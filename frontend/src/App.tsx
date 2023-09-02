@@ -1,8 +1,9 @@
 import { Stage, SimpleMesh, AppConsumer } from '@pixi/react';
 import { StretchyMap } from './StretchyMap';
+import { APP_HEIGHT, APP_WIDTH } from './constants';
 
-const w = 500;
-const h = 300;
+const w = APP_WIDTH;
+const h = APP_HEIGHT;
 
 const App = () => (
   <Stage

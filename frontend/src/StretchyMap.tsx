@@ -1,11 +1,12 @@
 import { SimpleMesh, useTick } from '@pixi/react';
 
 import * as PIXI from 'pixi.js';
-import { useReducer, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
+import exampleMap from './assets/example-map.png';
+import { APP_HEIGHT, APP_WIDTH } from './constants';
 
-const image = 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/693612/cake.png';
-const w = 500;
-const h = 300;
+const w = APP_WIDTH;
+const h = APP_HEIGHT;
 
 const state = {
   indices: new Uint16Array([
@@ -59,7 +60,7 @@ export const StretchyMap = () => {
 
   return (
     <SimpleMesh
-      image={image}
+      image={exampleMap}
       uvs={state.uvs}
       vertices={vertices}
       indices={state.indices}
