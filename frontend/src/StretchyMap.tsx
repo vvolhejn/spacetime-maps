@@ -4,16 +4,57 @@ import * as PIXI from 'pixi.js';
 import { useRef, useState } from 'react';
 import exampleMap from './assets/example-map.png';
 import { APP_HEIGHT, APP_WIDTH } from './constants';
+import { getMesh } from './mesh';
 
 const w = APP_WIDTH;
 const h = APP_HEIGHT;
 
 const state = {
   indices: new Uint16Array([
-    0, 3, 4, 0, 1, 4, 1, 2, 4, 2, 4, 5, 3, 4, 6, 4, 6, 7, 4, 7, 8, 4, 5, 8,
+    0,
+    3,
+    4,
+    0,
+    1,
+    4,
+    1,
+    2,
+    4,
+    2,
+    4,
+    5,
+    3,
+    4,
+    6,
+    4,
+    6,
+    7,
+    4,
+    7,
+    8,
+    4,
+    5,
+    8,
   ]),
   uvs: new Float32Array([
-    0, 0, 0.5, 0, 1, 0, 0, 0.5, 0.5, 0.5, 1, 0.5, 0, 1, 0.5, 1, 1, 1,
+    0,
+    0,
+    0.5,
+    0,
+    1,
+    0,
+    0,
+    0.5,
+    0.5,
+    0.5,
+    1,
+    0.5,
+    0,
+    1,
+    0.5,
+    1,
+    1,
+    1,
   ]),
   vertices: new Float32Array([
     0,
@@ -43,6 +84,8 @@ export const StretchyMap = () => {
   const [motion, update] = useState({ x: 0, y: 0, rotation: 0, anchor: 0 });
   const iter = useRef(0);
 
+  const { vertices, uvs, indices } = getMesh(5, APP_WIDTH, APP_HEIGHT);
+
   useTick((delta) => {
     const i = (iter.current += 0.05 * delta);
 
@@ -54,17 +97,27 @@ export const StretchyMap = () => {
     });
   });
 
-  const vertices = new Float32Array(state.vertices);
-  vertices[8] = w / 2 + motion.x;
-  vertices[9] = h / 2 + motion.y - 50;
+  const vertices2 = new Float32Array(vertices);
+  vertices2[24] = w / 2 + motion.x;
+  vertices2[25] = h / 2 + motion.y - 50;
 
   return (
     <SimpleMesh
       image={exampleMap}
-      uvs={state.uvs}
-      vertices={vertices}
-      indices={state.indices}
+      uvs={uvs}
+      vertices={vertices2}
+      indices={indices}
       drawMode={PIXI.DRAW_MODES.TRIANGLES}
     />
   );
+
+  // return (
+  //   <SimpleMesh
+  //     image={exampleMap}
+  //     uvs={state.uvs}
+  //     vertices={vertices}
+  //     indices={state.indices}
+  //     drawMode={PIXI.DRAW_MODES.TRIANGLES}
+  //   />
+  // );
 };
