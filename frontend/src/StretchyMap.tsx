@@ -44,6 +44,7 @@ export const StretchyMap = ({ toggledKeys }: { toggledKeys: string[] }) => {
     );
 
     return {
+      grid,
       initialPositions,
       triangleIndices,
       springs,
@@ -51,7 +52,7 @@ export const StretchyMap = ({ toggledKeys }: { toggledKeys: string[] }) => {
     };
   };
 
-  const { initialPositions, triangleIndices, springs, flatUvs } = useMemo(
+  const { grid, initialPositions, triangleIndices, springs, flatUvs } = useMemo(
     getConstantGridData,
     []
   );
@@ -81,7 +82,11 @@ export const StretchyMap = ({ toggledKeys }: { toggledKeys: string[] }) => {
         indices={triangleIndices}
         drawMode={PIXI.DRAW_MODES.TRIANGLES}
       />
-      {toggledKeys.includes('KeyD') && <DebugOverlay meshState={meshState} />}
+      <DebugOverlay
+        meshState={meshState}
+        toggledKeys={toggledKeys}
+        grid={grid}
+      />
     </>
   );
 };

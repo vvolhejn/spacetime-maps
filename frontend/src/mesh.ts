@@ -1,4 +1,4 @@
-type GridEntry = {
+export type GridEntry = {
   index: number;
   uvX: number;
   uvY: number;
@@ -13,7 +13,7 @@ export type MeshState = {
 }[];
 
 export const getMesh = (gridSize: number) => {
-  const grid: Array<Array<GridEntry>> = [];
+  const grid: GridEntry[][] = [];
   let index = 0;
   for (let x = 0; x < gridSize; x++) {
     grid.push([]);

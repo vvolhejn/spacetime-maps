@@ -1,10 +1,11 @@
-import { Stage } from '@pixi/react';
+import { Container, Stage } from '@pixi/react';
 import { StretchyMap } from './StretchyMap';
 import { APP_HEIGHT, APP_WIDTH } from './constants';
 import { useEffect, useRef, useState } from 'react';
 
 const w = APP_WIDTH;
 const h = APP_HEIGHT;
+const DEBUG_PADDING = 50;
 
 const App = () => {
   const [toggledKeys, setToggledKeys] = useState([] as string[]);
@@ -18,6 +19,8 @@ const App = () => {
     wrapperDiv.focus();
   });
 
+  const padding = toggledKeys.includes('KeyR') ? DEBUG_PADDING : 0;
+
   return (
     <div
       tabIndex={0}
@@ -30,13 +33,20 @@ const App = () => {
         console.log(toggledKeys);
       }}
       ref={wrapperDivRef}
+      style={{
+        paddingLeft: DEBUG_PADDING - padding,
+        paddingTop: DEBUG_PADDING - padding,
+        outline: 'none',
+      }}
     >
       <Stage
-        width={w}
-        height={h}
+        width={w + 2 * padding}
+        height={h + 2 * padding}
         options={{ autoDensity: true, backgroundColor: 0xeef1f5 }}
       >
-        <StretchyMap toggledKeys={toggledKeys} />
+        <Container x={padding} y={padding}>
+          <StretchyMap toggledKeys={toggledKeys} />
+        </Container>
       </Stage>
     </div>
   );
