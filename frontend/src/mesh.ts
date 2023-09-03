@@ -6,6 +6,12 @@ type GridEntry = {
   y: number;
 };
 
+export type MeshState = {
+  x: number;
+  y: number;
+  pinned: boolean;
+}[];
+
 export const getMesh = (gridSize: number) => {
   const grid: Array<Array<GridEntry>> = [];
   let index = 0;

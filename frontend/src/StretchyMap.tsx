@@ -5,6 +5,7 @@ import { useMemo, useRef, useState } from 'react';
 import exampleMap from './assets/example-map.png';
 import { APP_HEIGHT, APP_WIDTH } from './constants';
 import { getMesh } from './mesh';
+import { DebugOverlay } from './DebugOverlay';
 
 const w = APP_WIDTH;
 const h = APP_HEIGHT;
@@ -14,7 +15,7 @@ type Spring = {
   to: number;
 };
 
-export const StretchyMap = () => {
+export const StretchyMap = ({ nClicks }: { nClicks: number }) => {
   const getConstantGridData = () => {
     const { grid, triangleIndices } = getMesh(5);
 
@@ -33,7 +34,7 @@ export const StretchyMap = () => {
         }))
       );
 
-    let springs = flatGrid.map((entry, i) => ({
+    let springs: Spring[] = flatGrid.map((entry, i) => ({
       from: i,
       to: i + flatGrid.length,
     }));
@@ -108,12 +109,15 @@ export const StretchyMap = () => {
   );
 
   return (
-    <SimpleMesh
-      image={exampleMap}
-      uvs={flatUvs}
-      vertices={flatVertices}
-      indices={triangleIndices}
-      drawMode={PIXI.DRAW_MODES.TRIANGLES}
-    />
+    <>
+      <SimpleMesh
+        image={exampleMap}
+        uvs={flatUvs}
+        vertices={flatVertices}
+        indices={triangleIndices}
+        drawMode={PIXI.DRAW_MODES.TRIANGLES}
+      />
+      {nClicks % 2 === 0 && <DebugOverlay meshState={meshState} />}
+    </>
   );
 };
