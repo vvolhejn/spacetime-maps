@@ -2,15 +2,11 @@ type GridEntry = {
   index: number;
   uvX: number;
   uvY: number;
-  imageX: number;
-  imageY: number;
+  x: number;
+  y: number;
 };
 
-export const getMesh = (
-  gridSize: number,
-  imageWidth: number,
-  imageHeight: number
-) => {
+export const getMesh = (gridSize: number) => {
   const grid: Array<Array<GridEntry>> = [];
   let index = 0;
   for (let x = 0; x < gridSize; x++) {
@@ -20,8 +16,8 @@ export const getMesh = (
         index: index,
         uvX: x / (gridSize - 1),
         uvY: y / (gridSize - 1),
-        imageX: (x * imageWidth) / (gridSize - 1),
-        imageY: (y * imageHeight) / (gridSize - 1),
+        x: x / (gridSize - 1),
+        y: y / (gridSize - 1),
       });
       index++;
     }
@@ -48,18 +44,7 @@ export const getMesh = (
   const flatTriangles = triangles.flat();
 
   return {
-    uvs: new Float32Array(
-      grid
-        .flat()
-        .map((entry) => [entry.uvX, entry.uvY])
-        .flat()
-    ),
-    vertices: new Float32Array(
-      grid
-        .flat()
-        .map((entry) => [entry.imageX, entry.imageY])
-        .flat()
-    ),
+    grid: grid,
     indices: new Float32Array(flatTriangles),
   };
 };
