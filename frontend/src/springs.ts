@@ -4,6 +4,7 @@ export type Spring = {
   from: number;
   to: number;
   length: number;
+  strength: number;
 };
 
 // e.g.
@@ -56,6 +57,7 @@ export const routeMatrixToSprings = (routeMatrix: RouteMatrix) => {
     from: entry.originIndex,
     to: entry.destinationIndex,
     length: averageSpeed / entry.metersPerSecond,
+    strength: 0.03,
   }));
   return res;
 };
@@ -79,7 +81,7 @@ export const stepSprings = (
     const distance = Math.sqrt(
       (from.x - to.x) * (from.x - to.x) + (from.y - to.y) * (from.y - to.y)
     );
-    const force = (distance - spring.length) * 0.1 * deltaSeconds;
+    const force = (distance - spring.length) * spring.strength * deltaSeconds;
 
     const angle = Math.atan2(to.y - from.y, to.x - from.x);
     const dx = Math.cos(angle) * force;

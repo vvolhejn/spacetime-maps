@@ -35,6 +35,7 @@ export const StretchyMap = ({ nClicks }: { nClicks: number }) => {
       from: i,
       to: i + flatGrid.length,
       length: 0,
+      strength: 1,
     }));
     springs = springs.concat(routeMatrixToSprings(gmailApiResponse as any));
 
