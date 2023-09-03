@@ -1,11 +1,12 @@
 import { SimpleMesh, useTick } from '@pixi/react';
 
 import * as PIXI from 'pixi.js';
-import { useMemo, useRef, useState } from 'react';
+import { useMemo, useState } from 'react';
 import exampleMap from './assets/example-map.png';
 import { APP_HEIGHT, APP_WIDTH } from './constants';
 import { getMesh } from './mesh';
 import { DebugOverlay } from './DebugOverlay';
+import { stepSprings } from './springs';
 
 const w = APP_WIDTH;
 const h = APP_HEIGHT;
@@ -55,50 +56,18 @@ export const StretchyMap = ({ nClicks }: { nClicks: number }) => {
     };
   };
 
-  // Use useMemo to memoize the result of the computation
   const { initialPositions, triangleIndices, springs, flatUvs } = useMemo(
     getConstantGridData,
     []
   );
 
   const [meshState, setMeshState] = useState(initialPositions);
-  const iter = useRef(0);
 
   useTick((delta) => {
-    iter.current += 0.05 * delta;
-    const time = iter.current;
+    const deltaSeconds = delta / 60;
 
-    let newMeshState = meshState.map((entry, i) => ({
-      x: entry.x,
-      y: entry.y,
-      dx: 0,
-      dy: 0,
-      pinned: entry.pinned,
-    }));
-
-    springs.forEach((spring) => {
-      const from = newMeshState[spring.from];
-      const to = newMeshState[spring.to];
-      const distance = Math.sqrt(
-        (from.x - to.x) * (from.x - to.x) + (from.y - to.y) * (from.y - to.y)
-      );
-      const force = distance * 0.01;
-      const angle = Math.atan2(to.y - from.y, to.x - from.x);
-      const dx = Math.cos(angle) * force;
-      const dy = Math.sin(angle) * force;
-      newMeshState[spring.from].dx += dx;
-      newMeshState[spring.from].dy += dy;
-      newMeshState[spring.to].dx -= dx;
-      newMeshState[spring.to].dy -= dy;
-    });
-
-    setMeshState(
-      newMeshState.map((entry) => ({
-        x: entry.pinned ? entry.x : entry.x + entry.dx,
-        y: entry.pinned ? entry.y : entry.y + entry.dy,
-        pinned: entry.pinned,
-      }))
-    );
+    let newMeshState = stepSprings(meshState, springs, deltaSeconds);
+    setMeshState(newMeshState);
   });
 
   const flatVertices = new Float32Array(
