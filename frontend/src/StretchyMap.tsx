@@ -6,15 +6,11 @@ import exampleMap from './assets/example-map.png';
 import { APP_HEIGHT, APP_WIDTH } from './constants';
 import { getMesh } from './mesh';
 import { DebugOverlay } from './DebugOverlay';
-import { stepSprings } from './springs';
+import { Spring, routeMatrixToSprings, stepSprings } from './springs';
+import gmailApiResponse from './gmapsApiResponse.json';
 
 const w = APP_WIDTH;
 const h = APP_HEIGHT;
-
-type Spring = {
-  from: number;
-  to: number;
-};
 
 export const StretchyMap = ({ nClicks }: { nClicks: number }) => {
   const getConstantGridData = () => {
@@ -38,8 +34,9 @@ export const StretchyMap = ({ nClicks }: { nClicks: number }) => {
     let springs: Spring[] = flatGrid.map((entry, i) => ({
       from: i,
       to: i + flatGrid.length,
+      length: 0,
     }));
-    springs.push({ from: 6, to: 11 });
+    springs = springs.concat(routeMatrixToSprings(gmailApiResponse as any));
 
     const flatUvs = new Float32Array(
       grid
