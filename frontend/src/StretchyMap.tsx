@@ -9,10 +9,7 @@ import { DebugOverlay } from './DebugOverlay';
 import { Spring, routeMatrixToSprings, stepSprings } from './springs';
 import gmailApiResponse from './gmapsApiResponse.json';
 
-const w = APP_WIDTH;
-const h = APP_HEIGHT;
-
-export const StretchyMap = ({ nClicks }: { nClicks: number }) => {
+export const StretchyMap = ({ toggledKeys }: { toggledKeys: string[] }) => {
   const getConstantGridData = () => {
     const { grid, triangleIndices } = getMesh(5);
 
@@ -84,7 +81,7 @@ export const StretchyMap = ({ nClicks }: { nClicks: number }) => {
         indices={triangleIndices}
         drawMode={PIXI.DRAW_MODES.TRIANGLES}
       />
-      {nClicks % 2 === 0 && <DebugOverlay meshState={meshState} />}
+      {toggledKeys.includes('KeyD') && <DebugOverlay meshState={meshState} />}
     </>
   );
 };
