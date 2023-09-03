@@ -41,10 +41,8 @@ export const getMesh = (gridSize: number) => {
     }
   }
 
-  const flatTriangles = triangles.flat();
-
   return {
     grid: grid,
-    indices: new Float32Array(flatTriangles),
+    triangleIndices: new Float32Array(triangles.flat()),
   };
 };
