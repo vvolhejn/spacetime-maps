@@ -7,7 +7,7 @@ import { APP_HEIGHT, APP_WIDTH } from './constants';
 import { getMesh } from './mesh';
 import { DebugOverlay } from './DebugOverlay';
 import { Spring, routeMatrixToSprings, stepSprings } from './springs';
-import gmailApiResponse from './gmapsApiResponse.json';
+import gmailApiResponse from './assets/5x5matrix.json';
 
 export const StretchyMap = ({ toggledKeys }: { toggledKeys: string[] }) => {
   const getConstantGridData = () => {

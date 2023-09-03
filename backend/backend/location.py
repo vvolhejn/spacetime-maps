@@ -10,11 +10,15 @@ class Location:
         # This is the format that the Google Maps API expects in URLs
         return f"{self.lat},{self.lng}"
 
-    def to_json(self) -> dict:
-        return {"latitude": self.lat, "longitude": self.lng}
-
     def with_offset(self, lat: float, lng: float):
         return Location(self.lat + lat, self.lng + lng)
+
+    def to_route_matrix_location(self):
+        return {
+            "waypoint": {
+                "location": {"latLng": {"latitude": self.lat, "longitude": self.lng}}
+            }
+        }
 
 
 def linspace(a, b, n):
@@ -53,7 +57,10 @@ def make_grid(center: Location, zoom: int, size: int = 5) -> list[Location]:
     max_offset_lng = STATIC_MAP_SIZE_COEF / (2**zoom)
 
     locations = []
-    for lat in linspace(center.lat - max_offset_lat, center.lat + max_offset_lat, size):
+    # Reverse the latitude so that the markers go "top to bottom" (north to south)
+    for lat in reversed(
+        linspace(center.lat - max_offset_lat, center.lat + max_offset_lat, size)
+    ):
         for lng in linspace(
             center.lng - max_offset_lng, center.lng + max_offset_lng, size
         ):

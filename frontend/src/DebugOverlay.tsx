@@ -59,7 +59,7 @@ export const DebugOverlay = ({
   return (
     <>
       {toggledKeys.includes('KeyD') && <Graphics draw={drawPoints} />}
-      {(toggledKeys.includes('KeyF') || true) && <Graphics draw={drawGrid} />}
+      {toggledKeys.includes('KeyF') && <Graphics draw={drawGrid} />}
     </>
   );
 };
