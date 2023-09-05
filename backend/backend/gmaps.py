@@ -39,10 +39,15 @@ def get_static_map(
 
 
 def call_distance_matrix_api(origins: list[Location], destinations: list[Location]):
+    # Note: 1000 elements = 5 dollars
+    # https://developers.google.com/maps/documentation/routes/usage-and-billing#rm-basic
     data = {
         "origins": [l.to_route_matrix_location() for l in origins],
         "destinations": [l.to_route_matrix_location() for l in destinations],
         "travelMode": "DRIVE",
+        # Note: TRAFFIC_AWARE and TRAFFIC_AWARE_OPTIMAL are more expensive.
+        # TRAFFIC_UNAWARE is the default.
+        "routingPreference": "TRAFFIC_UNAWARE",
         # "travelMode": "TRANSIT",
         # 9:00 UTC is 11:00 CEST
         # "departureTime": "2023-09-04T09:00:00Z",
@@ -70,6 +75,14 @@ def call_distance_matrix_api(origins: list[Location], destinations: list[Locatio
 def get_distance_matrix(
     origins: list[Location], destinations: list[Location]
 ) -> Iterable[dict]:
+    DOLLARS_PER_ELEMENT = 0.005
+    cost_dollars = len(origins) * len(destinations) * DOLLARS_PER_ELEMENT
+    if cost_dollars >= 1:
+        print(f"WARNING: This request will cost {cost_dollars}$")
+        print("Do you want to continue? [y/N]")
+        if input().lower() != "y":
+            raise RuntimeError("User is broke")
+
     ROOT_MAX_ENTRIES = 25
     MAX_ENTRIES = ROOT_MAX_ENTRIES * 2
 
