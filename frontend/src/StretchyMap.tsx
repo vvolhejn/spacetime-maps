@@ -7,11 +7,11 @@ import { APP_HEIGHT, APP_WIDTH } from './constants';
 import { getMesh } from './mesh';
 import { DebugOverlay } from './DebugOverlay';
 import { Spring, routeMatrixToSprings, stepSprings } from './springs';
-import gmailApiResponse from './assets/5x5matrix.json';
+import gmailApiResponse from './assets/9x9matrix.json';
 
 export const StretchyMap = ({ toggledKeys }: { toggledKeys: string[] }) => {
   const getConstantGridData = () => {
-    const { grid, triangleIndices } = getMesh(5);
+    const { grid, triangleIndices } = getMesh(9);
 
     const flatGrid = grid.flat();
     const initialPositions = flatGrid

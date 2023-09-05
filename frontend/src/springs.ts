@@ -27,7 +27,13 @@ type RouteMatrixEntry = {
 
 type RouteMatrix = RouteMatrixEntry[];
 
-export const routeMatrixToSprings = (routeMatrix: RouteMatrix) => {
+export const routeMatrixToSprings = (routeMatrix: RouteMatrix): Spring[] => {
+  const nLocations =
+    routeMatrix.reduce(
+      (acc, entry) => Math.max(acc, entry.originIndex, entry.destinationIndex),
+      0
+    ) + 1;
+
   const validRoutes = routeMatrix
     .filter(
       (entry) =>
@@ -57,7 +63,7 @@ export const routeMatrixToSprings = (routeMatrix: RouteMatrix) => {
     from: entry.originIndex,
     to: entry.destinationIndex,
     length: averageSpeed / entry.metersPerSecond,
-    strength: 0.03,
+    strength: 1 / nLocations,
   }));
   return res;
 };

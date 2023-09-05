@@ -76,10 +76,14 @@ def get_distance_matrix(
     origins: list[Location], destinations: list[Location]
 ) -> Iterable[dict]:
     DOLLARS_PER_ELEMENT = 0.005
-    cost_dollars = len(origins) * len(destinations) * DOLLARS_PER_ELEMENT
+    n_entries = len(origins) * len(destinations)
+    cost_dollars = n_entries * DOLLARS_PER_ELEMENT
     if cost_dollars >= 1:
-        print(f"WARNING: This request will cost {cost_dollars}$")
-        print("Do you want to continue? [y/N]")
+        print(
+            f"WARNING: You are asking for {n_entries} routes, "
+            f"which will cost {cost_dollars}$.\n"
+            "Do you want to continue? [y/N]"
+        )
         if input().lower() != "y":
             raise RuntimeError("User is broke")
 
@@ -93,8 +97,13 @@ def get_distance_matrix(
                     origins[i : i + ROOT_MAX_ENTRIES],
                     destinations[j : j + ROOT_MAX_ENTRIES],
                 )
-                print(response.status_code)
-                yield from response.json()
+
+                # Reindex to match the original indices
+                matrix_entries = response.json()
+                for entry in matrix_entries:
+                    entry["originIndex"] += i
+                    entry["destinationIndex"] += j
+                yield from matrix_entries
     else:
         response = call_distance_matrix_api(origins, destinations)
         yield from response.json()
