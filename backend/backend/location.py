@@ -16,11 +16,16 @@ class Location:
         return Location(self.lat + lat, self.lng + lng)
 
     def to_route_matrix_location(self):
+        """Serialize to a JSON that we can pass to the Google Maps Routes API."""
         return {
             "waypoint": {
                 "location": {"latLng": {"latitude": self.lat, "longitude": self.lng}}
             }
         }
+
+    def to_json(self):
+        """Serialize to a JSON that we pass to the frontend."""
+        return {"lat": self.lat, "lng": self.lng}
 
     def __repr__(self) -> str:
         return f"{self.lat:.5f}, {self.lng:.5f}"

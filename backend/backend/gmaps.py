@@ -133,6 +133,7 @@ def get_distance_matrix(
 
 class ResolvedLocation(TypedDict):
     location: Location
+    place_id: str
     types: list[str]
 
 
@@ -178,42 +179,3 @@ def snap_to_road(location: Location) -> ResolvedLocation:
         "place_id": resolution["place_id"],
         "types": resolution["types"],
     }
-
-
-def linspace(a, b, n):
-    return [a + (b - a) / (n - 1) * i for i in range(n)]
-
-
-def make_grid(
-    center: Location, zoom: int, size: int = 5, snap_to_roads: bool = True
-) -> list[Location]:
-    """Make a grid of locations around a center location, for plotting on a map."""
-
-    # If place markers on the map returned get_static_map() such that you move
-    # from the center by STATIC_MAP_SIZE_COEF (adjusted for zoom and Mercator)
-    # in each "diagonal" direction, you will reach the four corners of the map.
-    STATIC_MAP_SIZE_COEF = 280
-
-    max_offset_lat = (
-        STATIC_MAP_SIZE_COEF / (2**zoom) / get_mercator_scale_factor(center.lat)
-    )
-
-    max_offset_lng = STATIC_MAP_SIZE_COEF / (2**zoom)
-
-    locations = []
-    # Reverse the latitude so that the markers go "top to bottom" (north to south)
-    for lat in reversed(
-        linspace(center.lat - max_offset_lat, center.lat + max_offset_lat, size)
-    ):
-        for lng in linspace(
-            center.lng - max_offset_lng, center.lng + max_offset_lng, size
-        ):
-            locations.append(Location(lat, lng))
-
-    if snap_to_roads:
-        locations = [
-            snap_to_road(l)["location"]
-            for l in tqdm.tqdm(locations, desc="Snapping to roads")
-        ]
-
-    return locations
