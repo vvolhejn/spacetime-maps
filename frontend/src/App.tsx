@@ -2,13 +2,17 @@ import { Container, Stage } from '@pixi/react';
 import { StretchyMap } from './StretchyMap';
 import { APP_HEIGHT, APP_WIDTH } from './constants';
 import { useEffect, useRef, useState } from 'react';
+import { useLocalStorage } from 'usehooks-ts';
 
 const w = APP_WIDTH;
 const h = APP_HEIGHT;
 const DEBUG_PADDING = 50;
 
 const App = () => {
-  const [toggledKeys, setToggledKeys] = useState([] as string[]);
+  const [toggledKeys, setToggledKeys] = useLocalStorage(
+    'stretchyMap.toggledKeys',
+    [] as string[]
+  );
 
   const wrapperDivRef = useRef<HTMLDivElement>(null);
 
@@ -30,7 +34,6 @@ const App = () => {
         } else {
           setToggledKeys([...toggledKeys, e.code]);
         }
-        console.log(toggledKeys);
       }}
       ref={wrapperDivRef}
       style={{
