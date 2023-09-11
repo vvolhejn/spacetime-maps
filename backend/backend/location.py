@@ -20,6 +20,9 @@ class Location:
             }
         }
 
+    def __repr__(self) -> str:
+        return f"{self.lat:.5f}, {self.lng:.5f}"
+
 
 def linspace(a, b, n):
     return [a + (b - a) / (n - 1) * i for i in range(n)]
