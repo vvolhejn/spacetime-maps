@@ -27,7 +27,28 @@ type RouteMatrixEntry = {
 
 type RouteMatrix = RouteMatrixEntry[];
 
-export const routeMatrixToSprings = (routeMatrix: RouteMatrix): Spring[] => {
+type RouteMatrixRequestLocation = {
+  waypoint: {
+    location: {
+      latLng: {
+        latitude: number;
+        longitude: number;
+      };
+    };
+  };
+};
+
+type RouteMatrixRequest = {
+  origins: RouteMatrixRequestLocation[];
+  destinations: RouteMatrixRequestLocation[];
+  travelMode: string;
+  routingPreference: string;
+};
+
+export const routeMatrixToSprings = (
+  routeMatrixRequest: RouteMatrixRequest,
+  routeMatrix: RouteMatrix
+): Spring[] => {
   const nLocations =
     routeMatrix.reduce(
       (acc, entry) => Math.max(acc, entry.originIndex, entry.destinationIndex),
@@ -40,30 +61,62 @@ export const routeMatrixToSprings = (routeMatrix: RouteMatrix): Spring[] => {
         entry.condition === 'ROUTE_EXISTS' &&
         entry.originIndex !== entry.destinationIndex
     )
+    .filter((entry) => {
+      // For some pairs of locations, the route matrix returns a duration of 0s.
+      // I suspect this is because they're close to each other and they resolve into
+      // the same location on the road.
+      if (entry.duration === '0s') {
+        console.error('Invalid duration, skipping: ' + JSON.stringify(entry));
+        return false;
+      } else {
+        return true;
+      }
+    })
     .map((entry) => {
       if (entry.duration[entry.duration.length - 1] !== 's') {
         throw new Error('Invalid duration, expected it to end with "s"');
       }
       const durationSeconds = parseInt(entry.duration.split('s')[0]);
       if (durationSeconds === 0) {
-        throw new Error('Invalid duration, expected it to be > 0');
+        throw new Error(
+          'Invalid duration, expected it to be > 0: ' + JSON.stringify(entry)
+        );
       }
+
+      const origin =
+        routeMatrixRequest.origins[entry.originIndex].waypoint.location;
+      const destination =
+        routeMatrixRequest.destinations[entry.destinationIndex].waypoint
+          .location;
+      const sphericalDistanceMeters = getSphericalDistance(
+        origin.latLng.latitude,
+        origin.latLng.longitude,
+        destination.latLng.latitude,
+        destination.latLng.longitude
+      );
+
       return {
         ...entry,
         durationSeconds,
-        metersPerSecond: entry.distanceMeters / durationSeconds,
+        metersPerSecond: sphericalDistanceMeters / durationSeconds,
+        sphericalDistanceMeters,
       };
     });
+
+  console.log(validRoutes);
 
   const averageSpeed =
     validRoutes.reduce((acc, entry) => acc + entry.metersPerSecond, 0) /
     validRoutes.length;
 
+  const kmh = (averageSpeed * 3.6).toFixed(1);
+  console.log(`averageSpeed: ${kmh} km/h`);
+
   const res = validRoutes.map((entry) => ({
     from: entry.originIndex,
     to: entry.destinationIndex,
     length: averageSpeed / entry.metersPerSecond,
-    strength: 1 / nLocations,
+    strength: 0.1 / nLocations,
   }));
   return res;
 };
@@ -103,4 +156,32 @@ export const stepSprings = (
     y: entry.pinned ? entry.y : entry.y + entry.dy,
     pinned: entry.pinned,
   }));
+};
+
+const getSphericalDistance = (
+  lat1: number,
+  lng1: number,
+  lat2: number,
+  lng2: number
+): number => {
+  // Convert latitude and longitude from degrees to radians
+  const toRadians = (angle: number) => (angle * Math.PI) / 180;
+  lat1 = toRadians(lat1);
+  lng1 = toRadians(lng1);
+  lat2 = toRadians(lat2);
+  lng2 = toRadians(lng2);
+
+  // Radius of the Earth in meters
+  const radius = 6371.0 * 1000; // Earth's mean radius
+
+  // Haversine formula
+  const dlng = lng2 - lng1;
+  const dlat = lat2 - lat1;
+  const a =
+    Math.sin(dlat / 2) ** 2 +
+    Math.cos(lat1) * Math.cos(lat2) * Math.sin(dlng / 2) ** 2;
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  const distance = radius * c;
+
+  return distance;
 };

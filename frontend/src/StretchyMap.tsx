@@ -2,12 +2,13 @@ import { SimpleMesh, useTick } from '@pixi/react';
 
 import * as PIXI from 'pixi.js';
 import { useMemo, useState } from 'react';
-import exampleMap from './assets/example-map.png';
+import exampleMap from './assets/map-v2.png';
 import { APP_HEIGHT, APP_WIDTH } from './constants';
 import { MeshState, getMesh } from './mesh';
 import { DebugOverlay } from './DebugOverlay';
 import { Spring, routeMatrixToSprings, stepSprings } from './springs';
-import gmailApiResponse from './assets/9x9matrix.json';
+import gmailApiRequest from './assets/9x9matrix-v2-request.json';
+import gmailApiResponse from './assets/9x9matrix-v2.json';
 
 /**
  * Create a mesh of triangles from individual <SimpleMesh>es.
@@ -71,7 +72,9 @@ export const StretchyMap = ({ toggledKeys }: { toggledKeys: string[] }) => {
       length: 0,
       strength: 1,
     }));
-    springs = springs.concat(routeMatrixToSprings(gmailApiResponse as any));
+    springs = springs.concat(
+      routeMatrixToSprings(gmailApiRequest as any, gmailApiResponse as any)
+    );
 
     const flatUvs = new Float32Array(
       grid
