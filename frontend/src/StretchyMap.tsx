@@ -4,10 +4,47 @@ import * as PIXI from 'pixi.js';
 import { useMemo, useState } from 'react';
 import exampleMap from './assets/example-map.png';
 import { APP_HEIGHT, APP_WIDTH } from './constants';
-import { getMesh } from './mesh';
+import { MeshState, getMesh } from './mesh';
 import { DebugOverlay } from './DebugOverlay';
 import { Spring, routeMatrixToSprings, stepSprings } from './springs';
 import gmailApiResponse from './assets/9x9matrix.json';
+
+/**
+ * Create a mesh of triangles from individual <SimpleMesh>es.
+ * Originally, I had everything in one big <SimpleMesh>, but I ran into a bug where this
+ * would break for larger mesh sizes: https://github.com/pixijs/pixijs/issues/9646
+ */
+const createMesh = (
+  meshState: MeshState,
+  triangleIndices: Float32Array,
+  flatUvs: Float32Array
+) => {
+  let meshes = [];
+  for (let i = 0; i < triangleIndices.length; i += 3) {
+    const curIndices = triangleIndices.slice(i, i + 3);
+    const curVertices = Array.from(curIndices)
+      .map((i) => meshState.flat()[i])
+      .map((entry) => [entry.x * APP_WIDTH, entry.y * APP_HEIGHT])
+      .flat();
+    const curUvs = Array.from(curIndices)
+      .map((i) => [flatUvs[i * 2], flatUvs[i * 2 + 1]])
+      .flat();
+
+    meshes.push(
+      <SimpleMesh
+        key={i}
+        image={exampleMap}
+        uvs={new Float32Array(curUvs)}
+        vertices={new Float32Array(curVertices)}
+        // Since there is only one triangle now, the indices are trivial
+        indices={new Float32Array([0, 1, 2])}
+        drawMode={PIXI.DRAW_MODES.TRIANGLES}
+      />
+    );
+  }
+
+  return meshes;
+};
 
 export const StretchyMap = ({ toggledKeys }: { toggledKeys: string[] }) => {
   const getConstantGridData = () => {
@@ -66,22 +103,11 @@ export const StretchyMap = ({ toggledKeys }: { toggledKeys: string[] }) => {
     setMeshState(newMeshState);
   });
 
-  const flatVertices = new Float32Array(
-    meshState
-      .flat()
-      .map((entry) => [entry.x * APP_WIDTH, entry.y * APP_HEIGHT])
-      .flat()
-  );
+  const mesh = createMesh(meshState, triangleIndices, flatUvs);
 
   return (
     <>
-      <SimpleMesh
-        image={exampleMap}
-        uvs={flatUvs}
-        vertices={flatVertices}
-        indices={triangleIndices}
-        drawMode={PIXI.DRAW_MODES.TRIANGLES}
-      />
+      {mesh}
       <DebugOverlay
         meshState={meshState}
         toggledKeys={toggledKeys}
