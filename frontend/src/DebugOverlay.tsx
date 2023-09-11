@@ -1,7 +1,7 @@
 import * as PIXI from 'pixi.js';
 import { useCallback } from 'react';
 import { APP_HEIGHT, APP_WIDTH } from './constants';
-import { Graphics } from '@pixi/react';
+import { Graphics, Text } from '@pixi/react';
 import { GridEntry, MeshState } from './mesh';
 
 export const DebugOverlay = ({
@@ -56,9 +56,22 @@ export const DebugOverlay = ({
     [meshState, grid]
   );
 
+  const numbers = meshState
+    // The second half of the mesh are the "pinned" points
+    .slice(0, meshState.length / 2)
+    .map((point, i) => (
+      <Text
+        x={point.x * APP_WIDTH - 15}
+        y={point.y * APP_HEIGHT - 15}
+        text={i + ''}
+        key={i}
+      />
+    ));
+
   return (
     <>
-      {!toggledKeys.includes('KeyD') && <Graphics draw={drawPoints} />}
+      {toggledKeys.includes('KeyS') && numbers}
+      {toggledKeys.includes('KeyD') && <Graphics draw={drawPoints} />}
       {!toggledKeys.includes('KeyF') && <Graphics draw={drawGrid} />}
     </>
   );
