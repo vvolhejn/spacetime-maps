@@ -70,8 +70,11 @@ def confirm_if_expensive(origins: list[Location], destinations: list[Location]):
             raise RuntimeError("User is broke")
 
 
-def call_distance_matrix_api(origins: list[Location], destinations: list[Location]):
-    confirm_if_expensive(origins, destinations)
+def call_distance_matrix_api(
+    origins: list[Location], destinations: list[Location], confirm: bool = True
+):
+    if confirm:
+        confirm_if_expensive(origins, destinations)
 
     data = get_distance_matrix_api_payload(origins, destinations)
 
@@ -110,13 +113,18 @@ def get_distance_matrix(
                 response = call_distance_matrix_api(
                     origins[i : i + ROOT_MAX_ENTRIES],
                     destinations[j : j + ROOT_MAX_ENTRIES],
+                    confirm=False,  # Already confirmed above
                 )
 
                 # Reindex to match the original indices
                 matrix_entries = response.json()
                 for entry in matrix_entries:
-                    entry["originIndex"] += i
-                    entry["destinationIndex"] += j
+                    # TODO: Some requests returned entries that didn't have
+                    # originIndex or destinationIndex, but I couldn't reproduce.
+                    if "originIndex" in entry:
+                        entry["originIndex"] += i
+                    if "destinationIndex" in entry:
+                        entry["destinationIndex"] += j
                 yield from matrix_entries
     else:
         response = call_distance_matrix_api(origins, destinations)
