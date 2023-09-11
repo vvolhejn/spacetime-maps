@@ -23,7 +23,7 @@ const App = () => {
     wrapperDiv.focus();
   });
 
-  const padding = toggledKeys.includes('KeyR') ? DEBUG_PADDING : 0;
+  const padding = toggledKeys.includes('KeyE') ? DEBUG_PADDING : 0;
 
   return (
     <div

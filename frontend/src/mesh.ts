@@ -1,3 +1,5 @@
+import { GridData, Location, NormalizedLocation } from "./gridData";
+
 export type GridEntry = {
   index: number;
   uvX: number;
@@ -12,18 +14,47 @@ export type MeshState = {
   pinned: boolean;
 }[];
 
-export const getMesh = (gridSize: number) => {
-  const grid: GridEntry[][] = [];
+/** See backend for explanation */
+const getMercatorScaleFactor = (lat: number) => {
+  return 1 / Math.cos((lat * Math.PI) / 180);
+};
+
+const locationToNormalized = (
+  location: Location,
+  gridData: GridData
+): NormalizedLocation => {
+  const STATIC_MAP_SIZE_COEF = 280;
+
+  const maxOffsetLat =
+    STATIC_MAP_SIZE_COEF /
+    2 ** gridData.zoom /
+    getMercatorScaleFactor(location.lat);
+
+  const maxOffsetLng = STATIC_MAP_SIZE_COEF / 2 ** gridData.zoom;
+
+  const x =
+    (location.lng - gridData.center.lng + maxOffsetLng) / (2 * maxOffsetLng);
+  const y =
+    (-location.lat + gridData.center.lat + maxOffsetLat) / (2 * maxOffsetLat);
+  return { x, y };
+};
+
+export const getMesh = (gridSize: number, gridData: GridData) => {
+  const grid: GridEntry[][] = new Array(gridSize);
   let index = 0;
-  for (let x = 0; x < gridSize; x++) {
-    grid.push([]);
-    for (let y = 0; y < gridSize; y++) {
-      grid[x].push({
+
+  for (let y = 0; y < gridSize; y++) {
+    grid[y] = [];
+    for (let x = 0; x < gridSize; x++) {
+      const location = gridData.locations[index].snapped_location;
+      const normalized = locationToNormalized(location, gridData);
+
+      grid[y].push({
         index: index,
-        uvX: x / (gridSize - 1),
-        uvY: y / (gridSize - 1),
-        x: x / (gridSize - 1),
-        y: y / (gridSize - 1),
+        uvX: normalized.x,
+        uvY: normalized.y,
+        x: normalized.x,
+        y: normalized.y,
       });
       index++;
     }

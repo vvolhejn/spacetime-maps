@@ -7,8 +7,7 @@ import { APP_HEIGHT, APP_WIDTH } from './constants';
 import { MeshState, getMesh } from './mesh';
 import { DebugOverlay } from './DebugOverlay';
 import { Spring, routeMatrixToSprings, stepSprings } from './springs';
-import gmailApiRequest from './assets/9x9matrix-v2-request.json';
-import gmailApiResponse from './assets/9x9matrix-v2.json';
+import gridData from './assets/5x5grid-v4.json'
 
 /**
  * Create a mesh of triangles from individual <SimpleMesh>es.
@@ -49,7 +48,9 @@ const createMesh = (
 
 export const StretchyMap = ({ toggledKeys }: { toggledKeys: string[] }) => {
   const getConstantGridData = () => {
-    const { grid, triangleIndices } = getMesh(9);
+    const gridSize = gridData.size;
+
+    const { grid, triangleIndices } = getMesh(gridSize, gridData as any);
 
     const flatGrid = grid.flat();
     const initialPositions = flatGrid
@@ -73,7 +74,7 @@ export const StretchyMap = ({ toggledKeys }: { toggledKeys: string[] }) => {
       strength: 1,
     }));
     springs = springs.concat(
-      routeMatrixToSprings(gmailApiRequest as any, gmailApiResponse as any)
+      routeMatrixToSprings(gridData as any)
     );
 
     const flatUvs = new Float32Array(

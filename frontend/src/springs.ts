@@ -1,4 +1,5 @@
-import { MeshState } from './mesh';
+import { GridData } from "./gridData";
+import { MeshState } from "./mesh";
 
 export type Spring = {
   from: number;
@@ -7,93 +8,57 @@ export type Spring = {
   strength: number;
 };
 
-// e.g.
-//   {
-//   "originIndex": 0,
-//   "destinationIndex": 4,
-//   "status": {},
-//   "distanceMeters": 6542,
-//   "duration": "1111s",
-//   "condition": "ROUTE_EXISTS"
-// }
-type RouteMatrixEntry = {
-  originIndex: number;
-  destinationIndex: number;
-  status: any;
-  distanceMeters: number;
-  duration: string;
-  condition: string;
-};
-
-type RouteMatrix = RouteMatrixEntry[];
-
-type RouteMatrixRequestLocation = {
-  waypoint: {
-    location: {
-      latLng: {
-        latitude: number;
-        longitude: number;
-      };
-    };
-  };
-};
-
-type RouteMatrixRequest = {
-  origins: RouteMatrixRequestLocation[];
-  destinations: RouteMatrixRequestLocation[];
-  travelMode: string;
-  routingPreference: string;
-};
-
-export const routeMatrixToSprings = (
-  routeMatrixRequest: RouteMatrixRequest,
-  routeMatrix: RouteMatrix
-): Spring[] => {
+export const routeMatrixToSprings = (gridData: GridData): Spring[] => {
   const nLocations =
-    routeMatrix.reduce(
+    gridData.route_matrix.reduce(
       (acc, entry) => Math.max(acc, entry.originIndex, entry.destinationIndex),
       0
     ) + 1;
 
-  const validRoutes = routeMatrix
+  const validRoutes = gridData.route_matrix
     .filter(
       (entry) =>
-        entry.condition === 'ROUTE_EXISTS' &&
+        entry.condition === "ROUTE_EXISTS" &&
         entry.originIndex !== entry.destinationIndex
     )
     .filter((entry) => {
       // For some pairs of locations, the route matrix returns a duration of 0s.
       // I suspect this is because they're close to each other and they resolve into
       // the same location on the road.
-      if (entry.duration === '0s') {
-        console.error('Invalid duration, skipping: ' + JSON.stringify(entry));
+      if (entry.duration === "0s") {
+        console.error("Invalid duration, skipping: " + JSON.stringify(entry));
         return false;
       } else {
         return true;
       }
     })
     .map((entry) => {
-      if (entry.duration[entry.duration.length - 1] !== 's') {
+      if (entry.duration[entry.duration.length - 1] !== "s") {
         throw new Error('Invalid duration, expected it to end with "s"');
       }
-      const durationSeconds = parseInt(entry.duration.split('s')[0]);
+      const durationSeconds = parseInt(entry.duration.split("s")[0]);
       if (durationSeconds === 0) {
         throw new Error(
-          'Invalid duration, expected it to be > 0: ' + JSON.stringify(entry)
+          "Invalid duration, expected it to be > 0: " + JSON.stringify(entry)
         );
       }
 
-      const origin =
-        routeMatrixRequest.origins[entry.originIndex].waypoint.location;
+      const origin = gridData.locations[entry.originIndex].snapped_location;
       const destination =
-        routeMatrixRequest.destinations[entry.destinationIndex].waypoint
-          .location;
+        gridData.locations[entry.destinationIndex].snapped_location;
       const sphericalDistanceMeters = getSphericalDistance(
-        origin.latLng.latitude,
-        origin.latLng.longitude,
-        destination.latLng.latitude,
-        destination.latLng.longitude
+        origin.lat,
+        origin.lng,
+        destination.lat,
+        destination.lng
       );
+
+      if (sphericalDistanceMeters === 0) {
+        throw new Error(
+          "Invalid sphericalDistanceMeters, expected it to be > 0: " +
+            JSON.stringify(entry)
+        );
+      }
 
       return {
         ...entry,
@@ -102,8 +67,6 @@ export const routeMatrixToSprings = (
         sphericalDistanceMeters,
       };
     });
-
-  console.log(validRoutes);
 
   const averageSpeed =
     validRoutes.reduce((acc, entry) => acc + entry.metersPerSecond, 0) /
