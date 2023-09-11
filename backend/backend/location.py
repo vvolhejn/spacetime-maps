@@ -1,5 +1,7 @@
 import math
 
+import numpy as np
+
 
 class Location:
     def __init__(self, lat: float, lng: float):
@@ -70,3 +72,23 @@ def make_grid(center: Location, zoom: int, size: int = 5) -> list[Location]:
             locations.append(Location(lat, lng))
 
     return locations
+
+
+def spherical_distance(location1: Location, location2: Location) -> float:
+    # https://en.wikipedia.org/wiki/Haversine_formula
+    # Convert latitude and longitude from degrees to radians
+    lat1, lng1, lat2, lng2 = np.radians(
+        [location1.lat, location1.lng, location2.lat, location2.lng]
+    )
+
+    # Radius of the Earth in meters
+    radius = 6371.0 * 1000  # Earth's mean radius
+
+    # Haversine formula
+    dlng = lng2 - lng1
+    dlat = lat2 - lat1
+    a = np.sin(dlat / 2) ** 2 + np.cos(lat1) * np.cos(lat2) * np.sin(dlng / 2) ** 2
+    c = 2 * np.arctan2(np.sqrt(a), np.sqrt(1 - a))
+    distance = radius * c
+
+    return distance
