@@ -1,6 +1,6 @@
 import os
 import time
-from typing import Iterable
+from typing import Iterable, TypedDict
 
 import tqdm.auto as tqdm
 import requests
@@ -129,3 +129,50 @@ def get_distance_matrix(
     else:
         response = call_distance_matrix_api(origins, destinations)
         yield from response.json()
+
+
+class ResolvedLocation(TypedDict):
+    location: Location
+    place_id: str
+    types: list[str]
+
+
+def snap_to_road(location: Location) -> ResolvedLocation:
+    """Resolve a lan/lng pair to a location close to a road using reverse geocoding.
+
+    This is useful for snapping points in unreachable locations, like bodies of water,
+    to the closest road.
+    """
+    response = requests.get(
+        f"https://maps.googleapis.com/maps/api/geocode/json?"
+        f"latlng={location}&key={get_api_key()}"
+    )
+    data = response.json()
+
+    if data["status"] != "OK":
+        raise ValueError(f"Got non-OK status when resolving {location}. Got: {data}")
+
+    # https://developers.google.com/maps/documentation/geocoding/requests-reverse-geocoding
+    # The API returns multiple results - different descriptions for the location, like
+    # street, city, country, and a bunch of more complicated ones. Filter to the accurate
+    # ones. I also tried "street_address", which sounds like what we'd actually want,
+    # but this left multiple markers in the lake.
+    result_types = ["route", "point_of_interest"]
+
+    filtered_results = [
+        x for x in data["results"] if any(t in x["types"] for t in result_types)
+    ]
+
+    if not filtered_results:
+        raise ValueError(f"No location found when resolving {location}. Got: {data}")
+
+    resolution = filtered_results[0]
+
+    return {
+        "location": Location(
+            resolution["geometry"]["location"]["lat"],
+            resolution["geometry"]["location"]["lng"],
+        ),
+        "place_id": resolution["place_id"],
+        "types": resolution["types"],
+    }
