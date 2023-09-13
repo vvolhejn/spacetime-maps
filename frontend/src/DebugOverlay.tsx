@@ -3,6 +3,7 @@ import { useCallback } from "react";
 import { APP_HEIGHT, APP_WIDTH } from "./constants";
 import { Graphics, Text } from "@pixi/react";
 import { GridEntry, MeshState, Point } from "./mesh";
+import { Spring } from "./springs";
 
 const getClosestMeshPoint = (point: Point, meshState: MeshState) => {
   let closestIndex = 0;
@@ -19,16 +20,40 @@ const getClosestMeshPoint = (point: Point, meshState: MeshState) => {
   return closestIndex;
 };
 
+const drawArrow = (
+  g: PIXI.Graphics,
+  x: number,
+  y: number,
+  angle: number,
+  scale: number = 1,
+  color: number = 0x000000
+) => {
+  g.beginFill(color, 0.8);
+  g.moveTo(
+    x + 10 * scale * Math.cos(angle + Math.PI / 2),
+    y + 10 * scale * Math.sin(angle + Math.PI / 2)
+  );
+  g.lineTo(
+    x + 10 * scale * Math.cos(angle - Math.PI / 2),
+    y + 10 * scale * Math.sin(angle - Math.PI / 2)
+  );
+  g.lineTo(x + 20 * scale * Math.cos(angle), y + 20 * scale * Math.sin(angle));
+  g.closePath();
+  g.endFill();
+};
+
 export const DebugOverlay = ({
   meshState,
+  grid,
+  springs,
   toggledKeys,
   hoveredPoint,
-  grid,
 }: {
   meshState: MeshState;
+  grid: GridEntry[][];
+  springs: Spring[];
   toggledKeys: string[];
   hoveredPoint: Point | null;
-  grid: GridEntry[][];
 }) => {
   const drawPoints = useCallback(
     (g: PIXI.Graphics) => {
@@ -77,8 +102,8 @@ export const DebugOverlay = ({
     (g: PIXI.Graphics) => {
       if (!hoveredPoint) return;
       g.clear();
-      const closestMeshPoint =
-        meshState[getClosestMeshPoint(hoveredPoint, meshState)];
+      const closestIndex = getClosestMeshPoint(hoveredPoint, meshState);
+      const closestMeshPoint = meshState[closestIndex];
 
       g.beginFill(0x000000, 0.5);
       g.drawCircle(
@@ -86,8 +111,36 @@ export const DebugOverlay = ({
         closestMeshPoint.y * APP_HEIGHT,
         10
       );
+
+      springs.forEach((spring) => {
+        if (spring.from !== closestIndex && spring.to !== closestIndex) return;
+        const [iTo, iFrom] =
+          spring.from === closestIndex
+            ? [spring.to, spring.from]
+            : [spring.from, spring.to];
+
+        const from = meshState[iFrom];
+        const to = meshState[iTo];
+
+        let angle = Math.atan2(to.y - from.y, to.x - from.x) + Math.PI / 2;
+        const distanceRatio =
+          Math.hypot(to.x - from.x, to.y - from.y) / spring.length;
+
+        if (distanceRatio < 1) {
+          angle += Math.PI;
+        }
+
+        drawArrow(
+          g,
+          to.x * APP_WIDTH,
+          to.y * APP_HEIGHT,
+          angle + Math.PI / 2,
+          1.4,
+          distanceRatio < 1 ? 0x2f52e0 : 0xef767a
+        );
+      });
     },
-    [meshState, hoveredPoint]
+    [meshState, hoveredPoint, springs]
   );
 
   const numbers = meshState

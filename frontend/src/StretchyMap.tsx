@@ -118,9 +118,10 @@ export const StretchyMap = ({
       {mesh}
       <DebugOverlay
         meshState={meshState}
+        grid={grid}
+        springs={springs}
         toggledKeys={toggledKeys}
         hoveredPoint={hoveredPoint}
-        grid={grid}
       />
     </>
   );
