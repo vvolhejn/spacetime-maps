@@ -1,5 +1,5 @@
 import { GridData } from "./gridData";
-import { MeshState } from "./mesh";
+import { MeshState, locationToNormalized } from "./mesh";
 
 export type Spring = {
   from: number;
@@ -61,11 +61,19 @@ export const routeMatrixToSprings = (gridData: GridData): Spring[] => {
         );
       }
 
+      const originNormalized = locationToNormalized(origin, gridData);
+      const destinationNormalized = locationToNormalized(destination, gridData);
+      const normalizedDistance = Math.hypot(
+        originNormalized.x - destinationNormalized.x,
+        originNormalized.y - destinationNormalized.y
+      );
+
       return {
         ...entry,
         durationSeconds,
         metersPerSecond: sphericalDistanceMeters / durationSeconds,
         sphericalDistanceMeters,
+        normalizedDistance,
       };
     });
 
@@ -79,8 +87,11 @@ export const routeMatrixToSprings = (gridData: GridData): Spring[] => {
   const res = validRoutes.map((entry) => ({
     from: entry.originIndex,
     to: entry.destinationIndex,
-    length: averageSpeed / entry.metersPerSecond,
-    strength: 0.1 / nLocations,
+    // If the speed (aerial m)/(road s) is exactly equal to the average, the spring
+    // is "happy". If the speed is lower, it wants to expand (the length is larger),
+    // and vice versa.
+    length: (entry.normalizedDistance * averageSpeed) / entry.metersPerSecond,
+    strength: 2 / nLocations,
   }));
   return res;
 };
@@ -101,9 +112,7 @@ export const stepSprings = (
   springs.forEach((spring) => {
     const from = newMeshState[spring.from];
     const to = newMeshState[spring.to];
-    const distance = Math.sqrt(
-      (from.x - to.x) * (from.x - to.x) + (from.y - to.y) * (from.y - to.y)
-    );
+    const distance = Math.hypot(from.x - to.x, from.y - to.y);
     const force = (distance - spring.length) * spring.strength * deltaSeconds;
 
     const angle = Math.atan2(to.y - from.y, to.x - from.x);

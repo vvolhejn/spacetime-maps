@@ -135,7 +135,7 @@ export const DebugOverlay = ({
           to.x * APP_WIDTH,
           to.y * APP_HEIGHT,
           angle + Math.PI / 2,
-          1.4,
+          3 * Math.abs(1 - distanceRatio),
           distanceRatio < 1 ? 0x2f52e0 : 0xef767a
         );
       });

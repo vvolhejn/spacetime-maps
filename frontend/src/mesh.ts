@@ -24,7 +24,7 @@ const getMercatorScaleFactor = (lat: number) => {
   return 1 / Math.cos((lat * Math.PI) / 180);
 };
 
-const locationToNormalized = (
+export const locationToNormalized = (
   location: Location,
   gridData: GridData
 ): NormalizedLocation => {
