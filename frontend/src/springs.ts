@@ -19,7 +19,8 @@ export const routeMatrixToSprings = (gridData: GridData): Spring[] => {
     .filter(
       (entry) =>
         entry.condition === "ROUTE_EXISTS" &&
-        entry.originIndex !== entry.destinationIndex
+        // Only include each pair once
+        entry.originIndex < entry.destinationIndex
     )
     .filter((entry) => {
       // For some pairs of locations, the route matrix returns a duration of 0s.
