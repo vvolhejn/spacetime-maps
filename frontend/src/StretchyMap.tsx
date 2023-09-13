@@ -1,13 +1,13 @@
-import { SimpleMesh, useTick } from '@pixi/react';
+import { SimpleMesh, useTick } from "@pixi/react";
 
-import * as PIXI from 'pixi.js';
-import { useMemo, useState } from 'react';
-import exampleMap from './assets/map-v2.png';
-import { APP_HEIGHT, APP_WIDTH } from './constants';
-import { MeshState, getMesh } from './mesh';
-import { DebugOverlay } from './DebugOverlay';
-import { Spring, routeMatrixToSprings, stepSprings } from './springs';
-import gridData from './assets/5x5grid-v4.json'
+import * as PIXI from "pixi.js";
+import { useMemo, useState } from "react";
+import exampleMap from "./assets/map-v2.png";
+import { APP_HEIGHT, APP_WIDTH } from "./constants";
+import { MeshState, Point, getMesh } from "./mesh";
+import { DebugOverlay } from "./DebugOverlay";
+import { Spring, routeMatrixToSprings, stepSprings } from "./springs";
+import gridData from "./assets/5x5grid-v4.json";
 
 /**
  * Create a mesh of triangles from individual <SimpleMesh>es.
@@ -46,7 +46,13 @@ const createMesh = (
   return meshes;
 };
 
-export const StretchyMap = ({ toggledKeys }: { toggledKeys: string[] }) => {
+export const StretchyMap = ({
+  toggledKeys,
+  hoveredPoint,
+}: {
+  toggledKeys: string[];
+  hoveredPoint: Point | null;
+}) => {
   const getConstantGridData = () => {
     const gridSize = gridData.size;
 
@@ -73,9 +79,7 @@ export const StretchyMap = ({ toggledKeys }: { toggledKeys: string[] }) => {
       length: 0,
       strength: 1,
     }));
-    springs = springs.concat(
-      routeMatrixToSprings(gridData as any)
-    );
+    springs = springs.concat(routeMatrixToSprings(gridData as any));
 
     const flatUvs = new Float32Array(
       grid
@@ -115,6 +119,7 @@ export const StretchyMap = ({ toggledKeys }: { toggledKeys: string[] }) => {
       <DebugOverlay
         meshState={meshState}
         toggledKeys={toggledKeys}
+        hoveredPoint={hoveredPoint}
         grid={grid}
       />
     </>

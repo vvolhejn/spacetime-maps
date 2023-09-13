@@ -1,5 +1,10 @@
 import { GridData, Location, NormalizedLocation } from "./gridData";
 
+export type Point = {
+  x: number;
+  y: number;
+};
+
 export type GridEntry = {
   index: number;
   uvX: number;

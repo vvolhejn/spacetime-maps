@@ -1,16 +1,33 @@
-import * as PIXI from 'pixi.js';
-import { useCallback } from 'react';
-import { APP_HEIGHT, APP_WIDTH } from './constants';
-import { Graphics, Text } from '@pixi/react';
-import { GridEntry, MeshState } from './mesh';
+import * as PIXI from "pixi.js";
+import { useCallback } from "react";
+import { APP_HEIGHT, APP_WIDTH } from "./constants";
+import { Graphics, Text } from "@pixi/react";
+import { GridEntry, MeshState, Point } from "./mesh";
+
+const getClosestMeshPoint = (point: Point, meshState: MeshState) => {
+  let closestIndex = 0;
+  let closestDist = Infinity;
+
+  meshState.forEach((p, i) => {
+    if (p.pinned) return;
+    const dist = Math.hypot(p.x - point.x, p.y - point.y);
+    if (dist < closestDist) {
+      closestDist = dist;
+      closestIndex = i;
+    }
+  });
+  return closestIndex;
+};
 
 export const DebugOverlay = ({
   meshState,
   toggledKeys,
+  hoveredPoint,
   grid,
 }: {
   meshState: MeshState;
   toggledKeys: string[];
+  hoveredPoint: Point | null;
   grid: GridEntry[][];
 }) => {
   const drawPoints = useCallback(
@@ -56,6 +73,23 @@ export const DebugOverlay = ({
     [meshState, grid]
   );
 
+  const drawSprings = useCallback(
+    (g: PIXI.Graphics) => {
+      if (!hoveredPoint) return;
+      g.clear();
+      const closestMeshPoint =
+        meshState[getClosestMeshPoint(hoveredPoint, meshState)];
+
+      g.beginFill(0x000000, 0.5);
+      g.drawCircle(
+        closestMeshPoint.x * APP_WIDTH,
+        closestMeshPoint.y * APP_HEIGHT,
+        10
+      );
+    },
+    [meshState, hoveredPoint]
+  );
+
   const numbers = meshState
     // The second half of the mesh are the "pinned" points
     .slice(0, meshState.length / 2)
@@ -63,16 +97,17 @@ export const DebugOverlay = ({
       <Text
         x={point.x * APP_WIDTH - 15}
         y={point.y * APP_HEIGHT - 15}
-        text={i + ''}
+        text={i + ""}
         key={i}
       />
     ));
 
   return (
     <>
-      {toggledKeys.includes('KeyS') && numbers}
-      {toggledKeys.includes('KeyD') && <Graphics draw={drawPoints} />}
-      {toggledKeys.includes('KeyF') && <Graphics draw={drawGrid} />}
+      {toggledKeys.includes("KeyW") && <Graphics draw={drawSprings} />}
+      {toggledKeys.includes("KeyS") && numbers}
+      {toggledKeys.includes("KeyD") && <Graphics draw={drawPoints} />}
+      {toggledKeys.includes("KeyF") && <Graphics draw={drawGrid} />}
     </>
   );
 };
