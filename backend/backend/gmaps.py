@@ -1,11 +1,15 @@
 import os
 import time
-from typing import Iterable, TypedDict
+from typing import Callable, Iterable, TypedDict
+import logging
 
 import tqdm.auto as tqdm
 import requests
 
 from .location import Location, get_mercator_scale_factor
+
+
+logger = logging.getLogger(__name__)
 
 
 def get_api_key():
@@ -54,11 +58,11 @@ def get_distance_matrix_api_payload(
     }
 
 
-def confirm_if_expensive(origins: list[Location], destinations: list[Location]):
+def confirm_if_expensive_from_n(n: int):
     # Note: 1000 elements = 5 dollars
     # https://developers.google.com/maps/documentation/routes/usage-and-billing#rm-basic
     DOLLARS_PER_ELEMENT = 0.005
-    n_entries = len(origins) * len(destinations)
+    n_entries = n
     cost_dollars = n_entries * DOLLARS_PER_ELEMENT
     if cost_dollars >= 1:
         print(
@@ -68,6 +72,10 @@ def confirm_if_expensive(origins: list[Location], destinations: list[Location]):
         )
         if input().lower() != "y":
             raise RuntimeError("User is broke")
+
+
+def confirm_if_expensive(origins: list[Location], destinations: list[Location]):
+    return confirm_if_expensive_from_n(len(origins) * len(destinations))
 
 
 def call_distance_matrix_api(
@@ -129,6 +137,60 @@ def get_distance_matrix(
     else:
         response = call_distance_matrix_api(origins, destinations)
         yield from response.json()
+
+
+def get_sparsified_distance_matrix(
+    origins: list[Location],
+    destinations: list[Location],
+    should_include: Callable[[Location, Location], bool],
+    filter_mirrored: bool = True,
+) -> Iterable[dict]:
+    """Get a distance matrix, but only for a select subset of location pairs."""
+    mask = [
+        [should_include(origin, destination) for destination in destinations]
+        for origin in origins
+    ]
+
+    if filter_mirrored and origins == destinations:
+        # For a symmetrical matrix, we only need to compute the upper triangle.
+        for i in range(len(origins)):
+            for j in range(i, len(destinations)):
+                mask[i][j] = False
+
+    n_elements = sum(sum(x) for x in mask)
+    confirm_if_expensive_from_n(n_elements)
+
+    if n_elements == 0:
+        raise ValueError("No elements to include.")
+
+    logger.info(
+        f"Sparsified distance matrix has {n_elements} elements "
+        f"down from {len(origins) * len(destinations)}."
+    )
+
+    for origin, cur_mask in zip(origins, mask):
+        cur_destinations = [
+            destination
+            for destination, include in zip(destinations, cur_mask)
+            if include
+        ]
+
+        if not cur_destinations:
+            continue
+
+        reindexing = {}
+        for i, include in enumerate(mask):
+            if include:
+                reindexing[i] = len(reindexing)
+
+        response = call_distance_matrix_api([origin], cur_destinations, confirm=False)
+
+        matrix_entries = response.json()
+        for entry in matrix_entries:
+            if "destinationIndex" in entry:
+                entry["destinationIndex"] = reindexing[entry["destinationIndex"]]
+
+        yield from matrix_entries
 
 
 class ResolvedLocation(TypedDict):

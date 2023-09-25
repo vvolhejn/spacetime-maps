@@ -1,9 +1,12 @@
 from dataclasses import dataclass
+import math
 from typing import TypedDict
 import tqdm.auto as tqdm
 
-from backend.gmaps import snap_to_road
-from backend.location import Location, get_mercator_scale_factor
+from backend.gmaps import get_sparsified_distance_matrix, snap_to_road
+from backend.location import Location, NormalizedLocation, get_mercator_scale_factor
+
+STATIC_MAP_SIZE_COEF = 280
 
 
 @dataclass
@@ -33,6 +36,7 @@ class Grid:
         self.center = center
         self.zoom = zoom
         self.size = size
+
         self.locations: list[GridLocation] = []
         self.route_matrix: list[dict] | None = None
 
@@ -73,6 +77,46 @@ class Grid:
     def get_snapped_locations(self) -> list[Location]:
         return [x.snapped_location for x in self.locations]
 
+    def location_to_normalized(self, location: Location) -> NormalizedLocation:
+        max_offset_lat = (
+            STATIC_MAP_SIZE_COEF
+            / 2**self.zoom
+            / get_mercator_scale_factor(location.lat)
+        )
+
+        max_offset_lng = STATIC_MAP_SIZE_COEF / 2**self.zoom
+
+        x = (location.lng - self.center.lng + max_offset_lng) / (2 * max_offset_lng)
+        y = (-location.lat + self.center.lat + max_offset_lat) / (2 * max_offset_lat)
+        return NormalizedLocation(x, y)
+
+    def compute_sparsified_distance_matrix(
+        self, max_normalized_distance: float
+    ) -> None:
+        """Compute a distance matrix where we only compute distance nearby points.
+
+        Specifically, we measure "normalized distance" - Euclidean distance of the
+        points when projected onto the map, normalized to [0, 1] along both axes.
+        """
+
+        def should_include(a: Location, b: Location):
+            if a == b:
+                return False
+            a_normalized = self.location_to_normalized(a)
+            b_normalized = self.location_to_normalized(b)
+            distance = math.hypot(
+                a_normalized.x - b_normalized.x, a_normalized.y - b_normalized.y
+            )
+            return distance < max_normalized_distance
+
+        self.route_matrix = list(
+            get_sparsified_distance_matrix(
+                self.get_snapped_locations(),
+                self.get_snapped_locations(),
+                should_include=should_include,
+            )
+        )
+
 
 def linspace(a, b, n):
     return [a + (b - a) / (n - 1) * i for i in range(n)]
@@ -84,7 +128,6 @@ def make_grid(center: Location, zoom: int, size: int = 5) -> list[list[Location]
     # If place markers on the map returned get_static_map() such that you move
     # from the center by STATIC_MAP_SIZE_COEF (adjusted for zoom and Mercator)
     # in each "diagonal" direction, you will reach the four corners of the map.
-    STATIC_MAP_SIZE_COEF = 280
 
     max_offset_lat = (
         STATIC_MAP_SIZE_COEF / (2**zoom) / get_mercator_scale_factor(center.lat)

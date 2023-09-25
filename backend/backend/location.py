@@ -1,12 +1,13 @@
+from dataclasses import dataclass
 import math
 
 import numpy as np
 
 
+@dataclass
 class Location:
-    def __init__(self, lat: float, lng: float):
-        self.lat = lat
-        self.lng = lng
+    lat: float
+    lng: float
 
     def __str__(self) -> str:
         # This is the format that the Google Maps API expects in URLs
@@ -28,7 +29,13 @@ class Location:
         return {"lat": self.lat, "lng": self.lng}
 
     def __repr__(self) -> str:
-        return f"{self.lat:.5f}, {self.lng:.5f}"
+        return f"<{self.lat:.5f}, {self.lng:.5f}>"
+
+
+@dataclass
+class NormalizedLocation:
+    x: float
+    y: float
 
 
 def deg_to_rad(deg):
