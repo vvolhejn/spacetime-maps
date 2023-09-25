@@ -7,7 +7,7 @@ import { APP_HEIGHT, APP_WIDTH } from "./constants";
 import { MeshState, Point, getMesh } from "./mesh";
 import { DebugOverlay } from "./DebugOverlay";
 import { Spring, routeMatrixToSprings, stepSprings } from "./springs";
-import gridData from "./assets/5x5grid-v4.json";
+import gridData from "./assets/5x5grid-v5.json";
 
 /**
  * Create a mesh of triangles from individual <SimpleMesh>es.

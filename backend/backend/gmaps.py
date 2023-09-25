@@ -152,9 +152,9 @@ def get_sparsified_distance_matrix(
     ]
 
     if filter_mirrored and origins == destinations:
-        # For a symmetrical matrix, we only need to compute the upper triangle.
+        # For a symmetrical matrix, we only need to compute one triangle.
         for i in range(len(origins)):
-            for j in range(i, len(destinations)):
+            for j in range(i):
                 mask[i][j] = False
 
     n_elements = sum(sum(x) for x in mask)
@@ -168,7 +168,7 @@ def get_sparsified_distance_matrix(
         f"down from {len(origins) * len(destinations)}."
     )
 
-    for origin, cur_mask in zip(origins, mask):
+    for i_origin, (origin, cur_mask) in enumerate(zip(origins, mask)):
         cur_destinations = [
             destination
             for destination, include in zip(destinations, cur_mask)
@@ -179,14 +179,17 @@ def get_sparsified_distance_matrix(
             continue
 
         reindexing = {}
-        for i, include in enumerate(mask):
+        for i, include in enumerate(cur_mask):
             if include:
-                reindexing[i] = len(reindexing)
+                reindexing[len(reindexing)] = i
 
         response = call_distance_matrix_api([origin], cur_destinations, confirm=False)
 
         matrix_entries = response.json()
         for entry in matrix_entries:
+            if "originIndex" in entry:
+                assert entry["originIndex"] == 0
+                entry["originIndex"] = i_origin
             if "destinationIndex" in entry:
                 entry["destinationIndex"] = reindexing[entry["destinationIndex"]]
 
