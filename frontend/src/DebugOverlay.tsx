@@ -4,6 +4,7 @@ import { APP_HEIGHT, APP_WIDTH } from "./constants";
 import { Graphics, Text } from "@pixi/react";
 import { GridEntry, MeshState, Point } from "./mesh";
 import { Spring } from "./springs";
+import { USE_RELATIVE_STRENGTH } from "./settings";
 
 const getClosestMeshPoint = (point: Point, meshState: MeshState) => {
   let closestIndex = 0;
@@ -135,7 +136,9 @@ export const DebugOverlay = ({
           to.x * APP_WIDTH,
           to.y * APP_HEIGHT,
           angle + Math.PI / 2,
-          3 * Math.abs(1 - distanceRatio),
+          USE_RELATIVE_STRENGTH
+            ? 15 * Math.abs(1 - distanceRatio) * spring.strength
+            : 1 * Math.abs(1 - distanceRatio),
           distanceRatio < 1 ? 0x2f52e0 : 0xef767a
         );
       });

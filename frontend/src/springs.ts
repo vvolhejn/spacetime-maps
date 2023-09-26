@@ -1,5 +1,6 @@
 import { GridData } from "./gridData";
 import { MeshState, locationToNormalized } from "./mesh";
+import { SPEED_AVERAGING_TYPE, USE_RELATIVE_STRENGTH } from "./settings";
 
 export type Spring = {
   from: number;
@@ -77,12 +78,21 @@ export const routeMatrixToSprings = (gridData: GridData): Spring[] => {
       };
     });
 
-  const averageSpeed =
-    validRoutes.reduce((acc, entry) => acc + entry.metersPerSecond, 0) /
-    validRoutes.length;
+  let averageSpeed: number;
+  if (SPEED_AVERAGING_TYPE === "median") {
+    validRoutes.sort((a, b) => a.metersPerSecond - b.metersPerSecond);
+    averageSpeed =
+      validRoutes[Math.floor(validRoutes.length / 2)].metersPerSecond;
+  } else {
+    averageSpeed =
+      validRoutes.reduce((acc, entry) => acc + entry.metersPerSecond, 0) /
+      validRoutes.length;
+  }
 
   const kmh = (averageSpeed * 3.6).toFixed(1);
-  console.log(`averageSpeed: ${kmh} km/h`);
+  console.log(
+    `averageSpeed: ${kmh} km/h (averaged using ${SPEED_AVERAGING_TYPE})`
+  );
 
   const res = validRoutes.map((entry) => ({
     from: entry.originIndex,
@@ -91,7 +101,9 @@ export const routeMatrixToSprings = (gridData: GridData): Spring[] => {
     // is "happy". If the speed is lower, it wants to expand (the length is larger),
     // and vice versa.
     length: (entry.normalizedDistance * averageSpeed) / entry.metersPerSecond,
-    strength: 2 / nLocations,
+    strength: USE_RELATIVE_STRENGTH
+      ? 1 / entry.normalizedDistance / nLocations
+      : 1 / nLocations,
   }));
   return res;
 };
