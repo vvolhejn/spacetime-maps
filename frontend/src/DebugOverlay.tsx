@@ -2,9 +2,8 @@ import * as PIXI from "pixi.js";
 import { useCallback } from "react";
 import { APP_HEIGHT, APP_WIDTH } from "./constants";
 import { Graphics, Text } from "@pixi/react";
-import { GridEntry, MeshState, Point } from "./mesh";
-import { Spring } from "./springs";
-import { USE_RELATIVE_STRENGTH } from "./settings";
+import { GridEntry, MeshState, MeshStateEntry, Point } from "./mesh";
+import { Spring, getForce } from "./springs";
 
 const getClosestMeshPoint = (point: Point, meshState: MeshState) => {
   let closestIndex = 0;
@@ -41,6 +40,31 @@ const drawArrow = (
   g.lineTo(x + 20 * scale * Math.cos(angle), y + 20 * scale * Math.sin(angle));
   g.closePath();
   g.endFill();
+};
+
+const getForcesForEntry = (
+  meshState: MeshState,
+  springs: Spring[],
+  index: number
+): { entry: MeshStateEntry; force: number; spring: Spring }[] => {
+  return springs
+    .filter((spring) => spring.from === index || spring.to === index)
+    .map((spring) => {
+      const [iTo, iFrom] =
+        spring.from === index
+          ? [spring.to, spring.from]
+          : [spring.from, spring.to];
+
+      const from = meshState[iFrom];
+      const to = meshState[iTo];
+
+      const distanceRatio =
+        Math.hypot(to.x - from.x, to.y - from.y) / spring.length;
+
+      const force = getForce(from, to, spring.length);
+
+      return { entry: to, force, spring };
+    });
 };
 
 export const DebugOverlay = ({
@@ -113,15 +137,11 @@ export const DebugOverlay = ({
         10
       );
 
-      springs.forEach((spring) => {
-        if (spring.from !== closestIndex && spring.to !== closestIndex) return;
-        const [iTo, iFrom] =
-          spring.from === closestIndex
-            ? [spring.to, spring.from]
-            : [spring.from, spring.to];
+      const forces = getForcesForEntry(meshState, springs, closestIndex);
 
-        const from = meshState[iFrom];
-        const to = meshState[iTo];
+      forces.forEach(({ entry, force, spring }) => {
+        const from = closestMeshPoint;
+        const to = entry;
 
         let angle = Math.atan2(to.y - from.y, to.x - from.x) + Math.PI / 2;
         const distanceRatio =
@@ -131,15 +151,15 @@ export const DebugOverlay = ({
           angle += Math.PI;
         }
 
+        const pushingAway = force < 0;
+
         drawArrow(
           g,
-          to.x * APP_WIDTH,
-          to.y * APP_HEIGHT,
+          entry.x * APP_WIDTH,
+          entry.y * APP_HEIGHT,
           angle + Math.PI / 2,
-          USE_RELATIVE_STRENGTH
-            ? 15 * Math.abs(1 - distanceRatio) * spring.strength
-            : 1 * Math.abs(1 - distanceRatio),
-          distanceRatio < 1 ? 0x2f52e0 : 0xef767a
+          2 * Math.sqrt(Math.abs(force)),
+          pushingAway ? 0xef767a : 0x2f52e0
         );
       });
     },

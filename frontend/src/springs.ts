@@ -1,6 +1,11 @@
 import { GridData } from "./gridData";
-import { MeshState, locationToNormalized } from "./mesh";
-import { SPEED_AVERAGING_TYPE, USE_RELATIVE_STRENGTH } from "./settings";
+import { MeshState, MeshStateEntry, locationToNormalized } from "./mesh";
+import {
+  QUADRATIC_PENALTY,
+  SPEED_AVERAGING_TYPE,
+  STRENGTH_MULTIPLIER,
+  USE_RELATIVE_STRENGTH,
+} from "./settings";
 
 export type Spring = {
   from: number;
@@ -102,17 +107,37 @@ export const routeMatrixToSprings = (gridData: GridData): Spring[] => {
     // and vice versa.
     length: (entry.normalizedDistance * averageSpeed) / entry.metersPerSecond,
     strength: USE_RELATIVE_STRENGTH
-      ? 1 / entry.normalizedDistance / nLocations
-      : 1 / nLocations,
+      ? STRENGTH_MULTIPLIER / entry.normalizedDistance / nLocations
+      : STRENGTH_MULTIPLIER / nLocations,
   }));
   return res;
+};
+
+export const getForce = (
+  from: MeshStateEntry,
+  to: MeshStateEntry,
+  springLength: number
+): number => {
+  const distance = Math.hypot(from.x - to.x, from.y - to.y);
+  const delta = distance - springLength;
+
+  let force: number;
+  if (QUADRATIC_PENALTY) {
+    force = Math.sign(delta) * delta ** 2;
+    if (force < 0) {
+    }
+  } else {
+    force = delta;
+  }
+  // force = Math.min(force, 0);
+  return force;
 };
 
 export const stepSprings = (
   meshState: MeshState,
   springs: Spring[],
   deltaSeconds: number
-): MeshState => {
+): [MeshState, number] => {
   let newMeshState = meshState.map((entry, i) => ({
     x: entry.x,
     y: entry.y,
@@ -121,11 +146,15 @@ export const stepSprings = (
     pinned: entry.pinned,
   }));
 
+  let loss = 0;
+
   springs.forEach((spring) => {
     const from = newMeshState[spring.from];
     const to = newMeshState[spring.to];
-    const distance = Math.hypot(from.x - to.x, from.y - to.y);
-    const force = (distance - spring.length) * spring.strength * deltaSeconds;
+
+    let force = getForce(from, to, spring.length);
+    loss += force ** 2;
+    force *= spring.strength * deltaSeconds;
 
     const angle = Math.atan2(to.y - from.y, to.x - from.x);
     const dx = Math.cos(angle) * force;
@@ -136,11 +165,14 @@ export const stepSprings = (
     newMeshState[spring.to].dy -= dy;
   });
 
-  return newMeshState.map((entry) => ({
-    x: entry.pinned ? entry.x : entry.x + entry.dx,
-    y: entry.pinned ? entry.y : entry.y + entry.dy,
-    pinned: entry.pinned,
-  }));
+  return [
+    newMeshState.map((entry) => ({
+      x: entry.pinned ? entry.x : entry.x + entry.dx,
+      y: entry.pinned ? entry.y : entry.y + entry.dy,
+      pinned: entry.pinned,
+    })),
+    loss,
+  ];
 };
 
 const getSphericalDistance = (

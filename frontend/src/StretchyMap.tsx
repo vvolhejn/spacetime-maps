@@ -8,6 +8,7 @@ import { MeshState, Point, getMesh } from "./mesh";
 import { DebugOverlay } from "./DebugOverlay";
 import { Spring, routeMatrixToSprings, stepSprings } from "./springs";
 import gridData from "./assets/11x11grid-v6.json";
+import { CONVERGENCE_THRESHOLD } from "./settings";
 
 /**
  * Create a mesh of triangles from individual <SimpleMesh>es.
@@ -103,12 +104,27 @@ export const StretchyMap = ({
   );
 
   const [meshState, setMeshState] = useState(initialPositions);
+  const [loss, setLoss] = useState(0);
+  const [converged, setConverged] = useState(false);
 
   useTick((delta) => {
     const deltaSeconds = delta / 60;
 
-    let newMeshState = stepSprings(meshState, springs, deltaSeconds);
+    if (converged) {
+      return;
+    }
+    let [newMeshState, newLoss] = stepSprings(meshState, springs, deltaSeconds);
+
+    const lossDelta = newLoss - loss;
+    console.log(lossDelta);
+
+    if (Math.abs(lossDelta) < CONVERGENCE_THRESHOLD) {
+      setConverged(true);
+      return;
+    }
+
     setMeshState(newMeshState);
+    setLoss(newLoss);
   });
 
   const mesh = createMesh(meshState, triangleIndices, flatUvs);
