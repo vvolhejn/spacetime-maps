@@ -77,6 +77,9 @@ class Grid:
     def get_snapped_locations(self) -> list[Location]:
         return [x.snapped_location for x in self.locations]
 
+    def get_raw_locations(self) -> list[Location]:
+        return [x.raw_location for x in self.locations]
+
     def location_to_normalized(self, location: Location) -> NormalizedLocation:
         max_offset_lat = (
             STATIC_MAP_SIZE_COEF
