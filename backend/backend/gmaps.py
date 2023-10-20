@@ -17,10 +17,16 @@ def get_api_key():
 
 
 def get_static_map(
-    center: Location, zoom: int, markers: list[Location] | None = None
+    center: Location,
+    zoom: int,
+    markers: list[Location] | None = None,
+    size_pixels: int = 400,
 ) -> bytes:
     if not 0 <= zoom <= 21:
         raise ValueError("Zoom must be between 0 and 21")
+
+    if size_pixels > 640:
+        raise ValueError("Size must be at most 640 (GMaps API limitation)")
 
     if markers is None:
         markers = []
@@ -28,10 +34,11 @@ def get_static_map(
     params = {
         "center": center,
         "zoom": zoom,
-        "size": "400x400",
+        "size": f"{size_pixels}x{size_pixels}",
         "key": get_api_key(),
         "markers": "|" + "|".join(str(x) for x in markers),
         "scale": 2,
+        "style": "feature:poi|visibility:off",
     }
     params_s = "&".join([f"{k}={v}" for k, v in params.items()])
     response = requests.get(

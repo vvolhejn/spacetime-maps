@@ -1,12 +1,11 @@
 from dataclasses import dataclass
 import math
-from typing import TypedDict
 import tqdm.auto as tqdm
 
 from backend.gmaps import get_sparsified_distance_matrix, snap_to_road
 from backend.location import Location, NormalizedLocation, get_mercator_scale_factor
 
-STATIC_MAP_SIZE_COEF = 280
+STATIC_MAP_SIZE_COEF = 0.7
 
 
 @dataclass
@@ -31,16 +30,24 @@ class GridLocation:
 
 class Grid:
     def __init__(
-        self, center: Location, zoom: int, size: int, snap_to_roads: bool = True
+        self,
+        center: Location,
+        zoom: int,
+        size: int,
+        snap_to_roads: bool = True,
+        # The pixel size matters for placing the markers on the static map image, because
+        # a bigger size_pixels covers a larger area
+        size_pixels: int = 400,
     ):
         self.center = center
         self.zoom = zoom
         self.size = size
+        self.size_pixels = size_pixels
 
         self.locations: list[GridLocation] = []
         self.route_matrix: list[dict] | None = None
 
-        raw_grid = make_grid(center, zoom, size)
+        raw_grid = make_grid(center, zoom, size, size_pixels)
 
         for y, row in tqdm.tqdm(
             enumerate(raw_grid),
@@ -83,11 +90,12 @@ class Grid:
     def location_to_normalized(self, location: Location) -> NormalizedLocation:
         max_offset_lat = (
             STATIC_MAP_SIZE_COEF
+            * self.size_pixels
             / 2**self.zoom
             / get_mercator_scale_factor(location.lat)
         )
 
-        max_offset_lng = STATIC_MAP_SIZE_COEF / 2**self.zoom
+        max_offset_lng = STATIC_MAP_SIZE_COEF * self.size_pixels / 2**self.zoom
 
         x = (location.lng - self.center.lng + max_offset_lng) / (2 * max_offset_lng)
         y = (-location.lat + self.center.lat + max_offset_lat) / (2 * max_offset_lat)
@@ -125,7 +133,9 @@ def linspace(a, b, n):
     return [a + (b - a) / (n - 1) * i for i in range(n)]
 
 
-def make_grid(center: Location, zoom: int, size: int = 5) -> list[list[Location]]:
+def make_grid(
+    center: Location, zoom: int, size: int = 5, size_pixels: int = 400
+) -> list[list[Location]]:
     """Make a grid of locations around a center location, for plotting on a map."""
 
     # If place markers on the map returned get_static_map() such that you move
@@ -133,10 +143,13 @@ def make_grid(center: Location, zoom: int, size: int = 5) -> list[list[Location]
     # in each "diagonal" direction, you will reach the four corners of the map.
 
     max_offset_lat = (
-        STATIC_MAP_SIZE_COEF / (2**zoom) / get_mercator_scale_factor(center.lat)
+        STATIC_MAP_SIZE_COEF
+        * size_pixels
+        / (2**zoom)
+        / get_mercator_scale_factor(center.lat)
     )
 
-    max_offset_lng = STATIC_MAP_SIZE_COEF / (2**zoom)
+    max_offset_lng = STATIC_MAP_SIZE_COEF * size_pixels / (2**zoom)
 
     locations = []
     # Reverse the latitude so that the markers go "top to bottom" (north to south)
