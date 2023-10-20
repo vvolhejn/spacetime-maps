@@ -2,12 +2,12 @@ import { SimpleMesh, useTick } from "@pixi/react";
 
 import * as PIXI from "pixi.js";
 import { useMemo, useState } from "react";
-import exampleMap from "./assets/map-v7.png";
+import exampleMap from "./assets/map-v8.png";
 import { APP_HEIGHT, APP_WIDTH } from "./constants";
 import { MeshState, Point, getMesh } from "./mesh";
 import { DebugOverlay } from "./DebugOverlay";
 import { Spring, routeMatrixToSprings, stepSprings } from "./springs";
-import gridData from "./assets/15x15grid-v7.json";
+import gridData from "./assets/20x20grid-v8.json";
 import { CONVERGENCE_THRESHOLD } from "./settings";
 
 /**

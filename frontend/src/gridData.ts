@@ -30,6 +30,10 @@ export type GridData = {
   center: Location;
   zoom: number;
   size: number;
+  // The size of the static map in pixels divided by 2.
+  // We divide by 2 because the Google Maps API also has a "scale" parameter
+  // which we set to 2, and that multiplies the resolution by 2.
+  size_pixels?: number;
   locations: {
     raw_location: Location;
     snapped_location: Location;

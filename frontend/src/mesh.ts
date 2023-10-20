@@ -30,7 +30,7 @@ export const locationToNormalized = (
   location: Location,
   gridData: GridData
 ): NormalizedLocation => {
-  const STATIC_MAP_SIZE_COEF = 280;
+  const STATIC_MAP_SIZE_COEF = 0.7 * (gridData.size_pixels ?? 400);
 
   const maxOffsetLat =
     STATIC_MAP_SIZE_COEF /
