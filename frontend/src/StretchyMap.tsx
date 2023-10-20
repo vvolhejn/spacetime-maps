@@ -113,10 +113,14 @@ export const StretchyMap = ({
     if (converged) {
       return;
     }
-    let [newMeshState, newLoss] = stepSprings(meshState, springs, deltaSeconds);
+    let [newMeshState, newLoss] = stepSprings(
+      meshState,
+      springs,
+      deltaSeconds,
+      hoveredPoint
+    );
 
     const lossDelta = newLoss - loss;
-    console.log(lossDelta);
 
     if (Math.abs(lossDelta) < CONVERGENCE_THRESHOLD) {
       setConverged(true);

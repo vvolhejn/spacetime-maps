@@ -1,5 +1,5 @@
 import { GridData } from "./gridData";
-import { MeshState, MeshStateEntry, locationToNormalized } from "./mesh";
+import { MeshState, MeshStateEntry, Point, locationToNormalized } from "./mesh";
 import {
   QUADRATIC_PENALTY,
   SPEED_AVERAGING_TYPE,
@@ -136,7 +136,8 @@ export const getForce = (
 export const stepSprings = (
   meshState: MeshState,
   springs: Spring[],
-  deltaSeconds: number
+  deltaSeconds: number,
+  hoveredPoint: Point | null
 ): [MeshState, number] => {
   let newMeshState = meshState.map((entry, i) => ({
     x: entry.x,
@@ -155,6 +156,14 @@ export const stepSprings = (
     let force = getForce(from, to, spring.length);
     loss += force ** 2;
     force *= spring.strength * deltaSeconds;
+
+    if (hoveredPoint !== null) {
+      const distanceFromHover = Math.hypot(
+        (from.x + to.x) / 2 - hoveredPoint.x,
+        (from.y + to.y) / 2 - hoveredPoint.y
+      );
+      force *= Math.min(10, 1 / (distanceFromHover + 0.01));
+    }
 
     const angle = Math.atan2(to.y - from.y, to.x - from.x);
     const dx = Math.cos(angle) * force;
