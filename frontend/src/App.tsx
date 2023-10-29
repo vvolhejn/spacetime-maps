@@ -4,6 +4,7 @@ import { APP_HEIGHT, APP_WIDTH } from "./constants";
 import { useEffect, useRef, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import { Point } from "./mesh";
+import useWindowDimensions from "./windowDimensions";
 
 const w = APP_WIDTH;
 const h = APP_HEIGHT;
@@ -25,48 +26,63 @@ const App = () => {
     wrapperDiv.focus();
   });
 
+  const { width, height } = useWindowDimensions();
+
   const padding = toggledKeys.includes("KeyE") ? DEBUG_PADDING : 0;
 
   return (
-    <div
-      tabIndex={0}
-      onKeyDown={(e) => {
-        if (toggledKeys.includes(e.code)) {
-          setToggledKeys(toggledKeys.filter((k) => k !== e.code));
-        } else {
-          setToggledKeys([...toggledKeys, e.code]);
-        }
-      }}
-      ref={wrapperDivRef}
-      style={{
-        paddingLeft: DEBUG_PADDING - padding,
-        paddingTop: DEBUG_PADDING - padding,
-        outline: "none",
-      }}
-    >
-      <Stage
-        width={w + 2 * padding}
-        height={h + 2 * padding}
-        options={{ autoDensity: true, backgroundColor: 0xeef1f5 }}
+    <>
+      <div
+        tabIndex={0}
+        onKeyDown={(e) => {
+          if (toggledKeys.includes(e.code)) {
+            setToggledKeys(toggledKeys.filter((k) => k !== e.code));
+          } else {
+            setToggledKeys([...toggledKeys, e.code]);
+          }
+        }}
+        ref={wrapperDivRef}
+        style={{
+          // paddingLeft: DEBUG_PADDING - padding,
+          // paddingTop: DEBUG_PADDING - padding,
+          width: "100vw",
+          height: "100vh",
+          overflow: "hidden",
+          position: "absolute",
+          zIndex: -1,
+        }}
       >
-        <Container
-          x={padding}
-          y={padding}
-          pointermove={(e) => {
-            setHoveredPoint({
-              x: (e.global.x - padding) / w,
-              y: (e.global.y - padding) / h,
-            });
+        <Stage
+          width={width}
+          height={height}
+          options={{
+            autoDensity: true,
+            backgroundColor: 0xeef1f5,
           }}
-          pointerout={() => {
-            setHoveredPoint(null);
-          }}
-          interactive={true}
         >
-          <StretchyMap toggledKeys={toggledKeys} hoveredPoint={hoveredPoint} />
-        </Container>
-      </Stage>
-    </div>
+          <Container
+            x={padding}
+            y={padding}
+            pointermove={(e) => {
+              setHoveredPoint({
+                x: (e.global.x - padding) / w,
+                y: (e.global.y - padding) / h,
+              });
+            }}
+            pointerout={() => {
+              setHoveredPoint(null);
+            }}
+            interactive={true}
+          >
+            <StretchyMap
+              toggledKeys={toggledKeys}
+              hoveredPoint={hoveredPoint}
+            />
+          </Container>
+        </Stage>
+      </div>
+      <div>Stretchy map</div>
+    </>
   );
 };
 
