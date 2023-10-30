@@ -13,13 +13,11 @@ export type GridEntry = {
   y: number;
 };
 
-export type MeshStateEntry = {
+export type VertexPosition = {
   x: number;
   y: number;
   pinned: boolean;
 };
-
-export type MeshState = MeshStateEntry[];
 
 /** See backend for explanation */
 const getMercatorScaleFactor = (lat: number) => {

@@ -1,5 +1,5 @@
 import { GridData } from "./gridData";
-import { MeshState, MeshStateEntry, Point, locationToNormalized } from "./mesh";
+import { VertexPosition, Point, locationToNormalized } from "./mesh";
 import {
   QUADRATIC_PENALTY,
   SPEED_AVERAGING_TYPE,
@@ -114,8 +114,8 @@ export const routeMatrixToSprings = (gridData: GridData): Spring[] => {
 };
 
 export const getForce = (
-  from: MeshStateEntry,
-  to: MeshStateEntry,
+  from: VertexPosition,
+  to: VertexPosition,
   springLength: number
 ): number => {
   const distance = Math.hypot(from.x - to.x, from.y - to.y);
@@ -134,12 +134,12 @@ export const getForce = (
 };
 
 export const stepSprings = (
-  meshState: MeshState,
+  vertexPositions: VertexPosition[],
   springs: Spring[],
   deltaSeconds: number,
   hoveredPoint: Point | null
-): [MeshState, number] => {
-  let newMeshState = meshState.map((entry, i) => ({
+): [VertexPosition[], number] => {
+  let newVertexPositions = vertexPositions.map((entry, i) => ({
     x: entry.x,
     y: entry.y,
     dx: 0,
@@ -150,8 +150,8 @@ export const stepSprings = (
   let loss = 0;
 
   springs.forEach((spring) => {
-    const from = newMeshState[spring.from];
-    const to = newMeshState[spring.to];
+    const from = newVertexPositions[spring.from];
+    const to = newVertexPositions[spring.to];
 
     let force = getForce(from, to, spring.length);
     loss += force ** 2;
@@ -168,14 +168,14 @@ export const stepSprings = (
     const angle = Math.atan2(to.y - from.y, to.x - from.x);
     const dx = Math.cos(angle) * force;
     const dy = Math.sin(angle) * force;
-    newMeshState[spring.from].dx += dx;
-    newMeshState[spring.from].dy += dy;
-    newMeshState[spring.to].dx -= dx;
-    newMeshState[spring.to].dy -= dy;
+    newVertexPositions[spring.from].dx += dx;
+    newVertexPositions[spring.from].dy += dy;
+    newVertexPositions[spring.to].dx -= dx;
+    newVertexPositions[spring.to].dy -= dy;
   });
 
   return [
-    newMeshState.map((entry) => ({
+    newVertexPositions.map((entry) => ({
       x: entry.pinned ? entry.x : entry.x + entry.dx,
       y: entry.pinned ? entry.y : entry.y + entry.dy,
       pinned: entry.pinned,

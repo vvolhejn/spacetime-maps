@@ -1,14 +1,17 @@
 import * as PIXI from "pixi.js";
 import { useCallback } from "react";
 import { Graphics, Text } from "@pixi/react";
-import { GridEntry, MeshState, MeshStateEntry, Point } from "./mesh";
+import { GridEntry, VertexPosition, Point } from "./mesh";
 import { Spring, getForce } from "./springs";
 
-const getClosestMeshPoint = (point: Point, meshState: MeshState) => {
+const getClosestMeshPoint = (
+  point: Point,
+  vertexPositions: VertexPosition[]
+) => {
   let closestIndex = 0;
   let closestDist = Infinity;
 
-  meshState.forEach((p, i) => {
+  vertexPositions.forEach((p, i) => {
     if (p.pinned) return;
     const dist = Math.hypot(p.x - point.x, p.y - point.y);
     if (dist < closestDist) {
@@ -42,10 +45,10 @@ const drawArrow = (
 };
 
 const getForcesForEntry = (
-  meshState: MeshState,
+  vertexPositions: VertexPosition[],
   springs: Spring[],
   index: number
-): { entry: MeshStateEntry; force: number; spring: Spring }[] => {
+): { entry: VertexPosition; force: number; spring: Spring }[] => {
   return springs
     .filter((spring) => spring.from === index || spring.to === index)
     .map((spring) => {
@@ -54,8 +57,8 @@ const getForcesForEntry = (
           ? [spring.to, spring.from]
           : [spring.from, spring.to];
 
-      const from = meshState[iFrom];
-      const to = meshState[iTo];
+      const from = vertexPositions[iFrom];
+      const to = vertexPositions[iTo];
 
       const force = getForce(from, to, spring.length);
 
@@ -64,14 +67,14 @@ const getForcesForEntry = (
 };
 
 export const DebugOverlay = ({
-  meshState,
+  vertexPositions,
   grid,
   springs,
   toggledKeys,
   hoveredPoint,
   mapSizePx,
 }: {
-  meshState: MeshState;
+  vertexPositions: VertexPosition[];
   grid: GridEntry[][];
   springs: Spring[];
   toggledKeys: string[];
@@ -82,7 +85,7 @@ export const DebugOverlay = ({
     (g: PIXI.Graphics) => {
       g.clear();
 
-      meshState.forEach((point) => {
+      vertexPositions.forEach((point) => {
         g.lineStyle(0);
         g.beginFill(point.pinned ? 0xffff0b : 0xff000b, 0.5);
         g.drawCircle(
@@ -93,15 +96,15 @@ export const DebugOverlay = ({
         g.endFill();
       });
     },
-    [meshState, mapSizePx]
+    [vertexPositions, mapSizePx]
   );
 
   const drawGrid = useCallback(
     (g: PIXI.Graphics) => {
       g.clear();
       const drawLine = (x1: number, y1: number, x2: number, y2: number) => {
-        const pos1 = meshState[grid[x1][y1].index];
-        const pos2 = meshState[grid[x2][y2].index];
+        const pos1 = vertexPositions[grid[x1][y1].index];
+        const pos2 = vertexPositions[grid[x2][y2].index];
         g.lineStyle(3, 0x555555, 0.5);
         g.moveTo(pos1.x * mapSizePx, pos1.y * mapSizePx);
         g.lineTo(pos2.x * mapSizePx, pos2.y * mapSizePx);
@@ -118,15 +121,15 @@ export const DebugOverlay = ({
         }
       }
     },
-    [meshState, grid, mapSizePx]
+    [vertexPositions, grid, mapSizePx]
   );
 
   const drawSprings = useCallback(
     (g: PIXI.Graphics) => {
       if (!hoveredPoint) return;
       g.clear();
-      const closestIndex = getClosestMeshPoint(hoveredPoint, meshState);
-      const closestMeshPoint = meshState[closestIndex];
+      const closestIndex = getClosestMeshPoint(hoveredPoint, vertexPositions);
+      const closestMeshPoint = vertexPositions[closestIndex];
 
       g.beginFill(0x000000, 0.5);
       g.drawCircle(
@@ -135,7 +138,7 @@ export const DebugOverlay = ({
         10
       );
 
-      const forces = getForcesForEntry(meshState, springs, closestIndex);
+      const forces = getForcesForEntry(vertexPositions, springs, closestIndex);
 
       forces.forEach(({ entry, force, spring }) => {
         const from = closestMeshPoint;
@@ -161,12 +164,12 @@ export const DebugOverlay = ({
         );
       });
     },
-    [meshState, hoveredPoint, springs, mapSizePx]
+    [vertexPositions, hoveredPoint, springs, mapSizePx]
   );
 
-  const numbers = meshState
+  const numbers = vertexPositions
     // The second half of the mesh are the "pinned" points
-    .slice(0, meshState.length / 2)
+    .slice(0, vertexPositions.length / 2)
     .map((point, i) => (
       <Text
         x={point.x * mapSizePx - 15}

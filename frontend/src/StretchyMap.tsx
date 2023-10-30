@@ -3,7 +3,7 @@ import { SimpleMesh, useTick } from "@pixi/react";
 import * as PIXI from "pixi.js";
 import { useMemo, useState } from "react";
 import exampleMap from "./assets/map-v8.png";
-import { MeshState, Point, getMesh } from "./mesh";
+import { Point, VertexPosition, getMesh } from "./mesh";
 import { DebugOverlay } from "./DebugOverlay";
 import { Spring, routeMatrixToSprings, stepSprings } from "./springs";
 import gridData from "./assets/20x20grid-v8.json";
@@ -16,7 +16,7 @@ import useWindowDimensions from "./windowDimensions";
  * would break for larger mesh sizes: https://github.com/pixijs/pixijs/issues/9646
  */
 const createMesh = (
-  meshState: MeshState,
+  vertexPositions: VertexPosition[],
   triangleIndices: Float32Array,
   flatUvs: Float32Array,
   mapSizePx: number
@@ -25,7 +25,7 @@ const createMesh = (
   for (let i = 0; i < triangleIndices.length; i += 3) {
     const curIndices = triangleIndices.slice(i, i + 3);
     const curVertices = Array.from(curIndices)
-      .map((i) => meshState.flat()[i])
+      .map((i) => vertexPositions.flat()[i])
       .map((entry) => [entry.x * mapSizePx, entry.y * mapSizePx])
       .flat();
     const curUvs = Array.from(curIndices)
@@ -107,7 +107,7 @@ export const StretchyMap = ({
     []
   );
 
-  const [meshState, setMeshState] = useState(initialPositions);
+  const [vertexPositions, setVertexPositions] = useState(initialPositions);
   const [loss, setLoss] = useState(0);
   const [converged, setConverged] = useState(false);
 
@@ -117,8 +117,8 @@ export const StretchyMap = ({
     if (converged) {
       return;
     }
-    let [newMeshState, newLoss] = stepSprings(
-      meshState,
+    let [newVertexPositions, newLoss] = stepSprings(
+      vertexPositions,
       springs,
       deltaSeconds,
       hoveredPoint
@@ -131,17 +131,17 @@ export const StretchyMap = ({
       return;
     }
 
-    setMeshState(newMeshState);
+    setVertexPositions(newVertexPositions);
     setLoss(newLoss);
   });
 
-  const mesh = createMesh(meshState, triangleIndices, flatUvs, mapSizePx);
+  const mesh = createMesh(vertexPositions, triangleIndices, flatUvs, mapSizePx);
 
   return (
     <>
       {mesh}
       <DebugOverlay
-        meshState={meshState}
+        vertexPositions={vertexPositions}
         grid={grid}
         springs={springs}
         toggledKeys={toggledKeys}
