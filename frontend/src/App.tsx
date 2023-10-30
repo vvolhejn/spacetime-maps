@@ -1,13 +1,10 @@
 import { Container, Stage } from "@pixi/react";
 import { StretchyMap } from "./StretchyMap";
-import { APP_HEIGHT, APP_WIDTH } from "./constants";
 import { useEffect, useRef, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import { Point } from "./mesh";
 import useWindowDimensions from "./windowDimensions";
 
-const w = APP_WIDTH;
-const h = APP_HEIGHT;
 const DEBUG_PADDING = 50;
 
 const App = () => {
@@ -65,8 +62,8 @@ const App = () => {
             y={padding}
             pointermove={(e) => {
               setHoveredPoint({
-                x: (e.global.x - padding) / w,
-                y: (e.global.y - padding) / h,
+                x: e.global.x,
+                y: e.global.y,
               });
             }}
             pointerout={() => {

@@ -3,12 +3,12 @@ import { SimpleMesh, useTick } from "@pixi/react";
 import * as PIXI from "pixi.js";
 import { useMemo, useState } from "react";
 import exampleMap from "./assets/map-v8.png";
-import { APP_HEIGHT, APP_WIDTH } from "./constants";
 import { MeshState, Point, getMesh } from "./mesh";
 import { DebugOverlay } from "./DebugOverlay";
 import { Spring, routeMatrixToSprings, stepSprings } from "./springs";
 import gridData from "./assets/20x20grid-v8.json";
 import { CONVERGENCE_THRESHOLD } from "./settings";
+import useWindowDimensions from "./windowDimensions";
 
 /**
  * Create a mesh of triangles from individual <SimpleMesh>es.
@@ -18,14 +18,15 @@ import { CONVERGENCE_THRESHOLD } from "./settings";
 const createMesh = (
   meshState: MeshState,
   triangleIndices: Float32Array,
-  flatUvs: Float32Array
+  flatUvs: Float32Array,
+  mapSizePx: number
 ) => {
   let meshes = [];
   for (let i = 0; i < triangleIndices.length; i += 3) {
     const curIndices = triangleIndices.slice(i, i + 3);
     const curVertices = Array.from(curIndices)
       .map((i) => meshState.flat()[i])
-      .map((entry) => [entry.x * APP_WIDTH, entry.y * APP_HEIGHT])
+      .map((entry) => [entry.x * mapSizePx, entry.y * mapSizePx])
       .flat();
     const curUvs = Array.from(curIndices)
       .map((i) => [flatUvs[i * 2], flatUvs[i * 2 + 1]])
@@ -54,6 +55,9 @@ export const StretchyMap = ({
   toggledKeys: string[];
   hoveredPoint: Point | null;
 }) => {
+  const windowDimensions = useWindowDimensions();
+  const mapSizePx = Math.min(windowDimensions.width, windowDimensions.height);
+
   const getConstantGridData = () => {
     const gridSize = gridData.size;
 
@@ -131,7 +135,7 @@ export const StretchyMap = ({
     setLoss(newLoss);
   });
 
-  const mesh = createMesh(meshState, triangleIndices, flatUvs);
+  const mesh = createMesh(meshState, triangleIndices, flatUvs, mapSizePx);
 
   return (
     <>
@@ -142,6 +146,7 @@ export const StretchyMap = ({
         springs={springs}
         toggledKeys={toggledKeys}
         hoveredPoint={hoveredPoint}
+        mapSizePx={mapSizePx}
       />
     </>
   );

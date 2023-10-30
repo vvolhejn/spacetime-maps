@@ -1,6 +1,5 @@
 import * as PIXI from "pixi.js";
 import { useCallback } from "react";
-import { APP_HEIGHT, APP_WIDTH } from "./constants";
 import { Graphics, Text } from "@pixi/react";
 import { GridEntry, MeshState, MeshStateEntry, Point } from "./mesh";
 import { Spring, getForce } from "./springs";
@@ -58,9 +57,6 @@ const getForcesForEntry = (
       const from = meshState[iFrom];
       const to = meshState[iTo];
 
-      const distanceRatio =
-        Math.hypot(to.x - from.x, to.y - from.y) / spring.length;
-
       const force = getForce(from, to, spring.length);
 
       return { entry: to, force, spring };
@@ -73,12 +69,14 @@ export const DebugOverlay = ({
   springs,
   toggledKeys,
   hoveredPoint,
+  mapSizePx,
 }: {
   meshState: MeshState;
   grid: GridEntry[][];
   springs: Spring[];
   toggledKeys: string[];
   hoveredPoint: Point | null;
+  mapSizePx: number;
 }) => {
   const drawPoints = useCallback(
     (g: PIXI.Graphics) => {
@@ -88,14 +86,14 @@ export const DebugOverlay = ({
         g.lineStyle(0);
         g.beginFill(point.pinned ? 0xffff0b : 0xff000b, 0.5);
         g.drawCircle(
-          point.x * APP_WIDTH,
-          point.y * APP_HEIGHT,
+          point.x * mapSizePx,
+          point.y * mapSizePx,
           point.pinned ? 5 : 10
         );
         g.endFill();
       });
     },
-    [meshState]
+    [meshState, mapSizePx]
   );
 
   const drawGrid = useCallback(
@@ -105,8 +103,8 @@ export const DebugOverlay = ({
         const pos1 = meshState[grid[x1][y1].index];
         const pos2 = meshState[grid[x2][y2].index];
         g.lineStyle(3, 0x555555, 0.5);
-        g.moveTo(pos1.x * APP_WIDTH, pos1.y * APP_HEIGHT);
-        g.lineTo(pos2.x * APP_WIDTH, pos2.y * APP_HEIGHT);
+        g.moveTo(pos1.x * mapSizePx, pos1.y * mapSizePx);
+        g.lineTo(pos2.x * mapSizePx, pos2.y * mapSizePx);
       };
 
       for (let x = 0; x < grid.length; x++) {
@@ -120,7 +118,7 @@ export const DebugOverlay = ({
         }
       }
     },
-    [meshState, grid]
+    [meshState, grid, mapSizePx]
   );
 
   const drawSprings = useCallback(
@@ -132,8 +130,8 @@ export const DebugOverlay = ({
 
       g.beginFill(0x000000, 0.5);
       g.drawCircle(
-        closestMeshPoint.x * APP_WIDTH,
-        closestMeshPoint.y * APP_HEIGHT,
+        closestMeshPoint.x * mapSizePx,
+        closestMeshPoint.y * mapSizePx,
         10
       );
 
@@ -155,15 +153,15 @@ export const DebugOverlay = ({
 
         drawArrow(
           g,
-          entry.x * APP_WIDTH,
-          entry.y * APP_HEIGHT,
+          entry.x * mapSizePx,
+          entry.y * mapSizePx,
           angle + Math.PI / 2,
           2 * Math.sqrt(Math.abs(force)),
           pushingAway ? 0xef767a : 0x2f52e0
         );
       });
     },
-    [meshState, hoveredPoint, springs]
+    [meshState, hoveredPoint, springs, mapSizePx]
   );
 
   const numbers = meshState
@@ -171,8 +169,8 @@ export const DebugOverlay = ({
     .slice(0, meshState.length / 2)
     .map((point, i) => (
       <Text
-        x={point.x * APP_WIDTH - 15}
-        y={point.y * APP_HEIGHT - 15}
+        x={point.x * mapSizePx - 15}
+        y={point.y * mapSizePx - 15}
         text={i + ""}
         key={i}
       />

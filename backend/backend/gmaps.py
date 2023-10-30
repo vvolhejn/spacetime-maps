@@ -21,6 +21,7 @@ def get_static_map(
     zoom: int,
     markers: list[Location] | None = None,
     size_pixels: int = 400,
+    scale: int = 2,
 ) -> bytes:
     if not 0 <= zoom <= 21:
         raise ValueError("Zoom must be between 0 and 21")
@@ -37,7 +38,7 @@ def get_static_map(
         "size": f"{size_pixels}x{size_pixels}",
         "key": get_api_key(),
         "markers": "|" + "|".join(str(x) for x in markers),
-        "scale": 2,
+        "scale": scale,
         "style": "feature:poi|visibility:off",
     }
     params_s = "&".join([f"{k}={v}" for k, v in params.items()])
