@@ -42,8 +42,6 @@ const App = () => {
         style={{
           // paddingLeft: DEBUG_PADDING - padding,
           // paddingTop: DEBUG_PADDING - padding,
-          width: "100vw",
-          height: "100vh",
           overflow: "hidden",
           position: "absolute",
           zIndex: -1,
@@ -78,7 +76,34 @@ const App = () => {
           </Container>
         </Stage>
       </div>
-      <div>Stretchy map</div>
+      {/* top banner */}
+      <div
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          padding: 10,
+          fontSize: 14,
+          backgroundColor: "white",
+        }}
+      >
+        <div>Spacetime map</div>
+      </div>
+
+      {/* bottom right corner */}
+      <div
+        style={{
+          position: "absolute",
+          bottom: 0,
+          right: 0,
+          padding: 10,
+          fontSize: 14,
+          textAlign: "right",
+          backgroundColor: "white",
+        }}
+      >
+        <div>Map data ©Google</div>
+      </div>
     </>
   );
 };
