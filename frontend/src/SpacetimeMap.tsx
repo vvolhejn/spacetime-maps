@@ -18,18 +18,22 @@ const createMesh = (
   vertexPositions: VertexPosition[],
   triangles: Float32Array[],
   flatUvs: Float32Array,
-  mapSizePx: number
+  windowDimensions: { width: number; height: number }
 ) => {
   const indices = new Float32Array([0, 1, 2]);
 
+  const mapSizePx = Math.max(windowDimensions.width, windowDimensions.height);
+  const xOffset = (windowDimensions.width - mapSizePx) / 2;
+  const yOffset = (windowDimensions.height - mapSizePx) / 2;
+
   let meshes = triangles.map((triangle, i) => {
     const curVertices = new Float32Array([
-      vertexPositions[triangle[0]].x * mapSizePx,
-      vertexPositions[triangle[0]].y * mapSizePx,
-      vertexPositions[triangle[1]].x * mapSizePx,
-      vertexPositions[triangle[1]].y * mapSizePx,
-      vertexPositions[triangle[2]].x * mapSizePx,
-      vertexPositions[triangle[2]].y * mapSizePx,
+      vertexPositions[triangle[0]].x * mapSizePx + xOffset,
+      vertexPositions[triangle[0]].y * mapSizePx + yOffset,
+      vertexPositions[triangle[1]].x * mapSizePx + xOffset,
+      vertexPositions[triangle[1]].y * mapSizePx + yOffset,
+      vertexPositions[triangle[2]].x * mapSizePx + xOffset,
+      vertexPositions[triangle[2]].y * mapSizePx + yOffset,
     ]);
 
     const curUvs = new Float32Array([
@@ -65,7 +69,7 @@ export const SpacetimeMap = ({
   hoveredPoint: Point | null;
 }) => {
   const windowDimensions = useWindowDimensions();
-  const mapSizePx = Math.min(windowDimensions.width, windowDimensions.height);
+  const mapSizePx = Math.max(windowDimensions.width, windowDimensions.height);
 
   const normalizedHoveredPoint = hoveredPoint
     ? {
@@ -137,7 +141,12 @@ export const SpacetimeMap = ({
     setVertexPositions(newVertexPositions);
   });
 
-  const mesh = createMesh(vertexPositions, triangles, flatUvs, mapSizePx);
+  const mesh = createMesh(
+    vertexPositions,
+    triangles,
+    flatUvs,
+    windowDimensions
+  );
 
   return (
     <>
