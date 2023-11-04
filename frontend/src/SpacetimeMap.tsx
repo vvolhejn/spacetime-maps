@@ -20,14 +20,26 @@ const createMesh = (
   flatUvs: Float32Array,
   mapSizePx: number
 ) => {
+  const indices = new Float32Array([0, 1, 2]);
+
   let meshes = triangles.map((triangle, i) => {
-    const curVertices = Array.from(triangle)
-      .map((i) => vertexPositions.flat()[i])
-      .map((entry) => [entry.x * mapSizePx, entry.y * mapSizePx])
-      .flat();
-    const curUvs = Array.from(triangle)
-      .map((i) => [flatUvs[i * 2], flatUvs[i * 2 + 1]])
-      .flat();
+    const curVertices = new Float32Array([
+      vertexPositions[triangle[0]].x * mapSizePx,
+      vertexPositions[triangle[0]].y * mapSizePx,
+      vertexPositions[triangle[1]].x * mapSizePx,
+      vertexPositions[triangle[1]].y * mapSizePx,
+      vertexPositions[triangle[2]].x * mapSizePx,
+      vertexPositions[triangle[2]].y * mapSizePx,
+    ]);
+
+    const curUvs = new Float32Array([
+      flatUvs[triangle[0] * 2],
+      flatUvs[triangle[0] * 2 + 1],
+      flatUvs[triangle[1] * 2],
+      flatUvs[triangle[1] * 2 + 1],
+      flatUvs[triangle[2] * 2],
+      flatUvs[triangle[2] * 2 + 1],
+    ]);
 
     return (
       <SimpleMesh
@@ -36,7 +48,7 @@ const createMesh = (
         uvs={new Float32Array(curUvs)}
         vertices={new Float32Array(curVertices)}
         // Since there is only one triangle now, the indices are trivial
-        indices={new Float32Array([0, 1, 2])}
+        indices={indices}
         drawMode={PIXI.DRAW_MODES.TRIANGLES}
       />
     );
