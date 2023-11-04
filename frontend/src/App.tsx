@@ -1,5 +1,5 @@
 import { Container, Stage } from "@pixi/react";
-import { StretchyMap } from "./StretchyMap";
+import { StretchyMap } from "./SpacetimeMap";
 import { useEffect, useRef, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import { Point } from "./mesh";
@@ -9,7 +9,7 @@ const DEBUG_PADDING = 50;
 
 const App = () => {
   const [toggledKeys, setToggledKeys] = useLocalStorage(
-    "stretchyMap.toggledKeys",
+    "SpacetimeMap.toggledKeys",
     [] as string[]
   );
   const [hoveredPoint, setHoveredPoint] = useState<Point | null>(null);
