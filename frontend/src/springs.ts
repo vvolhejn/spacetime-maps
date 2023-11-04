@@ -137,7 +137,7 @@ export const stepSprings = (
   vertexPositions: VertexPosition[],
   springs: Spring[],
   deltaSeconds: number,
-  hoveredPoint: Point | null
+  normalizedHoveredPoint: Point | null
 ): [VertexPosition[], number] => {
   let newVertexPositions = vertexPositions.map((entry, i) => ({
     x: entry.x,
@@ -157,12 +157,13 @@ export const stepSprings = (
     loss += force ** 2;
     force *= spring.strength * deltaSeconds;
 
-    if (hoveredPoint !== null) {
+    if (normalizedHoveredPoint !== null) {
       const distanceFromHover = Math.hypot(
-        (from.x + to.x) / 2 - hoveredPoint.x,
-        (from.y + to.y) / 2 - hoveredPoint.y
+        (from.x + to.x) / 2 - normalizedHoveredPoint.x,
+        (from.y + to.y) / 2 - normalizedHoveredPoint.y
       );
-      force *= Math.min(10, 1 / (distanceFromHover + 0.01));
+      const coef = Math.min(10, 1 / (distanceFromHover + 0.01));
+      force *= coef;
     }
 
     const angle = Math.atan2(to.y - from.y, to.x - from.x);

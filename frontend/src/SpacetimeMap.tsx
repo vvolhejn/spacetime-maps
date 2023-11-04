@@ -7,7 +7,6 @@ import { Point, VertexPosition, getMesh } from "./mesh";
 import { DebugOverlay } from "./DebugOverlay";
 import { Spring, routeMatrixToSprings, stepSprings } from "./springs";
 import gridData from "./assets/20x20grid-v8.json";
-import { CONVERGENCE_THRESHOLD } from "./settings";
 import useWindowDimensions from "./windowDimensions";
 
 /**
@@ -58,6 +57,12 @@ export const StretchyMap = ({
   const windowDimensions = useWindowDimensions();
   const mapSizePx = Math.min(windowDimensions.width, windowDimensions.height);
 
+  const normalizedHoveredPoint = hoveredPoint
+    ? {
+        x: hoveredPoint.x / mapSizePx,
+        y: hoveredPoint.y / mapSizePx,
+      }
+    : null;
   const getConstantGridData = () => {
     const gridSize = gridData.size;
 
@@ -108,31 +113,18 @@ export const StretchyMap = ({
   );
 
   const [vertexPositions, setVertexPositions] = useState(initialPositions);
-  const [loss, setLoss] = useState(0);
-  const [converged, setConverged] = useState(false);
 
   useTick((delta) => {
     const deltaSeconds = delta / 60;
 
-    if (converged) {
-      return;
-    }
-    let [newVertexPositions, newLoss] = stepSprings(
+    let [newVertexPositions, _] = stepSprings(
       vertexPositions,
       springs,
       deltaSeconds,
-      hoveredPoint
+      normalizedHoveredPoint
     );
 
-    const lossDelta = newLoss - loss;
-
-    if (Math.abs(lossDelta) < CONVERGENCE_THRESHOLD) {
-      setConverged(true);
-      return;
-    }
-
     setVertexPositions(newVertexPositions);
-    setLoss(newLoss);
   });
 
   const mesh = createMesh(vertexPositions, triangleIndices, flatUvs, mapSizePx);
