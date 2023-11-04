@@ -16,22 +16,20 @@ import useWindowDimensions from "./windowDimensions";
  */
 const createMesh = (
   vertexPositions: VertexPosition[],
-  triangleIndices: Float32Array,
+  triangles: Float32Array[],
   flatUvs: Float32Array,
   mapSizePx: number
 ) => {
-  let meshes = [];
-  for (let i = 0; i < triangleIndices.length; i += 3) {
-    const curIndices = triangleIndices.slice(i, i + 3);
-    const curVertices = Array.from(curIndices)
+  let meshes = triangles.map((triangle, i) => {
+    const curVertices = Array.from(triangle)
       .map((i) => vertexPositions.flat()[i])
       .map((entry) => [entry.x * mapSizePx, entry.y * mapSizePx])
       .flat();
-    const curUvs = Array.from(curIndices)
+    const curUvs = Array.from(triangle)
       .map((i) => [flatUvs[i * 2], flatUvs[i * 2 + 1]])
       .flat();
 
-    meshes.push(
+    return (
       <SimpleMesh
         key={i}
         image={exampleMap}
@@ -42,12 +40,12 @@ const createMesh = (
         drawMode={PIXI.DRAW_MODES.TRIANGLES}
       />
     );
-  }
+  });
 
   return meshes;
 };
 
-export const StretchyMap = ({
+export const SpacetimeMap = ({
   toggledKeys,
   hoveredPoint,
 }: {
@@ -66,7 +64,7 @@ export const StretchyMap = ({
   const getConstantGridData = () => {
     const gridSize = gridData.size;
 
-    const { grid, triangleIndices } = getMesh(gridSize, gridData as any);
+    const { grid, triangles } = getMesh(gridSize, gridData as any);
 
     const flatGrid = grid.flat();
     const initialPositions = flatGrid
@@ -101,13 +99,13 @@ export const StretchyMap = ({
     return {
       grid,
       initialPositions,
-      triangleIndices,
+      triangles,
       springs,
       flatUvs,
     };
   };
 
-  const { grid, initialPositions, triangleIndices, springs, flatUvs } = useMemo(
+  const { grid, initialPositions, triangles, springs, flatUvs } = useMemo(
     getConstantGridData,
     []
   );
@@ -127,7 +125,7 @@ export const StretchyMap = ({
     setVertexPositions(newVertexPositions);
   });
 
-  const mesh = createMesh(vertexPositions, triangleIndices, flatUvs, mapSizePx);
+  const mesh = createMesh(vertexPositions, triangles, flatUvs, mapSizePx);
 
   return (
     <>

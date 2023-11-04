@@ -1,5 +1,5 @@
 import { Container, Stage } from "@pixi/react";
-import { StretchyMap } from "./SpacetimeMap";
+import { SpacetimeMap } from "./SpacetimeMap";
 import { useEffect, useRef, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import { Point } from "./mesh";
@@ -71,7 +71,7 @@ const App = () => {
             }}
             interactive={true}
           >
-            <StretchyMap
+            <SpacetimeMap
               toggledKeys={toggledKeys}
               hoveredPoint={hoveredPoint}
             />
