@@ -1,4 +1,4 @@
-import { SimpleMesh, useTick } from "@pixi/react";
+import { Container, SimpleMesh, useTick } from "@pixi/react";
 
 import * as PIXI from "pixi.js";
 import { useMemo, useState } from "react";
@@ -23,17 +23,15 @@ const createMesh = (
   const indices = new Float32Array([0, 1, 2]);
 
   const mapSizePx = Math.max(windowDimensions.width, windowDimensions.height);
-  const xOffset = (windowDimensions.width - mapSizePx) / 2;
-  const yOffset = (windowDimensions.height - mapSizePx) / 2;
 
   let meshes = triangles.map((triangle, i) => {
     const curVertices = new Float32Array([
-      vertexPositions[triangle[0]].x * mapSizePx + xOffset,
-      vertexPositions[triangle[0]].y * mapSizePx + yOffset,
-      vertexPositions[triangle[1]].x * mapSizePx + xOffset,
-      vertexPositions[triangle[1]].y * mapSizePx + yOffset,
-      vertexPositions[triangle[2]].x * mapSizePx + xOffset,
-      vertexPositions[triangle[2]].y * mapSizePx + yOffset,
+      vertexPositions[triangle[0]].x * mapSizePx,
+      vertexPositions[triangle[0]].y * mapSizePx,
+      vertexPositions[triangle[1]].x * mapSizePx,
+      vertexPositions[triangle[1]].y * mapSizePx,
+      vertexPositions[triangle[2]].x * mapSizePx,
+      vertexPositions[triangle[2]].y * mapSizePx,
     ]);
 
     const curUvs = new Float32Array([
@@ -71,10 +69,13 @@ export const SpacetimeMap = ({
   const windowDimensions = useWindowDimensions();
   const mapSizePx = Math.max(windowDimensions.width, windowDimensions.height);
 
+  const xOffset = (windowDimensions.width - mapSizePx) / 2;
+  const yOffset = (windowDimensions.height - mapSizePx) / 2;
+
   const normalizedHoveredPoint = hoveredPoint
     ? {
-        x: hoveredPoint.x / mapSizePx,
-        y: hoveredPoint.y / mapSizePx,
+        x: (hoveredPoint.x - xOffset) / mapSizePx,
+        y: (hoveredPoint.y - yOffset) / mapSizePx,
       }
     : null;
   const getConstantGridData = () => {
@@ -150,15 +151,17 @@ export const SpacetimeMap = ({
 
   return (
     <>
-      {mesh}
-      <DebugOverlay
-        vertexPositions={vertexPositions}
-        grid={grid}
-        springs={springs}
-        toggledKeys={toggledKeys}
-        hoveredPoint={hoveredPoint}
-        mapSizePx={mapSizePx}
-      />
+      <Container x={xOffset} y={yOffset}>
+        {mesh}
+        <DebugOverlay
+          vertexPositions={vertexPositions}
+          grid={grid}
+          springs={springs}
+          toggledKeys={toggledKeys}
+          normalizedHoveredPoint={normalizedHoveredPoint}
+          mapSizePx={mapSizePx}
+        />
+      </Container>
     </>
   );
 };
