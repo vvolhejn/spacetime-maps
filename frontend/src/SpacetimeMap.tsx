@@ -142,11 +142,9 @@ export const SpacetimeMap = ({
     setVertexPositions(newVertexPositions);
   });
 
-  const mesh = createMesh(
-    vertexPositions,
-    triangles,
-    flatUvs,
-    windowDimensions
+  const mesh = useMemo(
+    () => createMesh(vertexPositions, triangles, flatUvs, windowDimensions),
+    [vertexPositions, triangles, flatUvs, windowDimensions]
   );
 
   return (
