@@ -1,6 +1,6 @@
 import { Container, Stage } from "@pixi/react";
 import { SpacetimeMap } from "./SpacetimeMap";
-import { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import { Point } from "./mesh";
 import useWindowDimensions from "./windowDimensions";
@@ -13,15 +13,7 @@ const App = () => {
     [] as string[]
   );
   const [hoveredPoint, setHoveredPoint] = useState<Point | null>(null);
-
-  const wrapperDivRef = useRef<HTMLDivElement>(null);
-
-  // Focus the div on mount to receive keyboard events
-  useEffect(() => {
-    const wrapperDiv = wrapperDivRef.current;
-    if (!wrapperDiv) return;
-    wrapperDiv.focus();
-  });
+  const [timeness, setTimeness] = useState(0);
 
   const { width, height } = useWindowDimensions();
 
@@ -38,10 +30,7 @@ const App = () => {
             setToggledKeys([...toggledKeys, e.code]);
           }
         }}
-        ref={wrapperDivRef}
         style={{
-          // paddingLeft: DEBUG_PADDING - padding,
-          // paddingTop: DEBUG_PADDING - padding,
           overflow: "hidden",
           position: "absolute",
           zIndex: -1,
@@ -72,37 +61,33 @@ const App = () => {
             <SpacetimeMap
               toggledKeys={toggledKeys}
               hoveredPoint={hoveredPoint}
+              timeness={timeness}
             />
           </Container>
         </Stage>
       </div>
-      {/* top banner */}
-      <div
-        style={{
-          position: "absolute",
-          top: 0,
-          left: 0,
-          padding: 10,
-          fontSize: 14,
-          backgroundColor: "white",
-        }}
-      >
-        <div>Spacetime map</div>
-      </div>
 
-      {/* bottom right corner */}
-      <div
-        style={{
-          position: "absolute",
-          bottom: 0,
-          right: 0,
-          padding: 10,
-          fontSize: 14,
-          textAlign: "right",
-          backgroundColor: "white",
-        }}
-      >
-        <div>Map data ©Google</div>
+      <div className="absolute bottom-0 right-0 p-3 text-right bg-white">
+        <div className="flex justify-between items-center gap-3 text-l">
+          <span>Space</span>
+
+          <input
+            id="default-range"
+            type="range"
+            min="0"
+            max="1"
+            step="0.1"
+            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
+            value={timeness}
+            onChange={(e) => {
+              console.log(e);
+              setTimeness(parseFloat(e.target.value));
+            }}
+          />
+          <span>Time</span>
+        </div>
+        {/* Commented out for debugging */}
+        {/* <div>Map data ©Google</div> */}
       </div>
     </>
   );

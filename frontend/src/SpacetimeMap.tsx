@@ -62,9 +62,11 @@ const createMesh = (
 export const SpacetimeMap = ({
   toggledKeys,
   hoveredPoint,
+  timeness,
 }: {
   toggledKeys: string[];
   hoveredPoint: Point | null;
+  timeness: number;
 }) => {
   const windowDimensions = useWindowDimensions();
   const mapSizePx = Math.max(windowDimensions.width, windowDimensions.height);
@@ -103,6 +105,7 @@ export const SpacetimeMap = ({
       to: i + flatGrid.length,
       length: 0,
       strength: 1,
+      isAnchor: true,
     }));
     springs = springs.concat(routeMatrixToSprings(gridData as any));
 
@@ -136,7 +139,8 @@ export const SpacetimeMap = ({
       vertexPositions,
       springs,
       deltaSeconds,
-      normalizedHoveredPoint
+      normalizedHoveredPoint,
+      timeness
     );
 
     setVertexPositions(newVertexPositions);

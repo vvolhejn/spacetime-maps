@@ -12,6 +12,7 @@ export type Spring = {
   to: number;
   length: number;
   strength: number;
+  isAnchor: boolean;
 };
 
 export const routeMatrixToSprings = (gridData: GridData): Spring[] => {
@@ -109,6 +110,7 @@ export const routeMatrixToSprings = (gridData: GridData): Spring[] => {
     strength: USE_RELATIVE_STRENGTH
       ? STRENGTH_MULTIPLIER / entry.normalizedDistance / nLocations
       : STRENGTH_MULTIPLIER / nLocations,
+    isAnchor: false,
   }));
   return res;
 };
@@ -133,11 +135,15 @@ export const getForce = (
   return force;
 };
 
+const interpolate = (a: number, b: number, t: number): number =>
+  a + (b - a) * t;
+
 export const stepSprings = (
   vertexPositions: VertexPosition[],
   springs: Spring[],
   deltaSeconds: number,
-  normalizedHoveredPoint: Point | null
+  normalizedHoveredPoint: Point | null,
+  timeness: number
 ): [VertexPosition[], number] => {
   let newVertexPositions = vertexPositions.map((entry, i) => ({
     x: entry.x,
@@ -155,7 +161,10 @@ export const stepSprings = (
 
     let force = getForce(from, to, spring.length);
     loss += force ** 2;
-    force *= spring.strength * deltaSeconds;
+    force *=
+      spring.strength *
+      deltaSeconds *
+      (spring.isAnchor ? interpolate(1.0, 0.5, timeness) : timeness);
 
     if (normalizedHoveredPoint !== null) {
       const distanceFromHover = Math.hypot(
