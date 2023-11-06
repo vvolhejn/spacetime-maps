@@ -1,6 +1,6 @@
 import { Container, Stage } from "@pixi/react";
 import { SpacetimeMap } from "./SpacetimeMap";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import { Point } from "./mesh";
 import useWindowDimensions from "./windowDimensions";
@@ -18,10 +18,31 @@ const App = () => {
 
   const { width, height } = useWindowDimensions();
 
+  const [isMenuOpen, setMenuOpen] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+
   const padding = toggledKeys.includes("KeyE") ? DEBUG_PADDING : 0;
 
+  const handleClickOutside = (event: MouseEvent) => {
+    if (
+      menuRef.current &&
+      event.target instanceof Element &&
+      !menuRef.current.contains(event.target)
+    ) {
+      setMenuOpen(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   return (
-    <>
+    // "relative" is needed to allow the menu to overflow vertically
+    <div className="overflow-hidden h-screen relative">
       <div
         tabIndex={0}
         onKeyDown={(e) => {
@@ -68,8 +89,14 @@ const App = () => {
         </Stage>
       </div>
 
-      <Menu timeness={timeness} setTimeness={setTimeness} />
-    </>
+      <Menu
+        ref={menuRef}
+        timeness={timeness}
+        setTimeness={setTimeness}
+        isMenuOpen={isMenuOpen}
+        setMenuOpen={setMenuOpen}
+      />
+    </div>
   );
 };
 
