@@ -67,25 +67,31 @@ const App = () => {
         </Stage>
       </div>
 
-      <div className="absolute bottom-0 right-0 p-3 text-right bg-white">
-        <div className="flex justify-between items-center gap-3 text-l">
-          <span>Space</span>
+      <div
+        className={
+          "absolute bottom-0 right-0 p-3 " +
+          "bg-primary text-white " +
+          "flex justify-between items-center gap-3 " +
+          "text-xl text-right"
+        }
+      >
+        <span>Space</span>
 
-          <input
-            id="default-range"
-            type="range"
-            min="0"
-            max="1"
-            step="0.1"
-            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer"
-            value={timeness}
-            onChange={(e) => {
-              console.log(e);
-              setTimeness(parseFloat(e.target.value));
-            }}
-          />
-          <span>Time</span>
-        </div>
+        <input
+          id="default-range"
+          type="range"
+          min="0"
+          max="1"
+          step="0.1"
+          className="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer"
+          value={timeness}
+          onChange={(e) => {
+            console.log(e);
+            setTimeness(parseFloat(e.target.value));
+          }}
+        />
+        <span>Time</span>
+
         {/* Commented out for debugging */}
         {/* <div>Map data ©Google</div> */}
       </div>
