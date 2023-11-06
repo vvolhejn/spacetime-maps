@@ -48,8 +48,16 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
           </button>
         </div>
         {/* Expandable part */}
-        <div className={"text-white p-4 text-base"}>
-          <div>Map data ©Google</div>
+        <div
+          className={"text-white p-4 text-base max-w-md gap-y-2 flex flex-col"}
+        >
+          <p>
+            This is a map that shows time instead of space. Drag the slider
+            towards "Time". Places that are close in time – those that one can
+            travel quickly between by car – get pulled closer together on the
+            map.
+          </p>
+          <p>Map data ©Google</p>
         </div>
       </div>
     );
