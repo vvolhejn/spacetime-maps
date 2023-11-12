@@ -39,6 +39,15 @@ class Grid:
         # a bigger size_pixels covers a larger area
         size_pixels: int = 400,
     ):
+        """A grid of locations, possibly with distance information.
+
+        Args:
+            center: The center of the grid.
+            zoom: The zoom level of the grid.
+            size: The number of rows and columns in the grid.
+            snap_to_roads: Whether to snap the grid locations to roads.
+            size_pixels: The size of the static map image, in pixels.
+        """
         self.center = center
         self.zoom = zoom
         self.size = size
@@ -77,6 +86,7 @@ class Grid:
             "center": self.center.to_json(),
             "zoom": self.zoom,
             "size": self.size,
+            "size_pixels": self.size_pixels,
             "locations": [x.to_json() for x in self.locations],
             "route_matrix": self.route_matrix,
         }
