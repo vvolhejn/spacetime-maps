@@ -1,13 +1,16 @@
 import { Container, useTick } from "@pixi/react";
 
 import { useMemo, useState } from "react";
-import exampleMap from "./assets/map-v8.png";
 import { Point, VertexPosition, getMesh } from "./mesh";
 import { DebugOverlay } from "./DebugOverlay";
 import { Spring, routeMatrixToSprings, stepSprings } from "./springs";
-import gridData from "./assets/20x20grid-v8.json";
 import useWindowDimensions from "./windowDimensions";
 import MeshTriangle from "./MeshTriangle";
+
+// import exampleMap from "./assets/map-v8.png";
+// import gridData from "./assets/20x20grid-v8.json";
+import exampleMap from "./assets/prague-v1.png";
+import gridData from "./assets/prague-v2.json";
 
 /**
  * Create a mesh of triangles from individual <SimpleMesh>es.

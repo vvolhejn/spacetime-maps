@@ -176,7 +176,9 @@ def get_sparsified_distance_matrix(
         f"down from {len(origins) * len(destinations)}."
     )
 
-    for i_origin, (origin, cur_mask) in enumerate(zip(origins, mask)):
+    for i_origin, (origin, cur_mask) in tqdm.tqdm(
+        enumerate(zip(origins, mask)), total=len(origins)
+    ):
         cur_destinations = [
             destination
             for destination, include in zip(destinations, cur_mask)
