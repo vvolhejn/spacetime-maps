@@ -1,17 +1,14 @@
 import { Container, useTick } from "@pixi/react";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Point, VertexPosition, getMesh } from "./mesh";
 import { DebugOverlay } from "./DebugOverlay";
 import { Spring, routeMatrixToSprings, stepSprings } from "./springs";
 import useWindowDimensions from "./windowDimensions";
 import MeshTriangle from "./MeshTriangle";
 
-// import exampleMap from "./assets/map-v8.png";
-// import gridData from "./assets/20x20grid-v8.json";
-import exampleMap from "./assets/prague-v1.png";
-import gridData from "./assets/prague-v3.json";
 import { GridData } from "./gridData";
+import { City } from "./cityData";
 
 /**
  * Create a mesh of triangles from individual <SimpleMesh>es.
@@ -22,7 +19,9 @@ const createMeshTriangles = (
   vertexPositions: VertexPosition[],
   triangles: Float32Array[],
   flatUvs: Float32Array,
-  windowDimensions: { width: number; height: number }
+  windowDimensions: { width: number; height: number },
+  mapImage: string,
+  city: City
 ) => {
   const mapSizePx = Math.max(windowDimensions.width, windowDimensions.height);
 
@@ -47,8 +46,11 @@ const createMeshTriangles = (
 
     return (
       <MeshTriangle
-        key={i}
-        image={exampleMap}
+        // Include the city in the key because something goes wrong when we change the
+        // city and the grid sizes aren't the same - the triangles seem to be shifted.
+        // This is a simple hack to fix that.
+        key={`${city.displayName}-${i}`}
+        image={mapImage}
         uvs={new Float32Array(curUvs)}
         vertices={new Float32Array(curVertices)}
       />
@@ -62,13 +64,17 @@ export const SpacetimeMap = ({
   toggledKeys,
   hoveredPoint,
   timeness,
+  city,
 }: {
   toggledKeys: string[];
   hoveredPoint: Point | null;
   timeness: number;
+  city: City;
 }) => {
   const windowDimensions = useWindowDimensions();
   const mapSizePx = Math.max(windowDimensions.width, windowDimensions.height);
+
+  const mapImage = city.mapImage;
 
   const normalizedHoveredPoint = hoveredPoint
     ? {
@@ -76,7 +82,10 @@ export const SpacetimeMap = ({
         y: hoveredPoint.y / mapSizePx,
       }
     : null;
+
   const getConstantGridData = () => {
+    const gridData = city.data;
+
     const gridSize = gridData.size;
 
     const { grid, triangles } = getMesh(gridSize, gridData as GridData);
@@ -123,10 +132,15 @@ export const SpacetimeMap = ({
 
   const { grid, initialPositions, triangles, springs, flatUvs } = useMemo(
     getConstantGridData,
-    []
+    [city]
   );
 
   const [vertexPositions, setVertexPositions] = useState(initialPositions);
+
+  // Reset the vertex positions when the grid changes.
+  useEffect(() => {
+    setVertexPositions(initialPositions);
+  }, [initialPositions]);
 
   useTick((delta) => {
     const deltaSeconds = delta / 60;
@@ -146,7 +160,9 @@ export const SpacetimeMap = ({
     vertexPositions,
     triangles,
     flatUvs,
-    windowDimensions
+    windowDimensions,
+    mapImage,
+    city
   );
 
   return (

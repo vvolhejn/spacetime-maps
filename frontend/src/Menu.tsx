@@ -1,21 +1,19 @@
-import { forwardRef, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import { HamburgerMenuIcon } from "./HamburgerMenuIcon";
+import { CITIES, City } from "./cityData";
 
-export type MenuProps = {
-  timeness: number;
-  setTimeness: (timeness: number) => void;
-  isMenuOpen: boolean;
-  setMenuOpen: (isMenuOpen: boolean) => void;
-};
-
-export const DropdownItem = ({ text }: { text: string }) => {
+export const DropdownItem = ({
+  text,
+  onClick,
+}: {
+  text: string;
+  onClick: () => void;
+}) => {
   return (
     <li>
       <button
         className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white w-full"
-        onClick={() => {
-          console.log("foo");
-        }}
+        onClick={onClick}
       >
         {text}
       </button>
@@ -23,7 +21,13 @@ export const DropdownItem = ({ text }: { text: string }) => {
   );
 };
 
-export const CitySelector = () => {
+export const CitySelector = ({
+  city,
+  setCity,
+}: {
+  city: City;
+  setCity: (city: City) => void;
+}) => {
   const [isDropdownOpen, setDropdownOpen] = useState(false);
 
   return (
@@ -69,19 +73,48 @@ export const CitySelector = () => {
           className="py-2 text-sm text-gray-700 dark:text-gray-200"
           aria-labelledby="dropdownDefaultButton"
         >
-          <DropdownItem text="Prague" />
-          <DropdownItem text="Zürich" />
+          {Object.entries(CITIES).map(([cityName, city]) => (
+            <DropdownItem
+              text={city.displayName}
+              onClick={() => setCity(city)}
+              key={cityName}
+            />
+          ))}
         </ul>
       </div>
     </div>
   );
 };
 
+export type MenuProps = {
+  timeness: number;
+  setTimeness: (timeness: number) => void;
+  isMenuOpen: boolean;
+  setMenuOpen: (isMenuOpen: boolean) => void;
+  city: City;
+  setCity: (city: City) => void;
+};
+
 export const Menu = forwardRef<HTMLDivElement, MenuProps>(
-  ({ timeness, setTimeness, isMenuOpen, setMenuOpen }: MenuProps, ref) => {
+  (
+    {
+      timeness,
+      setTimeness,
+      isMenuOpen,
+      setMenuOpen,
+      city,
+      setCity,
+    }: MenuProps,
+    ref
+  ) => {
     const conditionalStyle = isMenuOpen
       ? ""
       : "translate-y-[calc(100%-3rem)] md:translate-y-0 ";
+
+    // Reset timeness when city changes
+    useEffect(() => {
+      setTimeness(0);
+    }, [city, setTimeness]);
 
     return (
       <div
@@ -104,8 +137,8 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
               id="default-range"
               type="range"
               min="0"
-              max="0.05"
-              step="0.01"
+              max={city.maxTimeness}
+              step={city.maxTimeness / 5}
               className="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer"
               value={timeness}
               onChange={(e) => {
@@ -128,7 +161,7 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
             travel quickly between by car – get pulled closer together on the
             map.
           </p>
-          <CitySelector />
+          <CitySelector city={city} setCity={setCity} />
           <p>Map data ©Google</p>
         </div>
       </div>

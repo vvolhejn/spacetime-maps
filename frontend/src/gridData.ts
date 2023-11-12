@@ -21,7 +21,7 @@ export type RouteMatrixAPIEntry = {
   originIndex: number;
   destinationIndex: number;
   status: {};
-  distanceMeters: number;
+  distanceMeters?: number;
   duration: string;
   condition: string;
 };

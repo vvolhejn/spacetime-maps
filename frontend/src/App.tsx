@@ -5,6 +5,7 @@ import { useLocalStorage } from "usehooks-ts";
 import { Point } from "./mesh";
 import useWindowDimensions from "./windowDimensions";
 import { Menu } from "./Menu";
+import { DEFAULT_CITY } from "./cityData";
 
 const DEBUG_PADDING = 50;
 
@@ -15,6 +16,7 @@ const App = () => {
   );
   const [hoveredPoint, setHoveredPoint] = useState<Point | null>(null);
   const [timeness, setTimeness] = useState(0);
+  const [city, setCity] = useState(DEFAULT_CITY);
 
   const { width, height } = useWindowDimensions();
 
@@ -82,6 +84,7 @@ const App = () => {
               toggledKeys={toggledKeys}
               hoveredPoint={hoveredPoint}
               timeness={timeness}
+              city={city}
             />
           </Container>
         </Stage>
@@ -92,6 +95,8 @@ const App = () => {
         setTimeness={setTimeness}
         isMenuOpen={isMenuOpen}
         setMenuOpen={setMenuOpen}
+        city={city}
+        setCity={setCity}
       />
     </div>
   );
