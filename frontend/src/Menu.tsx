@@ -8,16 +8,87 @@ export type MenuProps = {
   setMenuOpen: (isMenuOpen: boolean) => void;
 };
 
+export const DropdownItem = ({ text }: { text: string }) => {
+  return (
+    <li>
+      <button
+        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white w-full"
+        onClick={() => {
+          console.log("foo");
+        }}
+      >
+        {text}
+      </button>
+    </li>
+  );
+};
+
+export const CitySelector = () => {
+  const [isDropdownOpen, setDropdownOpen] = useState(false);
+
+  return (
+    <div className="w-full">
+      <button
+        id="dropdownDefaultButton"
+        onClick={() => {
+          setDropdownOpen(!isDropdownOpen);
+        }}
+        className={
+          "text-white bg-blue-600 hover:bg-blue-700 focus:ring-blue-800 focus:outline-none " +
+          " focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center " +
+          " inline-flex items-center w-full"
+        }
+        type="button"
+      >
+        City{" "}
+        <svg
+          className="w-2.5 h-2.5 ms-3"
+          aria-hidden="true"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 10 6"
+        >
+          <path
+            stroke="currentColor"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth="2"
+            d="m1 1 4 4 4-4"
+          />
+        </svg>
+      </button>
+
+      <div
+        id="dropdown"
+        className={
+          "z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-full dark:bg-gray-700 " +
+          (isDropdownOpen ? "block" : "hidden")
+        }
+      >
+        <ul
+          className="py-2 text-sm text-gray-700 dark:text-gray-200"
+          aria-labelledby="dropdownDefaultButton"
+        >
+          <DropdownItem text="Prague" />
+          <DropdownItem text="Zürich" />
+        </ul>
+      </div>
+    </div>
+  );
+};
+
 export const Menu = forwardRef<HTMLDivElement, MenuProps>(
   ({ timeness, setTimeness, isMenuOpen, setMenuOpen }: MenuProps, ref) => {
-    const conditionalStyle = isMenuOpen ? "" : "translate-y-[calc(100%-3rem)] ";
+    const conditionalStyle = isMenuOpen
+      ? ""
+      : "translate-y-[calc(100%-3rem)] md:translate-y-0 ";
 
     return (
       <div
         className={
-          "w-full md:w-auto " +
-          "md:left-1/2 md:-translate-x-1/2 " +
+          "w-full md:w-96 " +
           "fixed bottom-0 px-3 " +
+          "md:bottom-auto md:top-0 md:right-0 " +
           "bg-primary text-white " +
           "text-xl " +
           "transition " +
@@ -57,6 +128,7 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
             travel quickly between by car – get pulled closer together on the
             map.
           </p>
+          <CitySelector />
           <p>Map data ©Google</p>
         </div>
       </div>
