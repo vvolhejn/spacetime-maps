@@ -41,8 +41,7 @@ const App = () => {
   }, []);
 
   return (
-    // "relative" is needed to allow the menu to overflow vertically
-    <div className="overflow-hidden h-screen relative">
+    <div>
       <div
         tabIndex={0}
         onKeyDown={(e) => {
@@ -53,14 +52,13 @@ const App = () => {
           }
         }}
         style={{
-          overflow: "hidden",
           position: "absolute",
           zIndex: -1,
         }}
       >
         <Stage
-          width={width}
-          height={height}
+          width={Math.max(width, height)}
+          height={Math.max(width, height)}
           options={{
             autoDensity: true,
             backgroundColor: 0xeef1f5,
@@ -88,7 +86,6 @@ const App = () => {
           </Container>
         </Stage>
       </div>
-
       <Menu
         ref={menuRef}
         timeness={timeness}

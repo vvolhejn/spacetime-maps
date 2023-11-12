@@ -69,13 +69,10 @@ export const SpacetimeMap = ({
   const windowDimensions = useWindowDimensions();
   const mapSizePx = Math.max(windowDimensions.width, windowDimensions.height);
 
-  const xOffset = (windowDimensions.width - mapSizePx) / 2;
-  const yOffset = (windowDimensions.height - mapSizePx) / 2;
-
   const normalizedHoveredPoint = hoveredPoint
     ? {
-        x: (hoveredPoint.x - xOffset) / mapSizePx,
-        y: (hoveredPoint.y - yOffset) / mapSizePx,
+        x: hoveredPoint.x / mapSizePx,
+        y: hoveredPoint.y / mapSizePx,
       }
     : null;
   const getConstantGridData = () => {
@@ -153,7 +150,7 @@ export const SpacetimeMap = ({
 
   return (
     <>
-      <Container x={xOffset} y={yOffset}>
+      <Container>
         {meshTriangles}
         <DebugOverlay
           vertexPositions={vertexPositions}

@@ -17,7 +17,7 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
         className={
           "w-full md:w-auto " +
           "md:left-1/2 md:-translate-x-1/2 " +
-          "absolute bottom-0 px-3 " +
+          "fixed bottom-0 px-3 " +
           "bg-primary text-white " +
           "text-xl " +
           "transition " +
