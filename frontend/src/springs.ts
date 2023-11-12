@@ -1,4 +1,4 @@
-import { GridData } from "./gridData";
+import { GridData, getRouteMatrix } from "./gridData";
 import { VertexPosition, Point, locationToNormalized } from "./mesh";
 import {
   QUADRATIC_PENALTY,
@@ -16,13 +16,9 @@ export type Spring = {
 };
 
 export const routeMatrixToSprings = (gridData: GridData): Spring[] => {
-  const nLocations =
-    gridData.route_matrix.reduce(
-      (acc, entry) => Math.max(acc, entry.originIndex, entry.destinationIndex),
-      0
-    ) + 1;
+  const nLocations = gridData.locations.length;
 
-  const validRoutes = gridData.route_matrix
+  const validRoutes = getRouteMatrix(gridData)
     .filter(
       (entry) =>
         entry.condition === "ROUTE_EXISTS" &&

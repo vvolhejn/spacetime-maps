@@ -33,8 +33,8 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
               id="default-range"
               type="range"
               min="0"
-              max="1"
-              step="0.1"
+              max="0.05"
+              step="0.01"
               className="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer"
               value={timeness}
               onChange={(e) => {

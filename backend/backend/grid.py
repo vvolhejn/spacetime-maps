@@ -1,5 +1,6 @@
 from dataclasses import dataclass
 import math
+from typing import Literal, TypedDict
 import tqdm.auto as tqdm
 
 from backend.gmaps import get_sparsified_distance_matrix, snap_to_road
@@ -28,6 +29,15 @@ class GridLocation:
         }
 
 
+class RouteMatrixEntry(TypedDict):
+    originIndex: int
+    destinationIndex: int
+    status: dict
+    distanceMeters: int
+    duration: str  # e.g. "123s"
+    condition: Literal["ROUTE_EXISTS"]
+
+
 class Grid:
     def __init__(
         self,
@@ -54,7 +64,7 @@ class Grid:
         self.size_pixels = size_pixels
 
         self.locations: list[GridLocation] = []
-        self.route_matrix: list[dict] | None = None
+        self.route_matrix: list[RouteMatrixEntry] | None = None
 
         raw_grid = make_grid(center, zoom, size, size_pixels)
 
@@ -89,6 +99,7 @@ class Grid:
             "size_pixels": self.size_pixels,
             "locations": [x.to_json() for x in self.locations],
             "route_matrix": self.route_matrix,
+            "dense_travel_times": self.get_dense_travel_times(),
         }
 
     def get_snapped_locations(self) -> list[Location]:
@@ -137,6 +148,31 @@ class Grid:
                 should_include=should_include,
             )
         )
+
+    def get_dense_travel_times(self):
+        """Fills in the sparse route matrix to get a dense matrix of travel times."""
+        n_locations = len(self.locations)
+        m = [
+            [None if i != j else 0 for j in range(n_locations)]
+            for i in range(n_locations)
+        ]
+        for route in self.route_matrix:
+            origin = route["originIndex"]
+            destination = route["destinationIndex"]
+            duration = int(route["duration"][:-1])
+
+            m[origin][destination] = duration
+            m[destination][origin] = duration
+
+        # Run the Floyd-Warshall algorithm to fill in the rest of the matrix.
+        for k in tqdm.trange(len(m), desc="Computing dense matrix"):
+            for i in range(len(m)):
+                for j in range(len(m)):
+                    if m[i][k] is not None and m[k][j] is not None:
+                        if m[i][j] is None or m[i][j] > m[i][k] + m[k][j]:
+                            m[i][j] = m[i][k] + m[k][j]
+
+        return m
 
 
 def linspace(a, b, n):

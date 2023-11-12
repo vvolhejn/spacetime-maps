@@ -43,4 +43,44 @@ export type GridData = {
     snap_result_place_id: string;
   }[];
   route_matrix: RouteMatrixAPIEntry[];
+  // grid_data.dense_travel_times[i][j] is the number of seconds to get between
+  // locations i and j.
+  dense_travel_times?: number[][];
+};
+
+/**
+ * Get a route matrix from a sparse or dense representation.
+ * The dense representation is a 2D array of numbers (distances in seconds) and
+ * it might not be available.
+ */
+export const getRouteMatrix = (gridData: GridData): RouteMatrixAPIEntry[] => {
+  // console.log(gridData);
+  if (gridData.dense_travel_times) {
+    console.log("Using dense route matrix.");
+    const nLocations = gridData.locations.length;
+    const res: RouteMatrixAPIEntry[] = [];
+    for (let i = 0; i < nLocations; i++) {
+      for (let j = 0; j < nLocations; j++) {
+        if (i === j) {
+          continue;
+        }
+        const duration = gridData.dense_travel_times[i][j];
+        if (duration === 0) {
+          continue;
+        }
+        res.push({
+          originIndex: i,
+          destinationIndex: j,
+          status: {}, // unused
+          distanceMeters: 0, // unused
+          duration: duration + "s",
+          condition: "ROUTE_EXISTS",
+        });
+      }
+    }
+    return res;
+  } else {
+    console.log("No dense route matrix available.");
+    return gridData.route_matrix;
+  }
 };

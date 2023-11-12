@@ -10,7 +10,8 @@ import MeshTriangle from "./MeshTriangle";
 // import exampleMap from "./assets/map-v8.png";
 // import gridData from "./assets/20x20grid-v8.json";
 import exampleMap from "./assets/prague-v1.png";
-import gridData from "./assets/prague-v2.json";
+import gridData from "./assets/prague-v3.json";
+import { GridData } from "./gridData";
 
 /**
  * Create a mesh of triangles from individual <SimpleMesh>es.
@@ -78,7 +79,7 @@ export const SpacetimeMap = ({
   const getConstantGridData = () => {
     const gridSize = gridData.size;
 
-    const { grid, triangles } = getMesh(gridSize, gridData as any);
+    const { grid, triangles } = getMesh(gridSize, gridData as GridData);
 
     const flatGrid = grid.flat();
     const initialPositions = flatGrid
@@ -102,7 +103,7 @@ export const SpacetimeMap = ({
       strength: 1,
       isAnchor: true,
     }));
-    springs = springs.concat(routeMatrixToSprings(gridData as any));
+    springs = springs.concat(routeMatrixToSprings(gridData as GridData));
 
     const flatUvs = new Float32Array(
       grid
