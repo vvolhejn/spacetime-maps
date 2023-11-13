@@ -6,6 +6,7 @@ import { Point } from "./mesh";
 import useWindowDimensions from "./windowDimensions";
 import { Menu } from "./Menu";
 import { DEFAULT_CITY } from "./cityData";
+import { TimenessAnimation } from "./TimenessAnimation";
 
 const DEBUG_PADDING = 50;
 
@@ -89,6 +90,7 @@ const App = () => {
           </Container>
         </Stage>
       </div>
+      <TimenessAnimation setTimeness={setTimeness} city={city} />
       <Menu
         ref={menuRef}
         timeness={timeness}

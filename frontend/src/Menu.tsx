@@ -142,7 +142,7 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
               type="range"
               min="0"
               max={city.maxTimeness}
-              step={city.maxTimeness / 5}
+              step={city.maxTimeness / 10}
               className="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer"
               value={timeness}
               onChange={(e) => {
