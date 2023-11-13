@@ -5,14 +5,17 @@ import { CITIES, City } from "./cityData";
 export const DropdownItem = ({
   text,
   onClick,
+  selected = false,
 }: {
   text: string;
   onClick: () => void;
+  selected?: boolean;
 }) => {
+  const conditionalStyle = selected ? "bg-gray-600" : "";
   return (
     <li>
       <button
-        className="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600 dark:hover:text-white w-full"
+        className={`block px-4 py-2 hover:bg-gray-500 w-full ${conditionalStyle}`}
         onClick={onClick}
       >
         {text}
@@ -28,7 +31,7 @@ export const CitySelector = ({
   city: City;
   setCity: (city: City) => void;
 }) => {
-  const [isDropdownOpen, setDropdownOpen] = useState(false);
+  const [isDropdownOpen, setDropdownOpen] = useState(true);
 
   return (
     <div className="w-full">
@@ -65,19 +68,20 @@ export const CitySelector = ({
       <div
         id="dropdown"
         className={
-          "z-10 bg-white divide-y divide-gray-100 rounded-lg shadow w-full dark:bg-gray-700 " +
+          "z-10 divide-y divide-gray-100 rounded-lg shadow w-full bg-gray-700 " +
           (isDropdownOpen ? "block" : "hidden")
         }
       >
         <ul
-          className="py-2 text-sm text-gray-700 dark:text-gray-200"
+          className="py-2 text-sm text-gray-200"
           aria-labelledby="dropdownDefaultButton"
         >
-          {Object.entries(CITIES).map(([cityName, city]) => (
+          {Object.entries(CITIES).map(([cityName, curCity]) => (
             <DropdownItem
-              text={city.displayName}
-              onClick={() => setCity(city)}
+              text={curCity.displayName}
+              onClick={() => setCity(curCity)}
               key={cityName}
+              selected={city === curCity}
             />
           ))}
         </ul>
