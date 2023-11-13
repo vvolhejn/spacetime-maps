@@ -18,12 +18,18 @@ export type Spring = {
 export const routeMatrixToSprings = (gridData: GridData): Spring[] => {
   const nLocations = gridData.locations.length;
 
+  const snappedLocationString = (i: number) =>
+    JSON.stringify(gridData.locations[i].snapped_location);
+
   const validRoutes = getRouteMatrix(gridData)
     .filter(
       (entry) =>
         entry.condition === "ROUTE_EXISTS" &&
         // Only include each pair once
-        entry.originIndex < entry.destinationIndex
+        entry.originIndex < entry.destinationIndex &&
+        // If two locations are snapped to the same point, skip the corresponding spring.
+        snappedLocationString(entry.originIndex) !==
+          snappedLocationString(entry.destinationIndex)
     )
     .filter((entry) => {
       // For some pairs of locations, the route matrix returns a duration of 0s.

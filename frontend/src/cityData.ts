@@ -22,7 +22,7 @@ export const CITIES: { [key: string]: City } = {
     displayName: "Zürich",
     mapImage: zurichMap,
     data: zurichData,
-    maxTimeness: 1.0,
+    maxTimeness: 0.05,
   },
 };
 

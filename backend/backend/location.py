@@ -1,11 +1,10 @@
-from dataclasses import dataclass
 import math
 
+from pydantic import BaseModel
 import numpy as np
 
 
-@dataclass
-class Location:
+class Location(BaseModel):
     lat: float
     lng: float
 
@@ -24,16 +23,11 @@ class Location:
             }
         }
 
-    def to_json(self):
-        """Serialize to a JSON that we pass to the frontend."""
-        return {"lat": self.lat, "lng": self.lng}
-
     def __repr__(self) -> str:
         return f"<{self.lat:.5f}, {self.lng:.5f}>"
 
 
-@dataclass
-class NormalizedLocation:
+class NormalizedLocation(BaseModel):
     x: float
     y: float
 

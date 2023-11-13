@@ -1,6 +1,6 @@
-from dataclasses import dataclass
 import math
 from typing import Literal, TypedDict
+from pydantic import BaseModel
 import tqdm.auto as tqdm
 
 from backend.gmaps import get_sparsified_distance_matrix, snap_to_road
@@ -9,24 +9,13 @@ from backend.location import Location, NormalizedLocation, get_mercator_scale_fa
 STATIC_MAP_SIZE_COEF = 0.7
 
 
-@dataclass
-class GridLocation:
+class GridLocation(BaseModel):
     raw_location: Location
     snapped_location: Location
     grid_x: int
     grid_y: int
     snap_result_types: list[str] | None
     snap_result_place_id: str | None
-
-    def to_json(self):
-        return {
-            "raw_location": self.raw_location.to_json(),
-            "snapped_location": self.snapped_location.to_json(),
-            "grid_x": self.grid_x,
-            "grid_y": self.grid_y,
-            "snap_result_types": self.snap_result_types,
-            "snap_result_place_id": self.snap_result_place_id,
-        }
 
 
 class RouteMatrixEntry(TypedDict):
@@ -93,13 +82,13 @@ class Grid:
 
     def to_json(self):
         return {
-            "center": self.center.to_json(),
+            "center": self.center.model_dump(mode="json"),
             "zoom": self.zoom,
             "size": self.size,
             "size_pixels": self.size_pixels,
-            "locations": [x.to_json() for x in self.locations],
+            "locations": [x.model_dump(mode="json") for x in self.locations],
             "route_matrix": self.route_matrix,
-            "dense_travel_times": self.get_dense_travel_times(),
+            "dense_travel_times": get_dense_travel_times(self.route_matrix),
         }
 
     def get_snapped_locations(self) -> list[Location]:
@@ -149,30 +138,32 @@ class Grid:
             )
         )
 
-    def get_dense_travel_times(self):
-        """Fills in the sparse route matrix to get a dense matrix of travel times."""
-        n_locations = len(self.locations)
-        m = [
-            [None if i != j else 0 for j in range(n_locations)]
-            for i in range(n_locations)
-        ]
-        for route in self.route_matrix:
-            origin = route["originIndex"]
-            destination = route["destinationIndex"]
-            duration = int(route["duration"][:-1])
 
-            m[origin][destination] = duration
-            m[destination][origin] = duration
+def get_dense_travel_times(route_matrix: list[RouteMatrixEntry]):
+    """Fills in the sparse route matrix to get a dense matrix of travel times."""
+    n_locations = (
+        max(max(x["originIndex"], x["destinationIndex"]) for x in route_matrix) + 1
+    )
+    m = [
+        [None if i != j else 0 for j in range(n_locations)] for i in range(n_locations)
+    ]
+    for route in route_matrix:
+        origin = route["originIndex"]
+        destination = route["destinationIndex"]
+        duration = int(route["duration"][:-1])
 
-        # Run the Floyd-Warshall algorithm to fill in the rest of the matrix.
-        for k in tqdm.trange(len(m), desc="Computing dense matrix"):
-            for i in range(len(m)):
-                for j in range(len(m)):
-                    if m[i][k] is not None and m[k][j] is not None:
-                        if m[i][j] is None or m[i][j] > m[i][k] + m[k][j]:
-                            m[i][j] = m[i][k] + m[k][j]
+        m[origin][destination] = duration
+        m[destination][origin] = duration
 
-        return m
+    # Run the Floyd-Warshall algorithm to fill in the rest of the matrix.
+    for k in tqdm.trange(len(m), desc="Computing dense matrix"):
+        for i in range(len(m)):
+            for j in range(len(m)):
+                if m[i][k] is not None and m[k][j] is not None:
+                    if m[i][j] is None or m[i][j] > m[i][k] + m[k][j]:
+                        m[i][j] = m[i][k] + m[k][j]
+
+    return m
 
 
 def linspace(a, b, n):
