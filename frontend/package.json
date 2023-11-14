@@ -14,17 +14,15 @@
     "pixi.js": "^7.2.4",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-responsive": "^9.0.2",
     "react-scripts": "5.0.1",
     "typescript": "^4.9.5",
     "usehooks-ts": "^2.9.1",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "dev": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "dev": "vite",
+    "build": "tsc && vite build --outDir build/"
   },
   "eslintConfig": {
     "extends": [
@@ -45,8 +43,13 @@
     ]
   },
   "devDependencies": {
+    "@vitejs/plugin-react": "^4.1.1",
+    "autoprefixer": "^10.4.16",
+    "postcss": "^8.4.31",
     "prettier": "^3.0.3",
     "prettier-plugin-tailwindcss": "^0.5.6",
-    "tailwindcss": "^3.3.5"
+    "tailwindcss": "^3.3.5",
+    "vite": "^4.5.0",
+    "vite-tsconfig-paths": "^4.2.1"
   }
 }
