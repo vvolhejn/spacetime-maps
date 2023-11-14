@@ -2,6 +2,8 @@ import zurichMap from "./assets/map-v8.png";
 import zurichData from "./assets/20x20grid-v8.json";
 import pragueMap from "./assets/prague-v1.png";
 import pragueData from "./assets/prague-v3.json";
+import londonMap from "./assets/london/map.png";
+import londonData from "./assets/london/grid_data.json";
 import { GridData } from "./gridData";
 
 export type City = {
@@ -23,6 +25,12 @@ export const CITIES: { [key: string]: City } = {
     mapImage: zurichMap,
     data: zurichData,
     maxTimeness: 0.05,
+  },
+  london: {
+    displayName: "London",
+    mapImage: londonMap,
+    data: londonData,
+    maxTimeness: 0.15,
   },
 };
 
