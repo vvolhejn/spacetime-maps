@@ -109,7 +109,7 @@ class Grid:
 
         x = (location.lng - self.center.lng + max_offset_lng) / (2 * max_offset_lng)
         y = (-location.lat + self.center.lat + max_offset_lat) / (2 * max_offset_lat)
-        return NormalizedLocation(x, y)
+        return NormalizedLocation(x=x, y=y)
 
     def compute_sparsified_distance_matrix(
         self, max_normalized_distance: float
@@ -197,7 +197,7 @@ def make_grid(
         for lng in linspace(
             center.lng - max_offset_lng, center.lng + max_offset_lng, size
         ):
-            locations_row.append(Location(lat, lng))
+            locations_row.append(Location(lat=lat, lng=lng))
 
         locations.append(locations_row)
 

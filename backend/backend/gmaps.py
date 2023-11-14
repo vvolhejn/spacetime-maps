@@ -177,7 +177,7 @@ def get_sparsified_distance_matrix(
     )
 
     for i_origin, (origin, cur_mask) in tqdm.tqdm(
-        enumerate(zip(origins, mask)), total=len(origins)
+        enumerate(zip(origins, mask)), total=len(origins), desc="Computing travel times"
     ):
         cur_destinations = [
             destination
@@ -248,8 +248,8 @@ def snap_to_road(location: Location) -> ResolvedLocation:
 
     return {
         "location": Location(
-            resolution["geometry"]["location"]["lat"],
-            resolution["geometry"]["location"]["lng"],
+            lat=resolution["geometry"]["location"]["lat"],
+            lng=resolution["geometry"]["location"]["lng"],
         ),
         "place_id": resolution["place_id"],
         "types": resolution["types"],
