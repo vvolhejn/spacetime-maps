@@ -93,10 +93,7 @@ const App = () => {
           setHoveredPoint(null);
           setIsPressed(false);
         }}
-        style={{
-          position: "absolute",
-          zIndex: -1,
-        }}
+        className="absolute -z-10 select-none"
       >
         {/* The <Stage> wrapper must live outside of the SpacetimeMap component
             for useTick() to work. */}
@@ -119,15 +116,7 @@ const App = () => {
         </Stage>
         {/* Place an invisible div over the canvas to intercept mouse events.
             This fixes drag-to-scroll on not working on mobile. */}
-        <div
-          className="absolute top-0 left-0 w-full h-full z-10"
-          onContextMenu={(e) => {
-            // Prevent the context menu on long-press (mobile) or right-click (desktop)
-            e.preventDefault();
-            e.stopPropagation();
-            return false;
-          }}
-        ></div>
+        <div className="absolute top-0 left-0 w-full h-full z-10"></div>
       </div>
       <TimenessAnimation setTimeness={setTimeness} city={city} />
       <Menu
