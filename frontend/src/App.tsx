@@ -45,7 +45,7 @@ const App = () => {
   }, []);
 
   const onTick = (deltaSeconds: number) => {
-    const SECONDS_TO_MAX = 0.5;
+    const SECONDS_TO_MAX = 0.2;
     const newTimeness =
       timeness + ((isPressed ? +1 : -1) * deltaSeconds) / SECONDS_TO_MAX;
     setTimeness(clamp(newTimeness, 0, 1));
@@ -107,7 +107,9 @@ const App = () => {
         >
           <SpacetimeMap
             toggledKeys={toggledKeys}
-            hoveredPoint={hoveredPoint}
+            // This turned out to be confusing from a UX perspective, so let's disable it for now.
+            // hoveredPoint={hoveredPoint}
+            hoveredPoint={null}
             timeness={timeness}
             city={city}
             isPressed={isPressed}
