@@ -8,8 +8,6 @@ import { DEFAULT_CITY } from "./cityData";
 import { TimenessAnimation } from "./TimenessAnimation";
 import { useMapSizePx } from "./useIsMobile";
 
-const DEBUG_PADDING = 50;
-
 const App = () => {
   const [toggledKeys, setToggledKeys] = useLocalStorage(
     "SpacetimeMap.toggledKeys",
@@ -23,8 +21,6 @@ const App = () => {
 
   const [isMenuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-
-  const padding = toggledKeys.includes("KeyE") ? DEBUG_PADDING : 0;
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
@@ -59,6 +55,8 @@ const App = () => {
           zIndex: -1,
         }}
       >
+        {/* The <Stage> wrapper must live outside of the SpacetimeMap component
+            for useTick() to work. */}
         <Stage
           width={mapSizePx}
           height={mapSizePx}
@@ -67,14 +65,12 @@ const App = () => {
             backgroundColor: 0xeef1f5,
           }}
         >
-          <Container x={padding} y={padding}>
-            <SpacetimeMap
-              toggledKeys={toggledKeys}
-              hoveredPoint={hoveredPoint}
-              timeness={timeness}
-              city={city}
-            />
-          </Container>
+          <SpacetimeMap
+            toggledKeys={toggledKeys}
+            hoveredPoint={hoveredPoint}
+            timeness={timeness}
+            city={city}
+          />
         </Stage>
         {/* Place an invisible div over the canvas to intercept mouse events.
             This fixes drag-to-scroll on not working on mobile. */}
