@@ -67,20 +67,7 @@ const App = () => {
             backgroundColor: 0xeef1f5,
           }}
         >
-          <Container
-            x={padding}
-            y={padding}
-            pointermove={(e) => {
-              setHoveredPoint({
-                x: e.global.x,
-                y: e.global.y,
-              });
-            }}
-            pointerout={() => {
-              setHoveredPoint(null);
-            }}
-            interactive={true}
-          >
+          <Container x={padding} y={padding}>
             <SpacetimeMap
               toggledKeys={toggledKeys}
               hoveredPoint={hoveredPoint}
@@ -89,6 +76,9 @@ const App = () => {
             />
           </Container>
         </Stage>
+        {/* Place an invisible div over the canvas to intercept mouse events.
+            This fixes drag-to-scroll on not working on mobile. */}
+        <div className="absolute top-0 left-0 w-full h-full z-10"></div>
       </div>
       <TimenessAnimation setTimeness={setTimeness} city={city} />
       <Menu
