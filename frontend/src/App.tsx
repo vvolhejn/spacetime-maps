@@ -1,4 +1,4 @@
-import { Container, Stage } from "@pixi/react";
+import { Stage } from "@pixi/react";
 import { SpacetimeMap } from "./SpacetimeMap";
 import { useEffect, useRef, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
@@ -8,11 +8,16 @@ import { DEFAULT_CITY } from "./cityData";
 import { TimenessAnimation } from "./TimenessAnimation";
 import { useMapSizePx } from "./useIsMobile";
 
+const clamp = (num: number, min: number, max: number) => {
+  return Math.min(Math.max(num, min), max);
+};
+
 const App = () => {
   const [toggledKeys, setToggledKeys] = useLocalStorage(
     "SpacetimeMap.toggledKeys",
     [] as string[]
   );
+  const [isPressed, setIsPressed] = useState(false);
   const [hoveredPoint, setHoveredPoint] = useState<Point | null>(null);
   const [timeness, setTimeness] = useState(0);
   const [city, setCity] = useState(DEFAULT_CITY);
@@ -39,6 +44,13 @@ const App = () => {
     };
   }, []);
 
+  const onTick = (deltaSeconds: number) => {
+    const SECONDS_TO_MAX = 0.5;
+    const newTimeness =
+      timeness + ((isPressed ? +1 : -1) * deltaSeconds) / SECONDS_TO_MAX;
+    setTimeness(clamp(newTimeness, 0, 1));
+  };
+
   return (
     <div>
       <div
@@ -49,6 +61,37 @@ const App = () => {
           } else {
             setToggledKeys([...toggledKeys, e.code]);
           }
+        }}
+        onPointerDown={(e) => {
+          setIsPressed(true);
+        }}
+        onPointerUp={(e) => {
+          setIsPressed(false);
+        }}
+        onPointerMove={(e) => {
+          console.log("move");
+          setHoveredPoint({
+            x: e.clientX,
+            y: e.clientY,
+          });
+        }}
+        // I'm not sure why, but without these onTouch events, the hovered point doesn't
+        // update properly on mobile, or only updates irregularly.
+        onTouchStart={(e) => {
+          setHoveredPoint({
+            x: e.touches[0].clientX,
+            y: e.touches[0].clientY,
+          });
+        }}
+        onTouchMove={(e) => {
+          setHoveredPoint({
+            x: e.touches[0].clientX,
+            y: e.touches[0].clientY,
+          });
+        }}
+        onTouchEnd={(e) => {
+          setHoveredPoint(null);
+          setIsPressed(false);
         }}
         style={{
           position: "absolute",
@@ -70,6 +113,8 @@ const App = () => {
             hoveredPoint={hoveredPoint}
             timeness={timeness}
             city={city}
+            isPressed={isPressed}
+            onTick={onTick}
           />
         </Stage>
         {/* Place an invisible div over the canvas to intercept mouse events.

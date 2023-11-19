@@ -145,7 +145,7 @@ export const stepSprings = (
   springs: Spring[],
   deltaSeconds: number,
   normalizedHoveredPoint: Point | null,
-  timeness: number
+  scaledTimeness: number
 ): [VertexPosition[], number] => {
   let newVertexPositions = vertexPositions.map((entry, i) => ({
     x: entry.x,
@@ -166,7 +166,9 @@ export const stepSprings = (
     force *=
       spring.strength *
       deltaSeconds *
-      (spring.isAnchor ? interpolate(1.0, 0.5, timeness) : timeness);
+      (spring.isAnchor
+        ? interpolate(1.0, 0.5, scaledTimeness)
+        : scaledTimeness);
 
     if (normalizedHoveredPoint !== null) {
       const distanceFromHover = Math.hypot(

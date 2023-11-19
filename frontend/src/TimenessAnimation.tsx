@@ -13,6 +13,7 @@ export const TimenessAnimation = ({
   setTimeness: (timeness: number) => void;
   city: City;
 }) => {
+  return;
   const durationMs = 3000;
   const delayMs = 1000;
   useEffect(() => {

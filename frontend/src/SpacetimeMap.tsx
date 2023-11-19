@@ -64,13 +64,16 @@ export const SpacetimeMap = ({
   hoveredPoint,
   timeness,
   city,
+  isPressed,
+  onTick,
 }: {
   toggledKeys: string[];
   hoveredPoint: Point | null;
   timeness: number;
   city: City;
+  isPressed: boolean;
+  onTick: (deltaSeconds: number) => void;
 }) => {
-  const windowDimensions = useWindowDimensions();
   const mapSizePx = useMapSizePx();
 
   const mapImage = city.mapImage;
@@ -144,12 +147,16 @@ export const SpacetimeMap = ({
   useTick((delta) => {
     const deltaSeconds = delta / 60;
 
+    onTick(deltaSeconds);
+
     let [newVertexPositions, _] = stepSprings(
       vertexPositions,
       springs,
       deltaSeconds,
       normalizedHoveredPoint,
-      timeness
+      // Different cities have different maxTimeness because the stretch
+      // effect is less or more extreme depending on the data.
+      timeness * city.maxTimeness
     );
 
     setVertexPositions(newVertexPositions);
