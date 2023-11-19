@@ -3,10 +3,10 @@ import { SpacetimeMap } from "./SpacetimeMap";
 import { useEffect, useRef, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import { Point } from "./mesh";
-import useWindowDimensions from "./windowDimensions";
 import { Menu } from "./Menu";
 import { DEFAULT_CITY } from "./cityData";
 import { TimenessAnimation } from "./TimenessAnimation";
+import { useMapSizePx } from "./useIsMobile";
 
 const DEBUG_PADDING = 50;
 
@@ -19,7 +19,7 @@ const App = () => {
   const [timeness, setTimeness] = useState(0);
   const [city, setCity] = useState(DEFAULT_CITY);
 
-  const { width, height } = useWindowDimensions();
+  const mapSizePx = useMapSizePx();
 
   const [isMenuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -60,8 +60,8 @@ const App = () => {
         }}
       >
         <Stage
-          width={Math.max(width, height)}
-          height={Math.max(width, height)}
+          width={mapSizePx}
+          height={mapSizePx}
           options={{
             autoDensity: true,
             backgroundColor: 0xeef1f5,
