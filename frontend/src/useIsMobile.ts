@@ -3,6 +3,7 @@ import resolveConfig from "tailwindcss/resolveConfig";
 import { Config, KeyValuePair } from "tailwindcss/types/config";
 
 import * as tailwindConfig from "../tailwind.config";
+import useWindowDimensions from "./windowDimensions";
 
 const fullConfig = resolveConfig(tailwindConfig as unknown as Config);
 const breakpoints = fullConfig.theme?.screens as KeyValuePair<string, string>;
@@ -22,3 +23,9 @@ export function useIsMobile(breakpointKey = "lg") {
   });
   return !isLg;
 }
+
+export const useMapSizePx = () => {
+  const isMobile = useIsMobile();
+  const { width, height } = useWindowDimensions();
+  return isMobile ? Math.max(width, height) : Math.min(width, height);
+};

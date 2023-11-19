@@ -9,6 +9,7 @@ import MeshTriangle from "./MeshTriangle";
 
 import { GridData } from "./gridData";
 import { City } from "./cityData";
+import { useMapSizePx } from "./useIsMobile";
 
 /**
  * Create a mesh of triangles from individual <SimpleMesh>es.
@@ -19,12 +20,10 @@ const createMeshTriangles = (
   vertexPositions: VertexPosition[],
   triangles: Float32Array[],
   flatUvs: Float32Array,
-  windowDimensions: { width: number; height: number },
+  mapSizePx: number,
   mapImage: string,
   city: City
 ) => {
-  const mapSizePx = Math.max(windowDimensions.width, windowDimensions.height);
-
   let meshTriangles = triangles.map((triangle, i) => {
     const curVertices = new Float32Array([
       vertexPositions[triangle[0]].x * mapSizePx,
@@ -72,7 +71,7 @@ export const SpacetimeMap = ({
   city: City;
 }) => {
   const windowDimensions = useWindowDimensions();
-  const mapSizePx = Math.max(windowDimensions.width, windowDimensions.height);
+  const mapSizePx = useMapSizePx();
 
   const mapImage = city.mapImage;
 
@@ -160,7 +159,7 @@ export const SpacetimeMap = ({
     vertexPositions,
     triangles,
     flatUvs,
-    windowDimensions,
+    mapSizePx,
     mapImage,
     city
   );
