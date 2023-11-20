@@ -69,7 +69,7 @@ export const getRouteMatrix = (gridData: GridData): RouteMatrixAPIEntry[] => {
           continue;
         }
         const duration = gridData.dense_travel_times[i][j];
-        if (duration === 0) {
+        if (duration === 0 || duration == null) {
           continue;
         }
         res.push({
