@@ -1,11 +1,10 @@
-import { Stage } from "@pixi/react";
+import { Container, Stage, Text } from "@pixi/react";
 import { SpacetimeMap } from "./SpacetimeMap";
 import { useEffect, useRef, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import { Point } from "./mesh";
 import { Menu } from "./Menu";
-import { DEFAULT_CITY } from "./cityData";
-import { TimenessAnimation } from "./TimenessAnimation";
+import { City, DEFAULT_CITY, fetchCity } from "./cityData";
 import { useMapSizePx } from "./useIsMobile";
 
 const clamp = (num: number, min: number, max: number) => {
@@ -20,7 +19,8 @@ const App = () => {
   const [isPressed, setIsPressed] = useState(false);
   const [hoveredPoint, setHoveredPoint] = useState<Point | null>(null);
   const [timeness, setTimeness] = useState(0);
-  const [city, setCity] = useState(DEFAULT_CITY);
+  const [cityName, setCityName] = useState(DEFAULT_CITY);
+  const [city, setCity] = useState<City | null>(null);
 
   const mapSizePx = useMapSizePx();
 
@@ -50,6 +50,17 @@ const App = () => {
       timeness + ((isPressed ? +1 : -1) * deltaSeconds) / SECONDS_TO_MAX;
     setTimeness(clamp(newTimeness, 0, 1));
   };
+
+  useEffect(() => {
+    fetchCity(cityName).then(
+      (city) => {
+        setCity(city);
+      },
+      (error) => {
+        console.error("Error fetching city data", error);
+      }
+    );
+  }, [cityName]);
 
   return (
     <div>
@@ -105,30 +116,41 @@ const App = () => {
             backgroundColor: 0xeef1f5,
           }}
         >
-          <SpacetimeMap
-            toggledKeys={toggledKeys}
-            // This turned out to be confusing from a UX perspective, so let's disable it for now.
-            // hoveredPoint={hoveredPoint}
-            hoveredPoint={null}
-            timeness={timeness}
-            city={city}
-            isPressed={isPressed}
-            onTick={onTick}
-          />
+          {city === null && (
+            <Container>
+              <Text
+                text="Loading..."
+                anchor={0.5}
+                x={mapSizePx / 2}
+                y={mapSizePx / 2}
+              />
+            </Container>
+          )}
+          {!(city === null) && (
+            <SpacetimeMap
+              toggledKeys={toggledKeys}
+              // This turned out to be confusing from a UX perspective, so let's disable it for now.
+              // hoveredPoint={hoveredPoint}
+              hoveredPoint={null}
+              timeness={timeness}
+              city={city}
+              isPressed={isPressed}
+              onTick={onTick}
+            />
+          )}
         </Stage>
         {/* Place an invisible div over the canvas to intercept mouse events.
             This fixes drag-to-scroll on not working on mobile. */}
         <div className="absolute top-0 left-0 w-full h-full z-10"></div>
       </div>
-      <TimenessAnimation setTimeness={setTimeness} city={city} />
       <Menu
         ref={menuRef}
         timeness={timeness}
         setTimeness={setTimeness}
         isMenuOpen={isMenuOpen}
         setMenuOpen={setMenuOpen}
-        city={city}
-        setCity={setCity}
+        cityName={cityName}
+        setCityName={setCityName}
       />
     </div>
   );

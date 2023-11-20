@@ -1,47 +1,53 @@
-import zurichMap from "./assets/map-v8.png";
-import zurichData from "./assets/20x20grid-v8.json";
-import pragueMap from "./assets/prague-v1.png";
-import pragueData from "./assets/prague-v3.json";
-import londonMap from "./assets/london/map.png";
-import londonData from "./assets/london/grid_data.json";
-import newyorkMap from "./assets/newyork/map.png";
-import newyorkData from "./assets/newyork/grid_data.json";
 import { GridData } from "./gridData";
 
-export type City = {
+export type CityMetadata = {
   displayName: string;
-  mapImage: string;
-  data: GridData;
   maxTimeness: number;
+  dir: string;
 };
 
-export const CITIES: { [key: string]: City } = {
+export type City = CityMetadata & {
+  mapImage: string;
+  data: GridData;
+};
+
+export const CITIES: { [key: string]: CityMetadata } = {
   prague: {
     displayName: "Prague",
-    mapImage: pragueMap,
-    data: pragueData,
     maxTimeness: 0.05,
+    dir: "prague",
   },
   zurich: {
     displayName: "Zürich",
-    mapImage: zurichMap,
-    data: zurichData,
     maxTimeness: 0.05,
+    dir: "zurich",
   },
   london: {
     displayName: "London",
-    mapImage: londonMap,
-    data: londonData,
     maxTimeness: 0.15,
+    dir: "london",
   },
   newyork: {
     displayName: "New York",
-    mapImage: newyorkMap,
-    data: newyorkData,
     maxTimeness: 0.15,
+    dir: "newyork",
   },
 };
 
 export type CityName = keyof typeof CITIES;
 
-export const DEFAULT_CITY = CITIES["zurich"];
+export const DEFAULT_CITY = "zurich";
+
+export const fetchCity = async (cityName: CityName) => {
+  const cityMetadata = CITIES[cityName];
+  return Promise.all([
+    import(`./assets/${cityMetadata.dir}/grid_data.json`),
+    import(`./assets/${cityMetadata.dir}/map.png`),
+  ]).then(([gridData, mapImage]) => {
+    return {
+      ...cityMetadata,
+      data: gridData.default as GridData,
+      mapImage: mapImage.default as string,
+    };
+  });
+};

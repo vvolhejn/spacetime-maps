@@ -4,7 +4,6 @@ import { useEffect, useMemo, useState } from "react";
 import { Point, VertexPosition, getMesh } from "./mesh";
 import { DebugOverlay } from "./DebugOverlay";
 import { Spring, routeMatrixToSprings, stepSprings } from "./springs";
-import useWindowDimensions from "./windowDimensions";
 import MeshTriangle from "./MeshTriangle";
 
 import { GridData } from "./gridData";
@@ -21,7 +20,6 @@ const createMeshTriangles = (
   triangles: Float32Array[],
   flatUvs: Float32Array,
   mapSizePx: number,
-  mapImage: string,
   city: City
 ) => {
   let meshTriangles = triangles.map((triangle, i) => {
@@ -49,7 +47,7 @@ const createMeshTriangles = (
         // city and the grid sizes aren't the same - the triangles seem to be shifted.
         // This is a simple hack to fix that.
         key={`${city.displayName}-${i}`}
-        image={mapImage}
+        image={city.mapImage}
         uvs={new Float32Array(curUvs)}
         vertices={new Float32Array(curVertices)}
       />
@@ -75,8 +73,6 @@ export const SpacetimeMap = ({
   onTick: (deltaSeconds: number) => void;
 }) => {
   const mapSizePx = useMapSizePx();
-
-  const mapImage = city.mapImage;
 
   const normalizedHoveredPoint = hoveredPoint
     ? {
@@ -167,7 +163,6 @@ export const SpacetimeMap = ({
     triangles,
     flatUvs,
     mapSizePx,
-    mapImage,
     city
   );
 

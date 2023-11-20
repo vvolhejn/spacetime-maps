@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { City } from "./cityData";
+import { CityMetadata } from "./cityData";
 
 /**
  * A component that automatically animates the timeness when the page is loaded
@@ -11,7 +11,7 @@ export const TimenessAnimation = ({
   city,
 }: {
   setTimeness: (timeness: number) => void;
-  city: City;
+  city: CityMetadata;
 }) => {
   return null;
   const durationMs = 3000;

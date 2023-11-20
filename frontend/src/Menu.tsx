@@ -1,6 +1,6 @@
 import { forwardRef, useEffect, useState } from "react";
 import { HamburgerMenuIcon } from "./HamburgerMenuIcon";
-import { CITIES, City } from "./cityData";
+import { CITIES } from "./cityData";
 
 export const DropdownItem = ({
   text,
@@ -25,11 +25,11 @@ export const DropdownItem = ({
 };
 
 export const CitySelector = ({
-  city,
-  setCity,
+  cityName,
+  setCityName,
 }: {
-  city: City;
-  setCity: (city: City) => void;
+  cityName: string;
+  setCityName: (city: string) => void;
 }) => {
   const [isDropdownOpen, setDropdownOpen] = useState(true);
 
@@ -76,12 +76,12 @@ export const CitySelector = ({
           className="py-2 text-sm text-gray-200"
           aria-labelledby="dropdownDefaultButton"
         >
-          {Object.entries(CITIES).map(([cityName, curCity]) => (
+          {Object.entries(CITIES).map(([curCityName, curCity]) => (
             <DropdownItem
               text={curCity.displayName}
-              onClick={() => setCity(curCity)}
-              key={cityName}
-              selected={city === curCity}
+              onClick={() => setCityName(curCityName)}
+              key={curCityName}
+              selected={cityName === curCityName}
             />
           ))}
         </ul>
@@ -95,8 +95,8 @@ export type MenuProps = {
   setTimeness: (timeness: number) => void;
   isMenuOpen: boolean;
   setMenuOpen: (isMenuOpen: boolean) => void;
-  city: City;
-  setCity: (city: City) => void;
+  cityName: string;
+  setCityName: (cityName: string) => void;
 };
 
 export const Menu = forwardRef<HTMLDivElement, MenuProps>(
@@ -106,8 +106,8 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
       setTimeness,
       isMenuOpen,
       setMenuOpen,
-      city,
-      setCity,
+      cityName,
+      setCityName,
     }: MenuProps,
     ref
   ) => {
@@ -118,7 +118,7 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
     // Reset timeness when city changes
     useEffect(() => {
       setTimeness(0);
-    }, [city, setTimeness]);
+    }, [cityName, setTimeness]);
 
     return (
       <div
@@ -165,7 +165,7 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
             travel quickly between by car – get pulled closer together on the
             map.
           </p>
-          <CitySelector city={city} setCity={setCity} />
+          <CitySelector cityName={cityName} setCityName={setCityName} />
           <p>Map data ©Google</p>
         </div>
       </div>
