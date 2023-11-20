@@ -2,11 +2,14 @@ import math
 from typing import Literal, TypedDict
 from pydantic import BaseModel
 import tqdm.auto as tqdm
+import logging
 
 from backend.gmaps import get_sparsified_distance_matrix, snap_to_road
 from backend.location import Location, NormalizedLocation, get_mercator_scale_factor
 
 STATIC_MAP_SIZE_COEF = 0.7
+
+logger = logging.getLogger(__name__)
 
 
 class GridLocation(BaseModel):
@@ -73,10 +76,15 @@ class Grid:
                     snap_result_place_id=None,
                 )
                 if snap_to_roads:
-                    snap_result = snap_to_road(location)
-                    cur.snapped_location = snap_result["location"]
-                    cur.snap_result_types = snap_result["types"]
-                    cur.snap_result_place_id = snap_result["place_id"]
+                    try:
+                        snap_result = snap_to_road(location)
+                        cur.snapped_location = snap_result["location"]
+                        cur.snap_result_types = snap_result["types"]
+                        cur.snap_result_place_id = snap_result["place_id"]
+                    except ValueError:
+                        logger.warning(f"Failed to snap location to road: {location}")
+                        # A bit of a hack since it's not actually snapped
+                        cur.snapped_location = location
 
                 self.locations.append(cur)
 
@@ -130,13 +138,25 @@ class Grid:
             )
             return distance < max_normalized_distance
 
-        self.route_matrix = list(
+        distance_matrix = list(
             get_sparsified_distance_matrix(
                 self.get_snapped_locations(),
                 self.get_snapped_locations(),
                 should_include=should_include,
             )
         )
+        original_len = len(distance_matrix)
+        distance_matrix = [
+            entry for entry in distance_matrix if entry["condition"] == "ROUTE_EXISTS"
+        ]
+        if len(distance_matrix) != original_len:
+            logger.info(
+                f"Filtered away {original_len - len(distance_matrix)} distance matrix "
+                "entries for which routes were not found. "
+                f"{len(distance_matrix)} entries remain."
+            )
+
+        self.route_matrix = distance_matrix
 
 
 def get_dense_travel_times(route_matrix: list[RouteMatrixEntry]):

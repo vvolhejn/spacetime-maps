@@ -23,10 +23,9 @@ export type RouteMatrixAPIEntry = {
   destinationIndex: number;
   status: {};
   distanceMeters?: number;
-  // will not be present if "condition" is "ROUTE_NOT_FOUND"
-  duration?: string;
-  // "ROUTE_EXISTS" or "ROUTE_NOT_FOUND", but when we import JSON data
-  // the typechecker complains if we type it that way
+  duration: string;
+  // Will always be "ROUTE_EXISTS". The API can also return "ROUTE_NOT_FOUND",
+  // but those entries should be filtered out by the backend.
   condition: string;
 };
 
