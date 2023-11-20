@@ -31,7 +31,7 @@ export const CITIES: { [key: string]: CityMetadata } = {
 
 export type CityName = keyof typeof CITIES;
 
-export const DEFAULT_CITY = "zurich";
+export const DEFAULT_CITY = "newyork";
 
 export const fetchCity = async (cityName: CityName) => {
   return Promise.all([
