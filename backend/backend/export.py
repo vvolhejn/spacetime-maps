@@ -109,10 +109,26 @@ def main(
     print(f"Exported to {output_dir}")
 
 
+def float_with_trailing_comma_allowed(s: str) -> float:
+    """
+    This is useful because the coordinates you copy from Google Maps are like
+    "52.520008, 13.404954", and argparse doesn't like the trailing comma.
+    """
+    if s.endswith(","):
+        s = s[:-1]
+
+    try:
+        return float(s)
+    except ValueError:
+        raise argparse.ArgumentTypeError(f"{s} is not a float")
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--output-name", type=str, required=True)
-    parser.add_argument("--center", nargs=2, type=float, required=True)
+    parser.add_argument(
+        "--center", nargs=2, type=float_with_trailing_comma_allowed, required=True
+    )
     parser.add_argument("--zoom", type=int, default=14)
     parser.add_argument("--grid-size", type=int, default=19)
     parser.add_argument(
