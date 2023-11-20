@@ -35,7 +35,7 @@ export const routeMatrixToSprings = (gridData: GridData): Spring[] => {
       // For some pairs of locations, the route matrix returns a duration of 0s.
       // I suspect this is because they're close to each other and they resolve into
       // the same location on the road.
-      if (entry.duration === "0s") {
+      if (entry.duration === undefined || entry.duration === "0s") {
         console.error("Invalid duration, skipping: " + JSON.stringify(entry));
         return false;
       } else {
@@ -43,6 +43,11 @@ export const routeMatrixToSprings = (gridData: GridData): Spring[] => {
       }
     })
     .map((entry) => {
+      if (entry.duration === undefined) {
+        throw new Error(
+          "entry.duration is undefined (even though we check above??)"
+        );
+      }
       if (entry.duration[entry.duration.length - 1] !== "s") {
         throw new Error('Invalid duration, expected it to end with "s"');
       }

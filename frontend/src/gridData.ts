@@ -17,12 +17,16 @@ export type NormalizedLocation = {
 //   "duration": "1111s",
 //   "condition": "ROUTE_EXISTS"
 // }
+
 export type RouteMatrixAPIEntry = {
   originIndex: number;
   destinationIndex: number;
   status: {};
   distanceMeters?: number;
-  duration: string;
+  // will not be present if "condition" is "ROUTE_NOT_FOUND"
+  duration?: string;
+  // "ROUTE_EXISTS" or "ROUTE_NOT_FOUND", but when we import JSON data
+  // the typechecker complains if we type it that way
   condition: string;
 };
 
@@ -39,8 +43,9 @@ export type GridData = {
     snapped_location: Location;
     grid_x: number;
     grid_y: number;
-    snap_result_types: string[];
-    snap_result_place_id: string;
+    // These will be null if snapping failed.
+    snap_result_types: string[] | null;
+    snap_result_place_id: string | null;
   }[];
   route_matrix: RouteMatrixAPIEntry[];
   // grid_data.dense_travel_times[i][j] is the number of seconds to get between

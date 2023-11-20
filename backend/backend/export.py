@@ -114,7 +114,7 @@ if __name__ == "__main__":
     parser.add_argument("--output-name", type=str, required=True)
     parser.add_argument("--center", nargs=2, type=float, required=True)
     parser.add_argument("--zoom", type=int, default=14)
-    parser.add_argument("--grid-size", type=int, default=3)
+    parser.add_argument("--grid-size", type=int, default=19)
     parser.add_argument(
         "--max-normalized-distance",
         type=float,
