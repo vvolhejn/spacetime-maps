@@ -150,7 +150,8 @@ export const stepSprings = (
   springs: Spring[],
   deltaSeconds: number,
   normalizedHoveredPoint: Point | null,
-  scaledTimeness: number
+  timeness: number,
+  timenessScale: number
 ): [VertexPosition[], number] => {
   let newVertexPositions = vertexPositions.map((entry, i) => ({
     x: entry.x,
@@ -171,9 +172,11 @@ export const stepSprings = (
     force *=
       spring.strength *
       deltaSeconds *
+      // As timeness increases, give anchor springs less weight and give more to the
+      // time constraint ones.
       (spring.isAnchor
-        ? interpolate(1.0, 0.5, scaledTimeness)
-        : scaledTimeness);
+        ? interpolate(5, 1.5, timeness)
+        : timeness * timenessScale);
 
     if (normalizedHoveredPoint !== null) {
       const distanceFromHover = Math.hypot(

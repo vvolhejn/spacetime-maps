@@ -12,6 +12,21 @@ const clamp = (num: number, min: number, max: number) => {
   return Math.min(Math.max(num, min), max);
 };
 
+/**
+ * Animate timeness as a sinusoid. Spend a bit of time at 0 timeness
+ * ("dip") to give the springs a bit of time to reset.
+ */
+const getTimenessForAnimation = (totalTime: number) => {
+  const SECONDS_TO_SWITCH = 1.5;
+  const DIP = 0.05; // "Dip" below the 0 point
+  return clamp(
+    Math.sin((totalTime * Math.PI * 2) / SECONDS_TO_SWITCH) * (0.5 + DIP) +
+      (0.5 - DIP),
+    0,
+    1
+  );
+};
+
 const App = () => {
   const [toggledKeys, setToggledKeys] = useLocalStorage(
     "SpacetimeMap.toggledKeys",
@@ -22,6 +37,7 @@ const App = () => {
   const [timeness, setTimeness] = useState(0);
   const [cityName, setCityName] = useSearchParamsState("city", DEFAULT_CITY);
   const [city, setCity] = useState<City | null>(null);
+  const [totalTime, setTotalTime] = useState(0);
 
   const mapSizePx = useMapSizePx();
 
@@ -46,10 +62,15 @@ const App = () => {
   }, []);
 
   const onTick = (deltaSeconds: number) => {
-    const SECONDS_TO_MAX = 0.2;
-    const newTimeness =
-      timeness + ((isPressed ? +1 : -1) * deltaSeconds) / SECONDS_TO_MAX;
-    setTimeness(clamp(newTimeness, 0, 1));
+    setTotalTime(totalTime + deltaSeconds);
+    if (toggledKeys.includes("KeyA")) {
+      setTimeness(getTimenessForAnimation(totalTime));
+    } else {
+      const SECONDS_TO_MAX = 0.2;
+      const newTimeness =
+        timeness + ((isPressed ? +1 : -1) * deltaSeconds) / SECONDS_TO_MAX;
+      setTimeness(clamp(newTimeness, 0, 1));
+    }
   };
 
   useEffect(() => {
