@@ -6,17 +6,22 @@ export const DropdownItem = ({
   text,
   onClick,
   selected = false,
+  setMenuOpen,
 }: {
   text: string;
   onClick: () => void;
   selected?: boolean;
+  setMenuOpen: (isOpen: boolean) => void;
 }) => {
   const conditionalStyle = selected ? "bg-gray-600" : "";
   return (
     <li>
       <button
         className={`block px-4 py-2 hover:bg-gray-500 w-full ${conditionalStyle}`}
-        onClick={onClick}
+        onClick={() => {
+          onClick();
+          setMenuOpen(false);
+        }}
       >
         {text}
       </button>
@@ -27,9 +32,11 @@ export const DropdownItem = ({
 export const CitySelector = ({
   cityName,
   setCityName,
+  setMenuOpen,
 }: {
   cityName: string;
   setCityName: (city: string) => void;
+  setMenuOpen: (isOpen: boolean) => void;
 }) => {
   const [isDropdownOpen, setDropdownOpen] = useState(true);
 
@@ -82,6 +89,7 @@ export const CitySelector = ({
               onClick={() => setCityName(curCityName)}
               key={curCityName}
               selected={cityName === curCityName}
+              setMenuOpen={setMenuOpen}
             />
           ))}
         </ul>
@@ -165,7 +173,11 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
             travel quickly between by car – get pulled closer together on the
             map.
           </p>
-          <CitySelector cityName={cityName} setCityName={setCityName} />
+          <CitySelector
+            cityName={cityName}
+            setCityName={setCityName}
+            setMenuOpen={setMenuOpen}
+          />
           <p>Map data ©Google</p>
         </div>
       </div>
