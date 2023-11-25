@@ -8,6 +8,7 @@ from backend.gmaps import get_sparsified_distance_matrix, snap_to_road
 from backend.location import Location, NormalizedLocation, get_mercator_scale_factor
 
 STATIC_MAP_SIZE_COEF = 0.7
+MAX_SNAP_NORMALIZED_DISTANCE = 0.05
 
 logger = logging.getLogger(__name__)
 
@@ -78,9 +79,20 @@ class Grid:
                 if snap_to_roads:
                     try:
                         snap_result = snap_to_road(location)
-                        cur.snapped_location = snap_result["location"]
-                        cur.snap_result_types = snap_result["types"]
-                        cur.snap_result_place_id = snap_result["place_id"]
+
+                        snap_distance = self.get_normalized_distance(
+                            location, snap_result["location"]
+                        )
+                        if snap_distance > MAX_SNAP_NORMALIZED_DISTANCE:
+                            logger.warning(
+                                f"Snapped location is too far from original ({snap_distance:.3f}), "
+                                "skipping: "
+                                f"{location}"
+                            )
+                        else:
+                            cur.snapped_location = snap_result["location"]
+                            cur.snap_result_types = snap_result["types"]
+                            cur.snap_result_place_id = snap_result["place_id"]
                     except ValueError:
                         logger.warning(f"Failed to snap location to road: {location}")
                         # A bit of a hack since it's not actually snapped
@@ -157,6 +169,14 @@ class Grid:
             )
 
         self.route_matrix = distance_matrix
+
+    def get_normalized_distance(self, a: Location, b: Location) -> float:
+        """Get the normalized distance between two locations."""
+        a_normalized = self.location_to_normalized(a)
+        b_normalized = self.location_to_normalized(b)
+        return math.hypot(
+            a_normalized.x - b_normalized.x, a_normalized.y - b_normalized.y
+        )
 
 
 def get_dense_travel_times(route_matrix: list[RouteMatrixEntry]):

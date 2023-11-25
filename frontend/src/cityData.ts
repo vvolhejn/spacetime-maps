@@ -37,7 +37,7 @@ export const CITIES: { [key: string]: CityMetadata } = {
   },
   hongkong: {
     displayName: "Hong Kong",
-    maxTimeness: 0.15,
+    maxTimeness: 0.08,
   },
 };
 
