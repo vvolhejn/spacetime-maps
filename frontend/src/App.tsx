@@ -58,9 +58,15 @@ const App = () => {
         setCity(city);
       },
       (error) => {
-        console.error("Error fetching city data", error);
+        if (error.toString().includes("Unknown variable dynamic import")) {
+          console.error(`City "${cityName}" not found, resetting`);
+          setCityName(DEFAULT_CITY);
+        } else {
+          console.error("Error fetching city data", error);
+        }
       }
     );
+    // The setCityName dependency is missing, but I get an infinite loop if I add it.
   }, [cityName]);
 
   return (
