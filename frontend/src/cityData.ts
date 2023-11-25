@@ -35,6 +35,10 @@ export const CITIES: { [key: string]: CityMetadata } = {
     displayName: "Cairo",
     maxTimeness: 0.15,
   },
+  hongkong: {
+    displayName: "Hong Kong",
+    maxTimeness: 0.15,
+  },
 };
 
 export type CityName = keyof typeof CITIES;
