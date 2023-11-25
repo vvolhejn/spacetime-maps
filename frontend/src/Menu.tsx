@@ -131,7 +131,7 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
     return (
       <div
         className={
-          "w-full md:w-96 " +
+          "w-full md:w-96 md:h-full " +
           "fixed bottom-0 px-3 " +
           "md:bottom-auto md:top-0 md:right-0 " +
           "bg-primary text-white " +
@@ -172,6 +172,14 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
             towards "Time". Places that are close in time – those that one can
             travel quickly between by car – get pulled closer together on the
             map.
+          </p>
+          <p>
+            <a
+              href="https://vvolhejn.github.io/2023/11/25/spacetime-map.html"
+              className="underline"
+            >
+              About
+            </a>
           </p>
           <CitySelector
             cityName={cityName}
