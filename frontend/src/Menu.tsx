@@ -145,18 +145,12 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
         <div className="flex justify-between items-center gap-3 ">
           <div className="flex justify-between items-center gap-3 h-[3rem]">
             <span>Space</span>
-            <input
-              id="default-range"
-              type="range"
-              min="0"
-              max="1"
-              step="0.1"
-              className="w-full h-2 bg-gray-900 rounded-lg appearance-none cursor-pointer"
-              value={timeness}
-              onChange={(e) => {
-                setTimeness(parseFloat(e.target.value));
-              }}
-            />
+            <div className="w-60 bg-gray-200 h-4 transition-all duration-300 relative">
+              <div
+                className="bg-blue-600 h-4 absolute right-0"
+                style={{ width: `${timeness * 100}%` }}
+              ></div>
+            </div>
             <span>Time</span>
           </div>
           <button onClick={() => setMenuOpen(!isMenuOpen)}>
