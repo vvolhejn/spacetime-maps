@@ -6,6 +6,7 @@ import { Point } from "./mesh";
 import { Menu } from "./Menu";
 import { City, DEFAULT_CITY, fetchCity } from "./cityData";
 import { useMapSizePx } from "./useIsMobile";
+import { useSearchParamsState } from "./useSearchParamsState";
 
 const clamp = (num: number, min: number, max: number) => {
   return Math.min(Math.max(num, min), max);
@@ -19,7 +20,7 @@ const App = () => {
   const [isPressed, setIsPressed] = useState(false);
   const [hoveredPoint, setHoveredPoint] = useState<Point | null>(null);
   const [timeness, setTimeness] = useState(0);
-  const [cityName, setCityName] = useState(DEFAULT_CITY);
+  const [cityName, setCityName] = useSearchParamsState("city", DEFAULT_CITY);
   const [city, setCity] = useState<City | null>(null);
 
   const mapSizePx = useMapSizePx();
@@ -80,7 +81,6 @@ const App = () => {
           setIsPressed(false);
         }}
         onPointerMove={(e) => {
-          console.log("move");
           setHoveredPoint({
             x: e.clientX,
             y: e.clientY,
