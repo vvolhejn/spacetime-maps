@@ -17,7 +17,10 @@ export const DropdownItem = ({
   return (
     <li>
       <button
-        className={`block px-4 py-2 hover:bg-gray-500 w-full ${conditionalStyle}`}
+        className={
+          `block px-4 py-2 hover:bg-gray-500 w-full ${conditionalStyle}` +
+          " plausible-event-name=City+switch"
+        }
         onClick={() => {
           onClick();
           setMenuOpen(false);
