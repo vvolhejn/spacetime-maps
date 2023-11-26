@@ -146,9 +146,9 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
       >
         {/* Always visible part */}
         <div className="flex justify-between items-center gap-3 ">
-          <div className="flex justify-between items-center gap-3 h-[3rem]">
+          <div className="flex items-center gap-3 h-[3rem] grow">
             <span>Space</span>
-            <div className="w-60 bg-gray-200 h-4 transition-all duration-300 relative">
+            <div className="bg-gray-200 h-4 transition-all duration-300 relative grow">
               <div
                 className="bg-blue-600 h-4 absolute right-0"
                 style={{ width: `${timeness * 100}%` }}
