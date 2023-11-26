@@ -165,10 +165,9 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
           className={"text-white p-4 text-base max-w-md gap-y-2 flex flex-col"}
         >
           <p>
-            This is a map that shows time instead of space. Drag the slider
-            towards "Time". Places that are close in time – those that one can
-            travel quickly between by car – get pulled closer together on the
-            map.
+            This is a map that can show <strong>time</strong> instead of space.
+            Points that are close but take a long time to travel between get
+            pushed away from each other, and vice versa.
           </p>
           <p>
             <a

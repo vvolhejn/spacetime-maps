@@ -7,6 +7,7 @@ import { Menu } from "./Menu";
 import { City, DEFAULT_CITY, fetchCity } from "./cityData";
 import { useMapSizePx } from "./useIsMobile";
 import { useSearchParamsState } from "./useSearchParamsState";
+import { ExplanationModal } from "./ExplanationModal";
 
 const clamp = (num: number, min: number, max: number) => {
   return Math.min(Math.max(num, min), max);
@@ -38,6 +39,7 @@ const App = () => {
   const [cityName, setCityName] = useSearchParamsState("city", DEFAULT_CITY);
   const [city, setCity] = useState<City | null>(null);
   const [totalTime, setTotalTime] = useState(0);
+  const [showExplantion, setShowExplantion] = useState(true);
 
   const mapSizePx = useMapSizePx();
 
@@ -67,9 +69,15 @@ const App = () => {
       setTimeness(getTimenessForAnimation(totalTime));
     } else {
       const SECONDS_TO_MAX = 0.2;
-      const newTimeness =
+      let newTimeness =
         timeness + ((isPressed ? +1 : -1) * deltaSeconds) / SECONDS_TO_MAX;
-      setTimeness(clamp(newTimeness, 0, 1));
+      newTimeness = clamp(newTimeness, 0, 1);
+
+      if (newTimeness === 1) {
+        setShowExplantion(false);
+      }
+
+      setTimeness(newTimeness);
     }
   };
 
@@ -133,6 +141,7 @@ const App = () => {
         }}
         className="absolute -z-10 select-none"
       >
+        {showExplantion && <ExplanationModal />}
         {/* The <Stage> wrapper must live outside of the SpacetimeMap component
             for useTick() to work. */}
         <Stage

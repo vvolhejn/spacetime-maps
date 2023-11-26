@@ -6,3 +6,14 @@
   font-family: Gabarito;
   src: url('/Gabarito-VariableFont_wght.ttf');
 }
+
+/* Gabarito is a variable font, which Tailwind doesn't handle by default.
+   This fixes it (https://github.com/tailwindlabs/tailwindcss/discussions/3225). */
+@layer utilities {
+  .font-normal {
+      font-variation-settings: 'wght' 400;
+  }
+  .font-bold {
+      font-variation-settings: 'wght' 700;
+  }
+}
