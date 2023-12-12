@@ -166,8 +166,8 @@ const App = () => {
             <SpacetimeMap
               toggledKeys={toggledKeys}
               // This turned out to be confusing from a UX perspective, so let's disable it for now.
-              // hoveredPoint={hoveredPoint}
-              hoveredPoint={null}
+              hoveredPoint={hoveredPoint}
+              // hoveredPoint={null}
               timeness={timeness}
               city={city}
               isPressed={isPressed}

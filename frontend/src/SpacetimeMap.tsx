@@ -149,7 +149,7 @@ export const SpacetimeMap = ({
       vertexPositions,
       springs,
       deltaSeconds,
-      normalizedHoveredPoint,
+      null, // normalizedHoveredPoint,
       // Different cities have different maxTimeness because the stretch
       // effect is less or more extreme depending on the data.
       timeness,
