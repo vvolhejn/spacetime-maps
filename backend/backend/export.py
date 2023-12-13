@@ -50,7 +50,8 @@ def main(
     zoom: int,
     grid_size: int,
     max_normalized_distance: float,
-    preview: bool = True,
+    preview: bool,
+    travel_mode: gmaps.TravelMode,
 ):
     output_dir = ASSETS_DIR / output_name
 
@@ -76,7 +77,12 @@ def main(
             input()
 
     grid = Grid(
-        center, zoom=zoom, size=grid_size, snap_to_roads=True, size_pixels=size_pixels
+        center,
+        zoom=zoom,
+        size=grid_size,
+        snap_to_roads=True,
+        size_pixels=size_pixels,
+        travel_mode=travel_mode,
     )
 
     if preview:
@@ -146,6 +152,12 @@ if __name__ == "__main__":
         action="store_true",
         help="Do not show map preview before generating",
     )
+    parser.add_argument(
+        "--travel-mode",
+        type=gmaps.TravelMode,
+        choices=list(gmaps.TravelMode),
+        default=gmaps.TravelMode.DRIVE,
+    )
     args = parser.parse_args()
 
     main(
@@ -155,4 +167,5 @@ if __name__ == "__main__":
         grid_size=args.grid_size,
         max_normalized_distance=args.max_normalized_distance,
         preview=not args.no_preview,
+        travel_mode=args.travel_mode,
     )

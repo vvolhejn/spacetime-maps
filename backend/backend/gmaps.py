@@ -1,3 +1,4 @@
+from enum import StrEnum
 import os
 import time
 from typing import Callable, Iterable, TypedDict
@@ -6,10 +7,15 @@ import logging
 import tqdm.auto as tqdm
 import requests
 
-from .location import Location, get_mercator_scale_factor
+from .location import Location
 
 
 logger = logging.getLogger(__name__)
+
+
+class TravelMode(StrEnum):
+    DRIVE = "DRIVE"
+    TRANSIT = "TRANSIT"
 
 
 def get_api_key():
@@ -51,19 +57,29 @@ def get_static_map(
 
 
 def get_distance_matrix_api_payload(
-    origins: list[Location], destinations: list[Location]
+    origins: list[Location],
+    destinations: list[Location],
+    travel_mode: TravelMode = TravelMode.DRIVE,
 ):
-    return {
+    payload = {
         "origins": [l.to_route_matrix_location() for l in origins],
         "destinations": [l.to_route_matrix_location() for l in destinations],
-        "travelMode": "DRIVE",
+        "travelMode": str(travel_mode),
+        # TODO: set departureTime for travel_mode=TRANSIT. Otherwise, it defaults to
+        # now, which is not reproducible. But you can only specify datetimes close
+        # to the current moment, which makes things more complicated. It'd be ideal to
+        # use something like "Monday 10AM", but then you also need to take into account
+        # the timezone and find the closest Monday.
+        # https://developers.google.com/maps/documentation/routes/transit-route#options
+    }
+
+    # routingPreference doesn't apply for travel_mode=TRANSIT.
+    if travel_mode == TravelMode.DRIVE:
         # Note: TRAFFIC_AWARE and TRAFFIC_AWARE_OPTIMAL are more expensive.
         # TRAFFIC_UNAWARE is the default.
-        "routingPreference": "TRAFFIC_UNAWARE",
-        # "travelMode": "TRANSIT",
-        # 9:00 UTC is 11:00 CEST
-        # "departureTime": "2023-09-04T09:00:00Z",
-    }
+        payload["routingPreference"] = "TRAFFIC_UNAWARE"
+
+    return payload
 
 
 def confirm_if_expensive_from_n(n: int):
@@ -87,12 +103,17 @@ def confirm_if_expensive(origins: list[Location], destinations: list[Location]):
 
 
 def call_distance_matrix_api(
-    origins: list[Location], destinations: list[Location], confirm: bool = True
+    origins: list[Location],
+    destinations: list[Location],
+    confirm: bool = True,
+    travel_mode: TravelMode = TravelMode.DRIVE,
 ):
     if confirm:
         confirm_if_expensive(origins, destinations)
 
-    data = get_distance_matrix_api_payload(origins, destinations)
+    data = get_distance_matrix_api_payload(
+        origins, destinations, travel_mode=travel_mode
+    )
 
     for attempt in range(3):
         response = requests.post(
@@ -152,6 +173,7 @@ def get_sparsified_distance_matrix(
     destinations: list[Location],
     should_include: Callable[[Location, Location], bool],
     filter_mirrored: bool = True,
+    travel_mode: TravelMode = TravelMode.DRIVE,
 ) -> Iterable[dict]:
     """Get a distance matrix, but only for a select subset of location pairs."""
     mask = [
@@ -193,7 +215,9 @@ def get_sparsified_distance_matrix(
             if include:
                 reindexing[len(reindexing)] = i
 
-        response = call_distance_matrix_api([origin], cur_destinations, confirm=False)
+        response = call_distance_matrix_api(
+            [origin], cur_destinations, confirm=False, travel_mode=travel_mode
+        )
 
         matrix_entries = response.json()
         for entry in matrix_entries:

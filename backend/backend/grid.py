@@ -4,7 +4,7 @@ from pydantic import BaseModel
 import tqdm.auto as tqdm
 import logging
 
-from backend.gmaps import get_sparsified_distance_matrix, snap_to_road
+from backend.gmaps import TravelMode, get_sparsified_distance_matrix, snap_to_road
 from backend.location import Location, NormalizedLocation, get_mercator_scale_factor
 
 STATIC_MAP_SIZE_COEF = 0.7
@@ -41,6 +41,7 @@ class Grid:
         # The pixel size matters for placing the markers on the static map image, because
         # a bigger size_pixels covers a larger area
         size_pixels: int = 400,
+        travel_mode: TravelMode = TravelMode.DRIVE,
     ):
         """A grid of locations, possibly with distance information.
 
@@ -55,6 +56,7 @@ class Grid:
         self.zoom = zoom
         self.size = size
         self.size_pixels = size_pixels
+        self.travel_mode = travel_mode
 
         self.locations: list[GridLocation] = []
         self.route_matrix: list[RouteMatrixEntry] | None = None
@@ -106,6 +108,7 @@ class Grid:
             "zoom": self.zoom,
             "size": self.size,
             "size_pixels": self.size_pixels,
+            "travel_mode": self.travel_mode,
             "locations": [x.model_dump(mode="json") for x in self.locations],
             "route_matrix": self.route_matrix,
             "dense_travel_times": get_dense_travel_times(self.route_matrix),
@@ -155,6 +158,7 @@ class Grid:
                 self.get_snapped_locations(),
                 self.get_snapped_locations(),
                 should_include=should_include,
+                travel_mode=self.travel_mode,
             )
         )
         original_len = len(distance_matrix)

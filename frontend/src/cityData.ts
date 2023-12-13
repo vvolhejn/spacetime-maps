@@ -43,6 +43,15 @@ export const CITIES: { [key: string]: CityMetadata } = {
     displayName: "La Paz",
     maxTimeness: 0.15,
   },
+  // These are testing maps with low grid size.
+  // "prague-transit": {
+  //   displayName: "Prague - Transit",
+  //   maxTimeness: 0.15,
+  // },
+  // "prague-drive": {
+  //   displayName: "Prague - Drive",
+  //   maxTimeness: 0.15,
+  // },
 };
 
 export type CityName = keyof typeof CITIES;
