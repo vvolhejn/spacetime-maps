@@ -21,7 +21,11 @@ export const CITIES: { [key: string]: CityMetadata } = {
   },
   zurich: {
     displayName: "Zürich",
-    maxTimeness: 0.05,
+    maxTimeness: 0.2,
+  },
+  zurich_transit: {
+    displayName: "Zürich (by public transport)",
+    maxTimeness: 0.2,
   },
   london: {
     displayName: "London",
