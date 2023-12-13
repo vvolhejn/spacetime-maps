@@ -12,8 +12,12 @@ export type City = CityMetadata & {
 
 export const CITIES: { [key: string]: CityMetadata } = {
   prague: {
-    displayName: "Prague",
+    displayName: "Prague (by car)",
     maxTimeness: 0.05,
+  },
+  prague_transit: {
+    displayName: "Prague (by public transport)",
+    maxTimeness: 0.2,
   },
   zurich: {
     displayName: "Zürich",
@@ -44,11 +48,11 @@ export const CITIES: { [key: string]: CityMetadata } = {
     maxTimeness: 0.15,
   },
   // These are testing maps with low grid size.
-  // "prague-transit": {
+  // "prague_debug_transit": {
   //   displayName: "Prague - Transit",
   //   maxTimeness: 0.15,
   // },
-  // "prague-drive": {
+  // "prague_debug_drive": {
   //   displayName: "Prague - Drive",
   //   maxTimeness: 0.15,
   // },
