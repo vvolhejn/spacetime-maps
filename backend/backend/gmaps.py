@@ -111,6 +111,8 @@ def call_distance_matrix_api(
     if confirm:
         confirm_if_expensive(origins, destinations)
 
+    # Note that here we're not checking that the number of matrix elements
+    # doesn't exceed the maximum allowed by the API.
     data = get_distance_matrix_api_payload(
         origins, destinations, travel_mode=travel_mode
     )
@@ -141,6 +143,7 @@ def get_distance_matrix(
 ) -> Iterable[dict]:
     confirm_if_expensive(origins, destinations)
 
+    # This ROOT_MAX_ENTRIES assumes travel_mode=DRIVE. For TRANSIT, it's 10.
     ROOT_MAX_ENTRIES = 25
     MAX_ENTRIES = ROOT_MAX_ENTRIES * 2
 
@@ -215,6 +218,8 @@ def get_sparsified_distance_matrix(
             if include:
                 reindexing[len(reindexing)] = i
 
+        # We're assuming that the number of destinations is small enough that we can
+        # send them all in one request. This would break for large grids.
         response = call_distance_matrix_api(
             [origin], cur_destinations, confirm=False, travel_mode=travel_mode
         )
