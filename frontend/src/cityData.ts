@@ -21,7 +21,7 @@ export const CITIES: { [key: string]: CityMetadata } = {
   },
   zurich: {
     displayName: "Zürich",
-    maxTimeness: 0.2,
+    maxTimeness: 0.05,
   },
   zurich_transit: {
     displayName: "Zürich (by public transport)",
@@ -33,6 +33,10 @@ export const CITIES: { [key: string]: CityMetadata } = {
   },
   newyork: {
     displayName: "New York",
+    maxTimeness: 0.15,
+  },
+  newyork_transit: {
+    displayName: "New York (by public transport)",
     maxTimeness: 0.15,
   },
   losangeles: {
