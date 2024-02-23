@@ -13,7 +13,7 @@ class Location(BaseModel):
         return f"{self.lat},{self.lng}"
 
     def with_offset(self, lat: float, lng: float):
-        return Location(self.lat + lat, self.lng + lng)
+        return Location(lat=self.lat + lat, lng=self.lng + lng)
 
     def to_route_matrix_location(self):
         """Serialize to a JSON that we can pass to the Google Maps Routes API."""
@@ -22,6 +22,19 @@ class Location(BaseModel):
                 "location": {"latLng": {"latitude": self.lat, "longitude": self.lng}}
             }
         }
+
+    def interpolate(self, other: "Location", fraction: float) -> "Location":
+        """Interpolate between two locations.
+
+        Args:
+            other: The other location to interpolate to.
+            fraction: How far along the line to interpolate. 0 is self, 1 is other.
+                Can be outside the range [0, 1] to extrapolate.
+        """
+        return Location(
+            lat=self.lat + fraction * (other.lat - self.lat),
+            lng=self.lng + fraction * (other.lng - self.lng),
+        )
 
     def __repr__(self) -> str:
         return f"<{self.lat:.5f}, {self.lng:.5f}>"
@@ -67,3 +80,43 @@ def spherical_distance(location1: Location, location2: Location) -> float:
     distance = radius * c
 
     return distance
+
+
+class Polyline(BaseModel):
+    points: list[Location]
+
+    def total_length(self) -> float:
+        total = 0
+        for i in range(len(self.points) - 1):
+            total += spherical_distance(self.points[i], self.points[i + 1])
+        return total
+
+    def get_point_at_fraction(self, fraction: float) -> Location:
+        """
+        Args:
+            fraction: How far along the polyline, from 0 to 1
+        """
+        assert 0 <= fraction <= 1
+        total_length = self.total_length()
+        target_length = fraction * total_length
+        current_length = 0
+        for i in range(len(self.points) - 1):
+            segment_length = spherical_distance(self.points[i], self.points[i + 1])
+            if current_length + segment_length >= target_length:
+                remaining_length = target_length - current_length
+                fraction_along_segment = remaining_length / segment_length
+                return Location(
+                    lat=self.points[i].lat
+                    + fraction_along_segment
+                    * (self.points[i + 1].lat - self.points[i].lat),
+                    lng=self.points[i].lng
+                    + fraction_along_segment
+                    * (self.points[i + 1].lng - self.points[i].lng),
+                )
+            current_length += segment_length
+        return self.points[-1]
+
+    @staticmethod
+    def from_route_response(route_response: dict) -> "Polyline":
+        polyline = route_response["polyline"]["geoJsonLinestring"]["coordinates"]
+        return Polyline(points=[Location(lat=lat, lng=lng) for lng, lat in polyline])

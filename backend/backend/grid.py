@@ -214,6 +214,23 @@ def linspace(a, b, n):
     return [a + (b - a) / (n - 1) * i for i in range(n)]
 
 
+def get_map_dimensions(
+    center: Location, zoom: int, size_pixels: int
+) -> tuple[float, float]:
+    """Get the (lat, lng) dimensions of the map at a given zoom level."""
+    max_offset_lat = (
+        STATIC_MAP_SIZE_COEF
+        * 2
+        * size_pixels
+        / (2**zoom)
+        / get_mercator_scale_factor(center.lat)
+    )
+
+    max_offset_lng = STATIC_MAP_SIZE_COEF * 2 * size_pixels / (2**zoom)
+
+    return max_offset_lat, max_offset_lng
+
+
 def make_grid(
     center: Location, zoom: int, size: int = 5, size_pixels: int = 400
 ) -> list[list[Location]]:
@@ -223,23 +240,18 @@ def make_grid(
     # from the center by STATIC_MAP_SIZE_COEF (adjusted for zoom and Mercator)
     # in each "diagonal" direction, you will reach the four corners of the map.
 
-    max_offset_lat = (
-        STATIC_MAP_SIZE_COEF
-        * size_pixels
-        / (2**zoom)
-        / get_mercator_scale_factor(center.lat)
+    map_size_lat, map_size_lng = get_map_dimensions(
+        center=center, zoom=zoom, size_pixels=size_pixels
     )
-
-    max_offset_lng = STATIC_MAP_SIZE_COEF * size_pixels / (2**zoom)
 
     locations = []
     # Reverse the latitude so that the markers go "top to bottom" (north to south)
     for lat in reversed(
-        linspace(center.lat - max_offset_lat, center.lat + max_offset_lat, size)
+        linspace(center.lat - map_size_lat / 2, center.lat + map_size_lat / 2, size)
     ):
         locations_row = []
         for lng in linspace(
-            center.lng - max_offset_lng, center.lng + max_offset_lng, size
+            center.lng - map_size_lng / 2, center.lng + map_size_lng / 2, size
         ):
             locations_row.append(Location(lat=lat, lng=lng))
 
