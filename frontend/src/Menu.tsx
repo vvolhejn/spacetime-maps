@@ -80,7 +80,7 @@ export const CitySelector = ({
       <div
         id="dropdown"
         className={
-          "z-10 divide-y divide-gray-100 rounded-lg shadow w-full bg-gray-700 " +
+          "z-10 divide-y divide-gray-100 rounded-lg shadow w-full bg-gray-700 h-48 overflow-y-auto " +
           (isDropdownOpen ? "block" : "hidden")
         }
       >
