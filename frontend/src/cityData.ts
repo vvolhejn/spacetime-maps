@@ -21,7 +21,7 @@ export const CITIES: { [key: string]: CityMetadata } = {
   },
   zurich: {
     displayName: "Zürich",
-    maxTimeness: 0.05,
+    maxTimeness: 0.1,
   },
   zurich_transit: {
     displayName: "Zürich (by public transport)",
@@ -54,6 +54,10 @@ export const CITIES: { [key: string]: CityMetadata } = {
   lapaz: {
     displayName: "La Paz",
     maxTimeness: 0.15,
+  },
+  london_detail_pedestrian: {
+    displayName: "London (detail, pedestrian)",
+    maxTimeness: 0.3,
   },
   // These are testing maps with low grid size.
   // "prague_debug_transit": {
