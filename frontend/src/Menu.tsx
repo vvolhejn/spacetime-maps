@@ -192,7 +192,13 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
             setCityName={setCityName}
             setMenuOpen={setMenuOpen}
           />
-          <p>Map data ©Google</p>
+          <p>
+            By{" "}
+            <a href="https://vvolhejn.github.io/" className="underline">
+              Václav Volhejn
+            </a>
+            . Map data ©Google
+          </p>
         </div>
       </div>
     );
