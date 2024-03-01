@@ -3,6 +3,7 @@ import { useCallback } from "react";
 import { Graphics, Text } from "@pixi/react";
 import { GridEntry, VertexPosition, Point } from "./mesh";
 import { Spring, getForce } from "./springs";
+import { ViewSettings } from "./viewSettings";
 
 const getClosestMeshPoint = (
   point: Point,
@@ -70,14 +71,14 @@ export const DebugOverlay = ({
   vertexPositions,
   grid,
   springs,
-  toggledKeys,
+  viewSettings,
   normalizedHoveredPoint,
   mapSizePx,
 }: {
   vertexPositions: VertexPosition[];
   grid: GridEntry[][];
   springs: Spring[];
-  toggledKeys: string[];
+  viewSettings: ViewSettings;
   normalizedHoveredPoint: Point | null;
   mapSizePx: number;
 }) => {
@@ -184,10 +185,10 @@ export const DebugOverlay = ({
 
   return (
     <>
-      {toggledKeys.includes("KeyW") && <Graphics draw={drawSprings} />}
-      {toggledKeys.includes("KeyS") && numbers}
-      {toggledKeys.includes("KeyD") && <Graphics draw={drawPoints} />}
-      {toggledKeys.includes("KeyF") && <Graphics draw={drawGrid} />}
+      {viewSettings.showSpringArrows && <Graphics draw={drawSprings} />}
+      {viewSettings.showGridNumbers && numbers}
+      {viewSettings.showGridPoints && <Graphics draw={drawPoints} />}
+      {viewSettings.showGrid && <Graphics draw={drawGrid} />}
     </>
   );
 };

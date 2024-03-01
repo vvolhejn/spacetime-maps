@@ -8,6 +8,7 @@ import { City, DEFAULT_CITY, fetchCity } from "./cityData";
 import { useMapSizePx } from "./useIsMobile";
 import { useSearchParamsState } from "./useSearchParamsState";
 import { ExplanationModal } from "./ExplanationModal";
+import { ViewSettings, updateViewSettings } from "./viewSettings";
 
 const clamp = (num: number, min: number, max: number) => {
   return Math.min(Math.max(num, min), max);
@@ -18,7 +19,7 @@ const clamp = (num: number, min: number, max: number) => {
  * ("dip") to give the springs a bit of time to reset.
  */
 const getTimenessForAnimation = (totalTime: number) => {
-  const SECONDS_TO_SWITCH = 1.5;
+  const SECONDS_TO_SWITCH = 5;
   const DIP = 0.05; // "Dip" below the 0 point
   return clamp(
     Math.sin((totalTime * Math.PI * 2) / SECONDS_TO_SWITCH) * (0.5 + DIP) +
@@ -29,9 +30,16 @@ const getTimenessForAnimation = (totalTime: number) => {
 };
 
 const App = () => {
-  const [toggledKeys, setToggledKeys] = useLocalStorage(
-    "SpacetimeMap.toggledKeys",
-    [] as string[]
+  const [viewSettings, setViewSettings] = useLocalStorage<ViewSettings>(
+    "SpacetimeMap.viewSettings",
+    {
+      animate: false,
+      focusOnHover: false,
+      showSpringArrows: false,
+      showGridPoints: false,
+      showGrid: false,
+      showGridNumbers: false,
+    }
   );
   const [isPressed, setIsPressed] = useState(false);
   const [hoveredPoint, setHoveredPoint] = useState<Point | null>(null);
@@ -65,7 +73,7 @@ const App = () => {
 
   const onTick = (deltaSeconds: number) => {
     setTotalTime(totalTime + deltaSeconds);
-    if (toggledKeys.includes("KeyA")) {
+    if (viewSettings.animate) {
       setTimeness(getTimenessForAnimation(totalTime));
     } else {
       const SECONDS_TO_MAX = 0.2;
@@ -103,11 +111,7 @@ const App = () => {
       <div
         tabIndex={0}
         onKeyDown={(e) => {
-          if (toggledKeys.includes(e.code)) {
-            setToggledKeys(toggledKeys.filter((k) => k !== e.code));
-          } else {
-            setToggledKeys([...toggledKeys, e.code]);
-          }
+          setViewSettings(updateViewSettings(viewSettings, e.code));
         }}
         onPointerDown={(e) => {
           setIsPressed(true);
@@ -164,13 +168,12 @@ const App = () => {
           )}
           {!(city === null) && (
             <SpacetimeMap
-              toggledKeys={toggledKeys}
+              viewSettings={viewSettings}
               // This turned out to be confusing from a UX perspective, so let's disable it for now.
               hoveredPoint={hoveredPoint}
               // hoveredPoint={null}
               timeness={timeness}
               city={city}
-              isPressed={isPressed}
               onTick={onTick}
             />
           )}
