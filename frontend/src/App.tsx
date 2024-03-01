@@ -190,6 +190,8 @@ const App = () => {
         setMenuOpen={setMenuOpen}
         cityName={cityName}
         setCityName={setCityName}
+        viewSettings={viewSettings}
+        setViewSettings={setViewSettings}
       />
     </div>
   );

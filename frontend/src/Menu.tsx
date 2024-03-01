@@ -1,6 +1,8 @@
 import { forwardRef, useEffect, useState } from "react";
 import { HamburgerMenuIcon } from "./HamburgerMenuIcon";
 import { CITIES } from "./cityData";
+import { ViewSettingsPanel } from "./ViewSettingsPanel";
+import { ViewSettings } from "./viewSettings";
 
 export const DropdownItem = ({
   text,
@@ -52,7 +54,7 @@ export const CitySelector = ({
         }}
         className={
           "text-white bg-blue-600 hover:bg-blue-700 focus:ring-blue-800 focus:outline-none " +
-          " focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center " +
+          " focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center " +
           " inline-flex items-center w-full"
         }
         type="button"
@@ -108,6 +110,8 @@ export type MenuProps = {
   setMenuOpen: (isMenuOpen: boolean) => void;
   cityName: string;
   setCityName: (cityName: string) => void;
+  viewSettings: ViewSettings;
+  setViewSettings: (viewSettings: ViewSettings) => void;
 };
 
 export const Menu = forwardRef<HTMLDivElement, MenuProps>(
@@ -119,6 +123,8 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
       setMenuOpen,
       cityName,
       setCityName,
+      viewSettings,
+      setViewSettings,
     }: MenuProps,
     ref
   ) => {
@@ -177,6 +183,10 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
               About
             </a>
           </p>
+          <ViewSettingsPanel
+            viewSettings={viewSettings}
+            setViewSettings={setViewSettings}
+          />
           <CitySelector
             cityName={cityName}
             setCityName={setCityName}

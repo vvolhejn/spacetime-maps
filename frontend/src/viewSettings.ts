@@ -7,6 +7,13 @@ export type ViewSettings = {
   showGridNumbers: boolean;
 };
 
+export const toggleSetting = (
+  viewSettings: ViewSettings,
+  setting: keyof ViewSettings
+) => {
+  return { ...viewSettings, [setting]: !viewSettings[setting] };
+};
+
 export const updateViewSettings = (
   viewSettings: ViewSettings,
   keyCode: string
@@ -20,7 +27,5 @@ export const updateViewSettings = (
     KeyW: "showSpringArrows",
   };
   const setting = keyCodeToSetting[keyCode];
-  return setting
-    ? { ...viewSettings, [setting]: !viewSettings[setting] }
-    : viewSettings;
+  return setting ? toggleSetting(viewSettings, setting) : viewSettings;
 };
