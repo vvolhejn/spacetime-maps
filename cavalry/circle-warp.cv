@@ -1,0 +1,1302 @@
+{
+ "activeComp": "compNode#1",
+ "assets": [
+  {
+   "data": { "filePath": "/Users/vaclav/prog/spacetime-map/actual-video/london-map-example-with-pin.png" },
+   "nodeId": "asset#3",
+   "type": "file"
+  },
+  {
+   "data": { "filePath": "/Users/vaclav/prog/spacetime-map/actual-video/london-map-example-with-pin.png" },
+   "nodeId": "asset#5",
+   "type": "file"
+  },
+  {
+   "data": { "filePath": "/Users/vaclav/prog/spacetime-map/actual-video/london-map-example-with-circle.png" },
+   "nodeId": "asset#4",
+   "type": "file"
+  },
+  {
+   "data": { "decimalSeparator": ".", "delimiter": ",", "factorize": false, "filePath": "/Users/vaclav/prog/spacetime-map/actual-video/spacetime_circle.csv", "quote": "\"" },
+   "nodeId": "asset#2",
+   "type": "file"
+  }
+ ],
+ "connections": [
+  { "from": "keyframe#10.id", "to": "visibilityCurve#4.keyframes.1" },
+  { "from": "keyframe#9.id", "to": "visibilityCurve#4.keyframes.0" },
+  { "from": "compNode#1.outActiveAnimationLayer", "to": "visibilityCurve#4.activeAnimationLayer" },
+  { "from": "compNode#1.time", "to": "visibilityCurve#4.time" },
+  { "from": "keyframe#4.id", "to": "visibilityCurve#2.keyframes.1" },
+  { "from": "compNode#1.outActiveAnimationLayer", "to": "visibilityCurve#2.activeAnimationLayer" },
+  { "from": "keyframe#3.id", "to": "visibilityCurve#2.keyframes.0" },
+  { "from": "compNode#1.time", "to": "visibilityCurve#2.time" },
+  { "from": "compNode#1.outActiveAnimationLayer", "to": "visibilityCurve#1.activeAnimationLayer" },
+  { "from": "keyframe#2.id", "to": "visibilityCurve#1.keyframes.1" },
+  { "from": "keyframe#1.id", "to": "visibilityCurve#1.keyframes.0" },
+  { "from": "compNode#1.time", "to": "visibilityCurve#1.time" },
+  { "from": "compNode#1.outActiveAnimationLayer", "to": "animationCurve#2.activeAnimationLayer" },
+  { "from": "keyframe#18.id", "to": "animationCurve#2.keyframes.0" },
+  { "from": "compNode#1.time", "to": "animationCurve#2.time" },
+  { "from": "keyframe#15.id", "to": "animationCurve#1.keyframes.2" },
+  { "from": "keyframe#5.id", "to": "animationCurve#1.keyframes.0" },
+  { "from": "keyframe#6.id", "to": "animationCurve#1.keyframes.1" },
+  { "from": "compNode#1.outActiveAnimationLayer", "to": "animationCurve#1.activeAnimationLayer" },
+  { "from": "compNode#1.time", "to": "animationCurve#1.time" },
+  { "from": "compNode#1.outActiveAnimationLayer", "to": "visibilityCurve#7.activeAnimationLayer" },
+  { "from": "keyframe#17.id", "to": "visibilityCurve#7.keyframes.1" },
+  { "from": "keyframe#16.id", "to": "visibilityCurve#7.keyframes.0" },
+  { "from": "compNode#1.time", "to": "visibilityCurve#7.time" },
+  { "from": "compNode#1.outActiveAnimationLayer", "to": "visibilityCurve#6.activeAnimationLayer" },
+  { "from": "keyframe#14.id", "to": "visibilityCurve#6.keyframes.1" },
+  { "from": "keyframe#13.id", "to": "visibilityCurve#6.keyframes.0" },
+  { "from": "compNode#1.time", "to": "visibilityCurve#6.time" },
+  { "from": "meshDistribution#1.id", "to": "pointsToCurve#1.generator" },
+  { "from": "strokeMaterial#5.id", "to": "pointsToCurve#1.stroke" },
+  { "from": "visibilityCurve#7.out", "to": "pointsToCurve#1.on" },
+  { "from": "visibilityCurve#4.out", "to": "footageShape#1.on" },
+  { "from": "imageShader#1.out", "to": "footageShape#1.footageShader" },
+  { "from": "colorMaterial#3.id", "to": "footageShape#1.material" },
+  { "from": "positionBlend#1.id", "to": "duplicator#1.shapePosition" },
+  { "from": "pointDistribution#1.id", "to": "duplicator#1.generator" },
+  { "from": "basicShape#1.id", "to": "duplicator#1.shapes.0" },
+  { "from": "visibilityCurve#2.out", "to": "duplicator#1.on" },
+  { "from": "imageShader#2.out", "to": "footageShape#2.footageShader" },
+  { "from": "visibilityCurve#6.out", "to": "footageShape#2.on" },
+  { "from": "colorMaterial#4.id", "to": "footageShape#2.material" },
+  { "from": "ellipseShape#1.id", "to": "basicShape#1.generator" },
+  { "from": "colorMaterial#1.id", "to": "basicShape#1.material" },
+  { "from": "visibilityCurve#1.out", "to": "basicShape#1.on" },
+  { "from": "animationCurve#1.out", "to": "positionBlend#1.strength" },
+  { "from": "spreadsheet#3.id", "to": "positionBlend#1.secondValue.y" },
+  { "from": "spreadsheet#4.id", "to": "positionBlend#1.secondValue.x" },
+  { "from": "spreadsheet#2.id", "to": "positionBlend#1.firstValue.x" },
+  { "from": "spreadsheet#1.id", "to": "positionBlend#1.firstValue.y" },
+  { "from": "numberRangeBase#1.max", "to": "numberRangeBase#2.max" },
+  { "from": "numberRangeBase#1.sourceMax", "to": "numberRangeBase#2.sourceMax" },
+  { "from": "numberRangeBase#1.min", "to": "numberRangeBase#2.min" },
+  { "from": "numberRangeBase#1.sourceMin", "to": "numberRangeBase#2.sourceMin" },
+  { "from": "renderMP4#2.id", "to": "renderQueueItem#3.generator" },
+  { "from": "compNode#1.id", "to": "renderQueueItem#3.targets.0.id" },
+  { "from": "numberRangeBase#2.id", "to": "spreadsheet#3.remapping" },
+  { "from": "asset#2.id", "to": "spreadsheet#3.file" },
+  { "from": "numberRangeBase#4.id", "to": "spreadsheet#4.remapping" },
+  { "from": "asset#2.id", "to": "spreadsheet#4.file" },
+  { "from": "spreadsheet#1.rowCount", "to": "pointDistribution#1.count" },
+  { "from": "compNode#1.fps", "to": "imageShader#1.inFps" },
+  { "from": "visibilityCurve#4.out", "to": "imageShader#1.on" },
+  { "from": "asset#3.id", "to": "imageShader#1.image" },
+  { "from": "compNode#1.resolution", "to": "imageShader#1.resolution" },
+  { "from": "compNode#1.fps", "to": "imageShader#1.fps" },
+  { "from": "imageShader#1.out", "to": "colorMaterial#3.colorShaders.0.shader" },
+  { "from": "duplicator#1.id", "to": "meshDistribution#1.inputShape" },
+  { "from": "numberRangeBase#3.max", "to": "numberRangeBase#4.max" },
+  { "from": "numberRangeBase#3.min", "to": "numberRangeBase#4.min" },
+  { "from": "numberRangeBase#3.sourceMax", "to": "numberRangeBase#4.sourceMax" },
+  { "from": "numberRangeBase#3.sourceMin", "to": "numberRangeBase#4.sourceMin" },
+  { "from": "renderMP4#1.id", "to": "renderQueueItem#2.generator" },
+  { "from": "compNode#1.id", "to": "renderQueueItem#2.targets.0.id" },
+  { "from": "animationCurve#2.out", "to": "numberRangeBase#1.sourceMin" },
+  { "from": "numberRangeBase#1.id", "to": "spreadsheet#1.remapping" },
+  { "from": "asset#2.id", "to": "spreadsheet#1.file" },
+  { "from": "numberRangeBase#3.id", "to": "spreadsheet#2.remapping" },
+  { "from": "asset#2.id", "to": "spreadsheet#2.file" },
+  { "from": "asset#4.id", "to": "imageShader#2.image" },
+  { "from": "compNode#1.fps", "to": "imageShader#2.inFps" },
+  { "from": "visibilityCurve#6.out", "to": "imageShader#2.on" },
+  { "from": "compNode#1.resolution", "to": "imageShader#2.resolution" },
+  { "from": "compNode#1.fps", "to": "imageShader#2.fps" },
+  { "from": "imageShader#2.out", "to": "colorMaterial#4.colorShaders.0.shader" }
+ ],
+ "nodeMeta": [
+  {
+   "children": [ "keyframe#10", "keyframe#9" ],
+   "nodeId": "visibilityCurve#4"
+  },
+  {
+   "children": [ "pointsToCurve#1", "duplicator#1", "basicShape#1", "spreadsheet#1", "spreadsheet#2", "spreadsheet#3", "spreadsheet#4", "positionBlend#1", "footageShape#1", "footageShape#2" ],
+   "nodeId": "compNode#1"
+  },
+  {
+   "children": [ "keyframe#4", "keyframe#3" ],
+   "nodeId": "visibilityCurve#2"
+  },
+  {
+   "children": [ "keyframe#2", "keyframe#1" ],
+   "nodeId": "visibilityCurve#1"
+  },
+  {
+   "children": [ "keyframe#18" ],
+   "nodeId": "animationCurve#2"
+  },
+  {
+   "children": [ "keyframe#15", "keyframe#6", "keyframe#5" ],
+   "nodeId": "animationCurve#1"
+  },
+  {
+   "children": [ "keyframe#17", "keyframe#16" ],
+   "nodeId": "visibilityCurve#7"
+  },
+  {
+   "children": [ "keyframe#14", "keyframe#13" ],
+   "nodeId": "visibilityCurve#6"
+  },
+  {
+   "children": [ "hiddenFolder#9", "visibilityCurve#7" ],
+   "nodeId": "pointsToCurve#1"
+  },
+  {
+   "children": [ "imageShader#1", "hiddenFolder#7" ],
+   "nodeId": "footageShape#1"
+  },
+  {
+   "children": [ "hiddenFolder#2", "visibilityCurve#2" ],
+   "nodeId": "duplicator#1"
+  },
+  {
+   "children": [ "imageShader#2", "hiddenFolder#8" ],
+   "nodeId": "footageShape#2"
+  },
+  {
+   "children": [ "hiddenFolder#1", "visibilityCurve#1" ],
+   "nodeId": "basicShape#1"
+  },
+  {
+   "children": [ "animationCurve#1" ],
+   "nodeId": "positionBlend#1"
+  },
+  {
+   "children": [ "hiddenFolder#13" ],
+   "nodeId": "renderQueueItem#3"
+  },
+  {
+   "children": [ "renderMP4#2", "renderPNG#3" ],
+   "nodeId": "hiddenFolder#13"
+  },
+  {
+   "children": [ "hiddenFolder#4" ],
+   "nodeId": "spreadsheet#3"
+  },
+  {
+   "children": [ "hiddenFolder#6" ],
+   "nodeId": "spreadsheet#4"
+  },
+  {
+   "children": [ "ellipseShape#1", "motionBlurFilter#1", "strokeMaterial#1", "polygonShape#1", "colorMaterial#1" ],
+   "nodeId": "hiddenFolder#1"
+  },
+  {
+   "children": [ "numberRangeBase#1", "areaRangeBase#1" ],
+   "nodeId": "hiddenFolder#3"
+  },
+  {
+   "children": [ "renderQueueItem#3", "renderQueueItem#2" ],
+   "nodeId": "renderQueue#1"
+  },
+  {
+   "children": [ "colorArray#1" ],
+   "nodeId": "paletteContainer#1"
+  },
+  {
+   "children": [ "pointDistribution#1", "motionBlurFilter#2", "strokeMaterial#2", "colorMaterial#2", "gridDistribution#1" ],
+   "nodeId": "hiddenFolder#2"
+  },
+  {
+   "children": [ "meshDistribution#1", "motionBlurFilter#5", "colorMaterial#5", "arrayDistribution#1", "strokeMaterial#5" ],
+   "nodeId": "hiddenFolder#9"
+  },
+  {
+   "children": [ "visibilityCurve#4" ],
+   "nodeId": "imageShader#1"
+  },
+  {
+   "children": [ "motionBlurFilter#3", "strokeMaterial#3", "colorMaterial#3" ],
+   "nodeId": "hiddenFolder#7"
+  },
+  {
+   "children": [ "numberRangeBase#3" ],
+   "nodeId": "hiddenFolder#5"
+  },
+  {
+   "children": [ "numberRangeBase#4" ],
+   "nodeId": "hiddenFolder#6"
+  },
+  {
+   "children": [ "renderMP4#1", "renderPNG#2" ],
+   "nodeId": "hiddenFolder#11"
+  },
+  {
+   "children": [ "hiddenFolder#11" ],
+   "nodeId": "renderQueueItem#2"
+  },
+  {
+   "children": [ "animationCurve#2" ],
+   "nodeId": "numberRangeBase#1"
+  },
+  {
+   "children": [ "numberRangeBase#2" ],
+   "nodeId": "hiddenFolder#4"
+  },
+  {
+   "children": [ "hiddenFolder#3" ],
+   "nodeId": "spreadsheet#1"
+  },
+  {
+   "children": [ "hiddenFolder#5" ],
+   "nodeId": "spreadsheet#2"
+  },
+  {
+   "children": [ "motionBlurFilter#4", "strokeMaterial#4", "colorMaterial#4" ],
+   "nodeId": "hiddenFolder#8"
+  },
+  {
+   "children": [ "visibilityCurve#6" ],
+   "nodeId": "imageShader#2"
+  },
+  {
+   "children": [ "asset#5", "asset#4", "asset#3", "asset#2", "compNode#1" ],
+   "nodeId": "asset#1"
+  }
+ ],
+ "nodes": [
+  {
+   "attributes": {
+    "time": { "value": 165.0, "varType": "double" }
+   },
+   "nodeId": "visibilityCurve#4",
+   "nodeType": "visibilityCurve"
+  },
+  {
+   "attributes": {
+    "backgroundColor": {
+     "value": { "a": 255, "b": 255, "g": 255, "r": 255 },
+     "varType": "color"
+    },
+    "endFrame": { "value": 480, "varType": "int" },
+    "fps": { "value": 60.0, "varType": "double" },
+    "inTime": { "value": 165.0, "varType": "double" },
+    "niceName": { "value": "Composition 1", "varType": "string" },
+    "playbackEnd": { "value": 480, "varType": "int" },
+    "resolution": {
+     "value": { "x": 1920, "y": 1920 },
+     "varType": "int2"
+    },
+    "uuid": { "value": "a375f05c-1f27-445a-a4ba-435720c85efb", "varType": "string" }
+   },
+   "nodeId": "compNode#1",
+   "nodeType": "compNode"
+  },
+  {
+   "attributes": {
+    "time": { "value": 165.0, "varType": "double" }
+   },
+   "nodeId": "visibilityCurve#2",
+   "nodeType": "visibilityCurve"
+  },
+  {
+   "attributes": {
+    "time": { "value": 165.0, "varType": "double" }
+   },
+   "nodeId": "visibilityCurve#1",
+   "nodeType": "visibilityCurve"
+  },
+  {
+   "attributes": {
+    "time": { "value": 165.0, "varType": "double" }
+   },
+   "nodeId": "animationCurve#2",
+   "nodeType": "animationCurve"
+  },
+  {
+   "attributes": {
+    "time": { "value": 165.0, "varType": "double" }
+   },
+   "nodeId": "animationCurve#1",
+   "nodeType": "animationCurve"
+  },
+  {
+   "attributes": {
+    "time": { "value": 165.0, "varType": "double" }
+   },
+   "nodeId": "visibilityCurve#7",
+   "nodeType": "visibilityCurve"
+  },
+  {
+   "attributes": {
+    "time": { "value": 165.0, "varType": "double" }
+   },
+   "nodeId": "visibilityCurve#6",
+   "nodeType": "visibilityCurve"
+  },
+  {
+   "attributes": {
+    "close": { "value": true, "varType": "bool" },
+    "niceName": { "value": "Points to Path", "varType": "string" },
+    "uuid": { "value": "5eadd505-a67c-433e-801f-849a7ef9f88b", "varType": "string" }
+   },
+   "nodeId": "pointsToCurve#1",
+   "nodeType": "pointsToCurve"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "london-map-example", "varType": "string" },
+    "scale": {
+     "value": { "x": 1.504488182067871, "y": 1.504488182067871 },
+     "varType": "double2"
+    },
+    "uuid": { "value": "71f07000-b57d-4960-a385-f3ed1709ad94", "varType": "string" }
+   },
+   "nodeId": "footageShape#1",
+   "nodeType": "footageShape"
+  },
+  {
+   "attributes": {
+    "hidden": { "value": true, "varType": "bool" },
+    "niceName": { "value": "Duplicator", "varType": "string" },
+    "position": {
+     "value": { "x": 55.22412109375, "y": 9.763236999511719, "z": 0.0 },
+     "varType": "double3"
+    },
+    "scale": {
+     "aspectRatio": 1.0,
+     "value": { "x": 1.108, "y": 1.108 },
+     "varType": "double2"
+    },
+    "shapePosition": {
+     "value": { "x": -47.384300066412436, "y": 357.5312801842857 },
+     "varType": "double2"
+    },
+    "uuid": { "value": "a07f1591-b48f-4abc-b9b9-f2b070d96d34", "varType": "string" }
+   },
+   "nodeId": "duplicator#1",
+   "nodeType": "duplicator"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "london-map-example-with-circle", "varType": "string" },
+    "scale": {
+     "aspectRatio": 1.0,
+     "value": { "x": 1.504, "y": 1.504 },
+     "varType": "double2"
+    },
+    "uuid": { "value": "9b27853f-c973-4bd7-bdef-bd0349e27983", "varType": "string" }
+   },
+   "nodeId": "footageShape#2",
+   "nodeType": "footageShape"
+  },
+  {
+   "attributes": {
+    "hidden": { "value": true, "varType": "bool" },
+    "niceName": { "value": "Ellipse Shape", "varType": "string" },
+    "position": {
+     "value": { "x": -536.3579711914063, "y": -96.40264892578125, "z": 0.0 },
+     "varType": "double3"
+    },
+    "uuid": { "value": "3fa0c090-6e9b-4ff4-956d-159f232d2580", "varType": "string" }
+   },
+   "nodeId": "basicShape#1",
+   "nodeType": "basicShape"
+  },
+  {
+   "attributes": {
+    "firstValue": {
+     "value": { "x": -47.384300066412436, "y": 404.31507109887355, "z": 0.0 },
+     "varType": "double3"
+    },
+    "niceName": { "value": "Position Blend", "varType": "string" },
+    "secondValue": {
+     "value": { "x": -47.384300066412436, "y": 320.51861316772784, "z": 0.0 },
+     "varType": "double3"
+    },
+    "strength": { "value": 55.83027262683271, "varType": "double" },
+    "uuid": { "value": "54cba38e-d79f-4b38-9b2b-7265419336d6", "varType": "string" }
+   },
+   "nodeId": "positionBlend#1",
+   "nodeType": "positionBlend"
+  },
+  {
+   "attributes": {
+    "data": {
+     "value": { "easing": 3, "numValue": 0.0 },
+     "varType": "keyData"
+    },
+    "uuid": { "value": "3bb0e482-c3cc-4cd5-ab8c-9b1d93f240cd", "varType": "string" }
+   },
+   "nodeId": "keyframe#5",
+   "nodeType": "keyframe"
+  },
+  {
+   "attributes": {
+    "graph": {
+     "list": [
+      {
+       "compound": {
+        "left": {
+         "value": { "x": -0.5, "y": -0.5 },
+         "varType": "double2"
+        },
+        "right": {
+         "value": { "x": 0.5, "y": 0.5 },
+         "varType": "double2"
+        }
+       }
+      },
+      {
+       "compound": {
+        "left": {
+         "value": { "x": -0.5, "y": -0.5 },
+         "varType": "double2"
+        },
+        "position": {
+         "value": { "x": 1.0, "y": 1.0 },
+         "varType": "double2"
+        },
+        "right": {
+         "value": { "x": 0.5, "y": 0.5 },
+         "varType": "double2"
+        }
+       }
+      }
+     ]
+    },
+    "max": { "value": 500.0, "varType": "double" },
+    "min": { "value": -500.0, "varType": "double" },
+    "niceName": { "value": "Number Range 2", "varType": "string" },
+    "sourceMax": { "value": 51.516, "varType": "double" },
+    "sourceMin": { "value": 51.506, "varType": "double" },
+    "uuid": { "value": "4b7f948a-bc15-458c-84ad-6c9c6de64e3d", "varType": "string" }
+   },
+   "nodeId": "numberRangeBase#2",
+   "nodeType": "numberRangeBase"
+  },
+  {
+   "attributes": {
+    "fileName": { "value": "Composition 1", "varType": "string" },
+    "filePath": { "value": "/Users/vaclav/prog/spacetime-map/actual-video", "varType": "string" },
+    "frameRange": {
+     "value": { "x": 0, "y": 479 },
+     "varType": "int2"
+    },
+    "niceName": { "value": "Composition 1 Render Item", "varType": "string" },
+    "targets": {
+     "list": [ {} ]
+    },
+    "uuid": { "value": "63afbe22-f408-4754-a844-a30bfdf74a5a", "varType": "string" }
+   },
+   "nodeId": "renderQueueItem#3",
+   "nodeType": "renderQueueItem"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "subUINodes", "varType": "string" },
+    "uuid": { "value": "ad395b02-af42-4596-a85c-edbe01c7d7d4", "varType": "string" }
+   },
+   "nodeId": "hiddenFolder#13",
+   "nodeType": "hiddenFolder"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "MP4", "varType": "string" },
+    "uuid": { "value": "329b9a6b-9988-4716-88d5-5d3a39120126", "varType": "string" }
+   },
+   "nodeId": "renderMP4#2",
+   "nodeType": "renderMP4"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "PNG", "varType": "string" },
+    "uuid": { "value": "ff130c86-afb8-4734-aa46-a9b71ea469ac", "varType": "string" }
+   },
+   "nodeId": "renderPNG#3",
+   "nodeType": "renderPNG"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "MP4", "varType": "string" },
+    "uuid": { "value": "7cff7f9e-b443-4aab-8c89-d30c3b8246df", "varType": "string" }
+   },
+   "nodeId": "renderMP4#1",
+   "nodeType": "renderMP4"
+  },
+  {
+   "attributes": {
+    "column": { "value": 2.0, "varType": "double" },
+    "niceName": { "value": "time_lat", "varType": "string" },
+    "uuid": { "value": "27e24167-7649-44d0-908f-98fa38fdd80c", "varType": "string" }
+   },
+   "nodeId": "spreadsheet#3",
+   "nodeType": "spreadsheet"
+  },
+  {
+   "attributes": {
+    "column": { "value": 3.0, "varType": "double" },
+    "niceName": { "value": "time_lng", "varType": "string" },
+    "uuid": { "value": "c78510d7-6b7f-4169-963d-c6a0182fca0d", "varType": "string" }
+   },
+   "nodeId": "spreadsheet#4",
+   "nodeType": "spreadsheet"
+  },
+  {
+   "attributes": {
+    "data": {
+     "value": { "numValue": 51.506 },
+     "varType": "keyData"
+    },
+    "timeOffset": { "value": 15.0, "varType": "double" },
+    "uuid": { "value": "62df56bf-2d06-4a8f-b09b-15a64f5a550a", "varType": "string" }
+   },
+   "nodeId": "keyframe#18",
+   "nodeType": "keyframe"
+  },
+  {
+   "attributes": {
+    "data": {
+     "value": { "numValue": -1.0 },
+     "varType": "keyData"
+    },
+    "timeOffset": { "value": 486.0, "varType": "double" },
+    "uuid": { "value": "b1b5314f-7c6d-4ace-a21c-2a3aceddb316", "varType": "string" }
+   },
+   "nodeId": "keyframe#2",
+   "nodeType": "keyframe"
+  },
+  {
+   "attributes": {
+    "data": {
+     "value": { "numValue": 1.0 },
+     "varType": "keyData"
+    },
+    "uuid": { "value": "b1ae97e5-5583-40f5-9e83-cef35028e1db", "varType": "string" }
+   },
+   "nodeId": "keyframe#1",
+   "nodeType": "keyframe"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "subUINodes", "varType": "string" },
+    "uuid": { "value": "1f885f06-dabf-407c-a504-769732ea7636", "varType": "string" }
+   },
+   "nodeId": "hiddenFolder#1",
+   "nodeType": "hiddenFolder"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "Polygon", "varType": "string" },
+    "uuid": { "value": "752c3406-0998-4b27-8b29-2120bce535a2", "varType": "string" }
+   },
+   "nodeId": "polygonShape#1",
+   "nodeType": "polygonShape"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "Stroke", "varType": "string" },
+    "uuid": { "value": "fc0270a1-c8b2-4b81-a018-21042c01c15e", "varType": "string" }
+   },
+   "nodeId": "strokeMaterial#1",
+   "nodeType": "strokeMaterial"
+  },
+  {
+   "attributes": {
+    "materialColor": {
+     "value": { "a": 255, "b": 92, "g": 42, "r": 170 },
+     "varType": "color"
+    },
+    "niceName": { "value": "Fill", "varType": "string" },
+    "uuid": { "value": "2833f2e5-3783-4993-9242-fb16809e4e37", "varType": "string" }
+   },
+   "nodeId": "colorMaterial#1",
+   "nodeType": "colorMaterial"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "Ellipse", "varType": "string" },
+    "radius": {
+     "value": { "x": 20.0, "y": 20.0 },
+     "varType": "double2"
+    },
+    "uuid": { "value": "1c10dfed-ee9c-4728-bbb8-9cc5fd65527d", "varType": "string" }
+   },
+   "nodeId": "ellipseShape#1",
+   "nodeType": "ellipseShape"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "Motion Blur", "varType": "string" },
+    "showInProjectWindow": { "value": false, "varType": "bool" },
+    "uuid": { "value": "1089528f-c455-4bbd-b97b-a60299a5f1a3", "varType": "string" }
+   },
+   "nodeId": "motionBlurFilter#1",
+   "nodeType": "motionBlurFilter"
+  },
+  {
+   "attributes": {
+    "count": { "value": 36, "varType": "int" },
+    "niceName": { "value": "Point", "varType": "string" },
+    "uuid": { "value": "0af75102-be7d-440d-83e3-c5a364163473", "varType": "string" }
+   },
+   "nodeId": "pointDistribution#1",
+   "nodeType": "pointDistribution"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "Hidden Folder", "varType": "string" },
+    "uuid": { "value": "1c300f3f-b628-4d90-b516-b65e96837632", "varType": "string" }
+   },
+   "nodeId": "hiddenFolder#3",
+   "nodeType": "hiddenFolder"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "Area Range", "varType": "string" },
+    "uuid": { "value": "abf5252c-60e2-4a98-a03f-531eab750165", "varType": "string" }
+   },
+   "nodeId": "areaRangeBase#1",
+   "nodeType": "areaRangeBase"
+  },
+  {
+   "attributes": {
+    "data": {
+     "value": { "numValue": -1.0 },
+     "varType": "keyData"
+    },
+    "timeOffset": { "value": 486.0, "varType": "double" },
+    "uuid": { "value": "62bd3f33-8d22-441d-ac28-fcf6c3e43dfe", "varType": "string" }
+   },
+   "nodeId": "keyframe#14",
+   "nodeType": "keyframe"
+  },
+  {
+   "attributes": {
+    "data": {
+     "value": { "numValue": 1.0 },
+     "varType": "keyData"
+    },
+    "uuid": { "value": "4ec500c5-5970-4e9d-8aa2-f4e4c6912d45", "varType": "string" }
+   },
+   "nodeId": "keyframe#13",
+   "nodeType": "keyframe"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "Default Scene Palette", "varType": "string" },
+    "uuid": { "value": "5898ccf6-beb9-427c-89e6-f2eaf4e2c601", "varType": "string" }
+   },
+   "nodeId": "colorArray#1",
+   "nodeType": "colorArray"
+  },
+  { "nodeId": "renderQueue#1", "nodeType": "renderQueue" },
+  { "nodeId": "paletteContainer#1", "nodeType": "paletteContainer" },
+  {
+   "attributes": {
+    "niceName": { "value": "Render Manager", "varType": "string" },
+    "uuid": { "value": "315c72f0-bdb1-40f5-a83a-fafa8030644d", "varType": "string" }
+   },
+   "nodeId": "dynamicIndexManager#1",
+   "nodeType": "dynamicIndexManager"
+  },
+  {
+   "attributes": {
+    "data": {
+     "value": { "easing": 3, "numValue": 0.0 },
+     "varType": "keyData"
+    },
+    "timeOffset": { "value": 68.0, "varType": "double" },
+    "uuid": { "value": "80472515-c5eb-4a76-94ea-605bd7f9de5d", "varType": "string" }
+   },
+   "nodeId": "keyframe#15",
+   "nodeType": "keyframe"
+  },
+  {
+   "attributes": {
+    "data": {
+     "value": { "numValue": 1.0 },
+     "varType": "keyData"
+    },
+    "uuid": { "value": "75b04fe5-19cc-4f4a-a726-9c1ebd58e09e", "varType": "string" }
+   },
+   "nodeId": "keyframe#3",
+   "nodeType": "keyframe"
+  },
+  {
+   "attributes": {
+    "data": {
+     "value": { "numValue": -1.0 },
+     "varType": "keyData"
+    },
+    "timeOffset": { "value": 486.0, "varType": "double" },
+    "uuid": { "value": "cb2cc0b8-bded-4d18-b708-3b100c9ef8d3", "varType": "string" }
+   },
+   "nodeId": "keyframe#4",
+   "nodeType": "keyframe"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "subUINodes", "varType": "string" },
+    "uuid": { "value": "3cc6e13b-a137-4ea0-917d-9e1475756641", "varType": "string" }
+   },
+   "nodeId": "hiddenFolder#2",
+   "nodeType": "hiddenFolder"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "Grid", "varType": "string" },
+    "uuid": { "value": "851b45a3-3d61-44cd-bdd3-c9a8ee8eb31d", "varType": "string" }
+   },
+   "nodeId": "gridDistribution#1",
+   "nodeType": "gridDistribution"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "Fill 2", "varType": "string" },
+    "uuid": { "value": "d5dd06ab-38a1-4cb7-a6bc-f3e6c52eaab0", "varType": "string" }
+   },
+   "nodeId": "colorMaterial#2",
+   "nodeType": "colorMaterial"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "Stroke 2", "varType": "string" },
+    "uuid": { "value": "7dbf2e25-1127-4e7e-abe4-9e38ad024c70", "varType": "string" }
+   },
+   "nodeId": "strokeMaterial#2",
+   "nodeType": "strokeMaterial"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "Motion Blur 2", "varType": "string" },
+    "showInProjectWindow": { "value": false, "varType": "bool" },
+    "uuid": { "value": "b152e0a2-d922-443d-a790-dd2a3a66eba5", "varType": "string" }
+   },
+   "nodeId": "motionBlurFilter#2",
+   "nodeType": "motionBlurFilter"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "subUINodes", "varType": "string" },
+    "uuid": { "value": "f6a05737-7a84-4d39-8edd-4977bfd1ee00", "varType": "string" }
+   },
+   "nodeId": "hiddenFolder#9",
+   "nodeType": "hiddenFolder"
+  },
+  {
+   "attributes": {
+    "data": {
+     "value": { "numValue": -1.0 },
+     "varType": "keyData"
+    },
+    "timeOffset": { "value": 486.0, "varType": "double" },
+    "uuid": { "value": "8b43fcb7-1657-4b98-98f2-5c9e98978d8a", "varType": "string" }
+   },
+   "nodeId": "keyframe#10",
+   "nodeType": "keyframe"
+  },
+  {
+   "attributes": {
+    "filterQuality": { "value": 1, "varType": "enum" },
+    "fps": { "value": 60.0, "varType": "double" },
+    "inFps": { "value": 60.0, "varType": "double" },
+    "niceName": { "value": "london-map-example Image Shader", "varType": "string" },
+    "resolution": {
+     "value": { "x": 1920, "y": 1920 },
+     "varType": "int2"
+    },
+    "scaleMode": { "value": 2, "varType": "enum" },
+    "time": { "value": 169.0, "varType": "double" },
+    "uuid": { "value": "d648c15b-d92a-4ead-b465-a3aeefdac51d", "varType": "string" }
+   },
+   "nodeId": "imageShader#1",
+   "nodeType": "imageShader"
+  },
+  {
+   "attributes": {
+    "data": {
+     "value": { "numValue": 1.0 },
+     "varType": "keyData"
+    },
+    "uuid": { "value": "6a82490a-82a9-4254-8624-60accd004623", "varType": "string" }
+   },
+   "nodeId": "keyframe#9",
+   "nodeType": "keyframe"
+  },
+  {
+   "attributes": {
+    "data": {
+     "value": { "numValue": 1.0 },
+     "varType": "keyData"
+    },
+    "uuid": { "value": "0d9b509f-d708-44b9-a2e8-c3c59c5059b0", "varType": "string" }
+   },
+   "nodeId": "keyframe#16",
+   "nodeType": "keyframe"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "Motion Blur 3", "varType": "string" },
+    "showInProjectWindow": { "value": false, "varType": "bool" },
+    "uuid": { "value": "545ed139-f507-4e8a-bbae-f7e1fb2712a9", "varType": "string" }
+   },
+   "nodeId": "motionBlurFilter#3",
+   "nodeType": "motionBlurFilter"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "subUINodes", "varType": "string" },
+    "uuid": { "value": "5547bbec-4e44-4d5c-96bb-3c4cc6811888", "varType": "string" }
+   },
+   "nodeId": "hiddenFolder#7",
+   "nodeType": "hiddenFolder"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "Stroke 3", "varType": "string" },
+    "uuid": { "value": "44bd351a-6747-4415-8197-0cf691da2ec7", "varType": "string" }
+   },
+   "nodeId": "strokeMaterial#3",
+   "nodeType": "strokeMaterial"
+  },
+  {
+   "attributes": {
+    "materialColor": {
+     "value": { "a": 0, "b": 100, "g": 100, "r": 100 },
+     "varType": "color"
+    },
+    "niceName": { "value": "Fill 3", "varType": "string" },
+    "uuid": { "value": "21632626-fa86-4f8e-8db8-c5cded7395c5", "varType": "string" }
+   },
+   "nodeId": "colorMaterial#3",
+   "nodeType": "colorMaterial"
+  },
+  {
+   "attributes": {
+    "data": {
+     "value": { "numValue": -1.0 },
+     "varType": "keyData"
+    },
+    "timeOffset": { "value": 486.0, "varType": "double" },
+    "uuid": { "value": "5178172f-d184-4f15-bca4-7b68486d3fb3", "varType": "string" }
+   },
+   "nodeId": "keyframe#17",
+   "nodeType": "keyframe"
+  },
+  {
+   "attributes": {
+    "data": {
+     "value": { "numValue": -1.0 },
+     "varType": "keyData"
+    },
+    "timeOffset": { "value": 250.0, "varType": "double" },
+    "uuid": { "value": "6706b9f1-9df3-4ffc-a8cf-f6f569bba4d5", "varType": "string" }
+   },
+   "nodeId": "keyframe#8",
+   "nodeType": "keyframe"
+  },
+  {
+   "attributes": {
+    "data": {
+     "value": { "numValue": 1.0 },
+     "varType": "keyData"
+    },
+    "uuid": { "value": "fb92ddb8-8834-476b-962d-cf3e7efa466a", "varType": "string" }
+   },
+   "nodeId": "keyframe#7",
+   "nodeType": "keyframe"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "Stroke 5", "varType": "string" },
+    "uuid": { "value": "ef4ea82b-b5b7-4518-b785-57b30194abcf", "varType": "string" },
+    "width": { "value": 15.0, "varType": "double" }
+   },
+   "nodeId": "strokeMaterial#5",
+   "nodeType": "strokeMaterial"
+  },
+  {
+   "attributes": {
+    "graph": {
+     "list": [
+      {
+       "compound": {
+        "left": {
+         "value": { "x": -0.5, "y": -0.5 },
+         "varType": "double2"
+        },
+        "right": {
+         "value": { "x": 0.5, "y": 0.5 },
+         "varType": "double2"
+        }
+       }
+      },
+      {
+       "compound": {
+        "left": {
+         "value": { "x": -0.5, "y": -0.5 },
+         "varType": "double2"
+        },
+        "position": {
+         "value": { "x": 1.0, "y": 1.0 },
+         "varType": "double2"
+        },
+        "right": {
+         "value": { "x": 0.5, "y": 0.5 },
+         "varType": "double2"
+        }
+       }
+      }
+     ]
+    },
+    "max": { "value": 500.0, "varType": "double" },
+    "min": { "value": -500.0, "varType": "double" },
+    "niceName": { "value": "Number Range 3", "varType": "string" },
+    "sourceMax": { "value": -0.092, "varType": "double" },
+    "sourceMin": { "value": -0.108, "varType": "double" },
+    "uuid": { "value": "981d8052-5b4c-47fd-b28e-67322ec5db7b", "varType": "string" }
+   },
+   "nodeId": "numberRangeBase#3",
+   "nodeType": "numberRangeBase"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "Hidden Folder 3", "varType": "string" },
+    "uuid": { "value": "319b44de-a87e-4cfa-ad11-46cc55b1aacc", "varType": "string" }
+   },
+   "nodeId": "hiddenFolder#5",
+   "nodeType": "hiddenFolder"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "Fill 5", "varType": "string" },
+    "uuid": { "value": "5f8743c4-05d1-4b11-99f5-a01d5a2ac2d5", "varType": "string" }
+   },
+   "nodeId": "colorMaterial#5",
+   "nodeType": "colorMaterial"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "Sub-Mesh", "varType": "string" },
+    "uuid": { "value": "f1719e22-9fbe-4809-ae60-eaabe32dadf1", "varType": "string" }
+   },
+   "nodeId": "meshDistribution#1",
+   "nodeType": "meshDistribution"
+  },
+  {
+   "attributes": {
+    "array": {
+     "list": [
+      {
+       "value": { "x": -200.0, "y": 0.0 },
+       "varType": "double2"
+      },
+      {
+       "value": { "x": 0.0, "y": 200.0 },
+       "varType": "double2"
+      },
+      {
+       "value": { "x": 200.0, "y": 0.0 },
+       "varType": "double2"
+      },
+      {}
+     ]
+    },
+    "niceName": { "value": "Array", "varType": "string" },
+    "uuid": { "value": "fc4f6b71-8eb7-4303-bd6d-f8e4c9cad268", "varType": "string" }
+   },
+   "nodeId": "arrayDistribution#1",
+   "nodeType": "arrayDistribution"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "Hidden Folder 4", "varType": "string" },
+    "uuid": { "value": "0993f85d-2768-4b2c-9711-74dd3b3d78fa", "varType": "string" }
+   },
+   "nodeId": "hiddenFolder#6",
+   "nodeType": "hiddenFolder"
+  },
+  {
+   "attributes": {
+    "graph": {
+     "list": [
+      {
+       "compound": {
+        "left": {
+         "value": { "x": -0.5, "y": -0.5 },
+         "varType": "double2"
+        },
+        "right": {
+         "value": { "x": 0.5, "y": 0.5 },
+         "varType": "double2"
+        }
+       }
+      },
+      {
+       "compound": {
+        "left": {
+         "value": { "x": -0.5, "y": -0.5 },
+         "varType": "double2"
+        },
+        "position": {
+         "value": { "x": 1.0, "y": 1.0 },
+         "varType": "double2"
+        },
+        "right": {
+         "value": { "x": 0.5, "y": 0.5 },
+         "varType": "double2"
+        }
+       }
+      }
+     ]
+    },
+    "max": { "value": 500.0, "varType": "double" },
+    "min": { "value": -500.0, "varType": "double" },
+    "niceName": { "value": "Number Range 4", "varType": "string" },
+    "sourceMax": { "value": -0.092, "varType": "double" },
+    "sourceMin": { "value": -0.108, "varType": "double" },
+    "uuid": { "value": "14c6a286-c3cc-463a-a29c-d4c227f98fc4", "varType": "string" }
+   },
+   "nodeId": "numberRangeBase#4",
+   "nodeType": "numberRangeBase"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "Motion Blur 5", "varType": "string" },
+    "showInProjectWindow": { "value": false, "varType": "bool" },
+    "uuid": { "value": "0bfdecc4-5a52-483d-b412-95c0abf78d0f", "varType": "string" }
+   },
+   "nodeId": "motionBlurFilter#5",
+   "nodeType": "motionBlurFilter"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "subUINodes", "varType": "string" },
+    "uuid": { "value": "6aaccaee-637a-4769-9e7d-ca8ceab705cb", "varType": "string" }
+   },
+   "nodeId": "hiddenFolder#11",
+   "nodeType": "hiddenFolder"
+  },
+  {
+   "attributes": {
+    "fileName": { "value": "fake-15-min", "varType": "string" },
+    "filePath": { "value": "/Users/vaclav/prog/spacetime-map/actual-video", "varType": "string" },
+    "frameRange": {
+     "value": { "x": 0, "y": 479 },
+     "varType": "int2"
+    },
+    "niceName": { "value": "Composition 1 Render Item", "varType": "string" },
+    "targets": {
+     "list": [ {} ]
+    },
+    "uuid": { "value": "28775abf-51d1-4b6a-9541-f825b66bfec3", "varType": "string" }
+   },
+   "nodeId": "renderQueueItem#2",
+   "nodeType": "renderQueueItem"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "PNG", "varType": "string" },
+    "uuid": { "value": "a4abac88-eb18-4e65-a1f3-9b1223b1eff6", "varType": "string" }
+   },
+   "nodeId": "renderPNG#2",
+   "nodeType": "renderPNG"
+  },
+  {
+   "attributes": {
+    "graph": {
+     "list": [
+      {
+       "compound": {
+        "left": {
+         "value": { "x": -0.5, "y": -0.5 },
+         "varType": "double2"
+        },
+        "right": {
+         "value": { "x": 0.5, "y": 0.5 },
+         "varType": "double2"
+        }
+       }
+      },
+      {
+       "compound": {
+        "left": {
+         "value": { "x": -0.5, "y": -0.5 },
+         "varType": "double2"
+        },
+        "position": {
+         "value": { "x": 1.0, "y": 1.0 },
+         "varType": "double2"
+        },
+        "right": {
+         "value": { "x": 0.5, "y": 0.5 },
+         "varType": "double2"
+        }
+       }
+      }
+     ]
+    },
+    "max": { "value": 500.0, "varType": "double" },
+    "min": { "value": -500.0, "varType": "double" },
+    "niceName": { "value": "Number Range", "varType": "string" },
+    "sourceMax": { "value": 51.516, "varType": "double" },
+    "sourceMin": { "value": 51.506, "varType": "double" },
+    "uuid": { "value": "25bbfc5f-9fa3-461e-9fbb-84e11f57b3ca", "varType": "string" }
+   },
+   "nodeId": "numberRangeBase#1",
+   "nodeType": "numberRangeBase"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "Hidden Folder 2", "varType": "string" },
+    "uuid": { "value": "45212786-821d-4f0d-8af1-f8165bd169c7", "varType": "string" }
+   },
+   "nodeId": "hiddenFolder#4",
+   "nodeType": "hiddenFolder"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "space_lat", "varType": "string" },
+    "uuid": { "value": "a7eea498-5b22-43ba-821c-768137cb8390", "varType": "string" }
+   },
+   "nodeId": "spreadsheet#1",
+   "nodeType": "spreadsheet"
+  },
+  {
+   "attributes": {
+    "column": { "value": 1.0, "varType": "double" },
+    "niceName": { "value": "space_lng", "varType": "string" },
+    "uuid": { "value": "886c574b-e698-4b6d-a068-6330a0bc0f57", "varType": "string" }
+   },
+   "nodeId": "spreadsheet#2",
+   "nodeType": "spreadsheet"
+  },
+  {
+   "attributes": {
+    "data": {
+     "value": { "easing": 3, "numValue": 100.0 },
+     "varType": "keyData"
+    },
+    "timeOffset": { "value": 251.0, "varType": "double" },
+    "uuid": { "value": "69c410be-2c42-45f5-ba0f-98697f8585e9", "varType": "string" }
+   },
+   "nodeId": "keyframe#6",
+   "nodeType": "keyframe"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "subUINodes", "varType": "string" },
+    "uuid": { "value": "5bb446c1-bf18-4caf-9f96-4fb104f0db31", "varType": "string" }
+   },
+   "nodeId": "hiddenFolder#8",
+   "nodeType": "hiddenFolder"
+  },
+  {
+   "attributes": {
+    "data": {
+     "value": { "numValue": -1.0 },
+     "varType": "keyData"
+    },
+    "timeOffset": { "value": 250.0, "varType": "double" },
+    "uuid": { "value": "34a1c2f5-a660-44f0-9df5-7fa8a63e29db", "varType": "string" }
+   },
+   "nodeId": "keyframe#12",
+   "nodeType": "keyframe"
+  },
+  {
+   "attributes": {
+    "filterQuality": { "value": 1, "varType": "enum" },
+    "fps": { "value": 60.0, "varType": "double" },
+    "inFps": { "value": 60.0, "varType": "double" },
+    "niceName": { "value": "london-map-example-with-circle Image Shader", "varType": "string" },
+    "resolution": {
+     "value": { "x": 1920, "y": 1920 },
+     "varType": "int2"
+    },
+    "time": { "value": 169.0, "varType": "double" },
+    "uuid": { "value": "5d36bfcc-a03d-422b-867c-038bb41e2b44", "varType": "string" }
+   },
+   "nodeId": "imageShader#2",
+   "nodeType": "imageShader"
+  },
+  {
+   "attributes": {
+    "materialColor": {
+     "value": { "a": 0, "b": 100, "g": 100, "r": 100 },
+     "varType": "color"
+    },
+    "niceName": { "value": "Fill 4", "varType": "string" },
+    "uuid": { "value": "8eab09ff-8be0-4806-8925-442fe356430b", "varType": "string" }
+   },
+   "nodeId": "colorMaterial#4",
+   "nodeType": "colorMaterial"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "Motion Blur 4", "varType": "string" },
+    "showInProjectWindow": { "value": false, "varType": "bool" },
+    "uuid": { "value": "d185c2a4-b7c0-45f2-b10f-906f11eac089", "varType": "string" }
+   },
+   "nodeId": "motionBlurFilter#4",
+   "nodeType": "motionBlurFilter"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "Stroke 4", "varType": "string" },
+    "uuid": { "value": "b7cdf1b3-45ce-483f-ab18-773b959af0ff", "varType": "string" }
+   },
+   "nodeId": "strokeMaterial#4",
+   "nodeType": "strokeMaterial"
+  },
+  {
+   "attributes": {
+    "data": {
+     "value": { "numValue": 1.0 },
+     "varType": "keyData"
+    },
+    "uuid": { "value": "103668c4-422e-4541-9421-db0ac13205a7", "varType": "string" }
+   },
+   "nodeId": "keyframe#11",
+   "nodeType": "keyframe"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "london-map-example-with-pin", "varType": "string" },
+    "uuid": { "value": "642e3056-4483-4ccb-9733-2c44ef9dba5d", "varType": "string" }
+   },
+   "nodeId": "asset#5",
+   "nodeType": "asset"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "spacetime_circle", "varType": "string" },
+    "uuid": { "value": "23805aed-2136-4758-9c8b-fb9afe62316d", "varType": "string" }
+   },
+   "nodeId": "asset#2",
+   "nodeType": "asset"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "london-map-example-with-circle", "varType": "string" },
+    "uuid": { "value": "1725e17b-9024-49f1-8075-24c6948ed8e4", "varType": "string" }
+   },
+   "nodeId": "asset#4",
+   "nodeType": "asset"
+  },
+  {
+   "attributes": {
+    "niceName": { "value": "london-map-example-with-pin", "varType": "string" },
+    "uuid": { "value": "9c05f68f-e959-4ef6-a224-bf9be8ec4509", "varType": "string" }
+   },
+   "nodeId": "asset#3",
+   "nodeType": "asset"
+  },
+  {
+   "attributes": {
+    "uuid": { "value": "f729449f-c4a8-4f92-8992-041369a4624e", "varType": "string" }
+   },
+   "nodeId": "asset#1",
+   "nodeType": "asset"
+  }
+ ],
+ "other": {
+  "viewport": { "backgroundMode": 0, "rulers": {} }
+ },
+ "resourceType": "cavalry.scenefile",
+ "version": "1.0.39"
+}
