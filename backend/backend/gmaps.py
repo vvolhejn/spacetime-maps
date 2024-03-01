@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 class TravelMode(StrEnum):
     DRIVE = "DRIVE"
     TRANSIT = "TRANSIT"
+    WALK = "WALK"
 
 
 def get_api_key():

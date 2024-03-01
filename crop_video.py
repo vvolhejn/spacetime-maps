@@ -16,7 +16,13 @@ if __name__ == "__main__":
         "--align",
         help="How to align the crop",
         choices=["left", "center", "right"],
-        default="right",
+        default="center",
+    )
+    parser.add_argument(
+        "--n-loops",
+        help="How many times to loop the video (default: 1)",
+        type=int,
+        default=1,
     )
     # parser.add_argument("loop", help="loop count")
     args = parser.parse_args()
@@ -31,8 +37,11 @@ if __name__ == "__main__":
     }[args.align]
 
     subprocess.run(
-        [
-            "ffmpeg",
+        ["ffmpeg"]
+        # stream_loop means "repeat this many times in addition to the original"
+        # but our semantics are "repeat this many times total"
+        + (["-stream_loop", f"{args.n_loops - 1}"] if args.n_loops > 1 else [])
+        + [
             "-i",
             args.input,
             "-vf",
