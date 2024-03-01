@@ -5,6 +5,9 @@ export type ViewSettings = {
   showGridPoints: boolean;
   showGrid: boolean;
   showGridNumbers: boolean;
+  // Using normalized distance
+  showSpringsThreshold: number;
+  showSpringsByDistance: boolean;
 };
 
 export const toggleSetting = (
@@ -24,6 +27,7 @@ export const updateViewSettings = (
     KeyD: "showGridPoints",
     KeyF: "showGrid",
     KeyH: "focusOnHover",
+    KeyQ: "showSpringsByDistance",
     KeyW: "showSpringArrows",
   };
   const setting = keyCodeToSetting[keyCode];

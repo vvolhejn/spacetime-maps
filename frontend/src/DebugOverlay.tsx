@@ -67,6 +67,22 @@ const getForcesForEntry = (
     });
 };
 
+const simpleHash = (data: string): number => {
+  let hash = 0;
+  if (data.length === 0) return hash;
+  for (let i = 0; i < data.length; i++) {
+    const char = data.charCodeAt(i);
+    hash = (hash << 5) - hash + char;
+    hash = hash & hash; // Convert to 32bit integer
+  }
+  return hash;
+};
+
+const hashPair = (num1: number, num2: number): number => {
+  const pairString = `${num1},${num2}`;
+  return simpleHash(pairString);
+};
+
 export const DebugOverlay = ({
   vertexPositions,
   grid,
@@ -82,7 +98,7 @@ export const DebugOverlay = ({
   normalizedHoveredPoint: Point | null;
   mapSizePx: number;
 }) => {
-  const drawPoints = useCallback(
+  const drawGridPoints = useCallback(
     (g: PIXI.Graphics) => {
       g.clear();
 
@@ -125,7 +141,7 @@ export const DebugOverlay = ({
     [vertexPositions, grid, mapSizePx]
   );
 
-  const drawSprings = useCallback(
+  const drawSpringArrows = useCallback(
     (g: PIXI.Graphics) => {
       if (!normalizedHoveredPoint) return;
       g.clear();
@@ -171,6 +187,30 @@ export const DebugOverlay = ({
     [vertexPositions, normalizedHoveredPoint, springs, mapSizePx]
   );
 
+  const drawSpringsByDistance = useCallback(
+    (g: PIXI.Graphics) => {
+      g.clear();
+      springs.forEach((spring) => {
+        const from = vertexPositions[spring.from];
+        const to = vertexPositions[spring.to];
+        if (from.pinned || to.pinned) return;
+
+        const length = Math.hypot(from.x - to.x, from.y - to.y);
+        if (length > viewSettings.showSpringsThreshold) return;
+
+        // Only show a subset of the springs, otherwise there'd be too many.
+        if (hashPair(spring.from, spring.to) % 32 !== 0) {
+          return;
+        }
+
+        g.lineStyle(2, 0x000000, 0.1);
+        g.moveTo(from.x * mapSizePx, from.y * mapSizePx);
+        g.lineTo(to.x * mapSizePx, to.y * mapSizePx);
+      });
+    },
+    [vertexPositions, springs, viewSettings, mapSizePx]
+  );
+
   const numbers = vertexPositions
     // The second half of the mesh are the "pinned" points
     .slice(0, vertexPositions.length / 2)
@@ -185,10 +225,13 @@ export const DebugOverlay = ({
 
   return (
     <>
-      {viewSettings.showSpringArrows && <Graphics draw={drawSprings} />}
+      {viewSettings.showSpringArrows && <Graphics draw={drawSpringArrows} />}
       {viewSettings.showGridNumbers && numbers}
-      {viewSettings.showGridPoints && <Graphics draw={drawPoints} />}
+      {viewSettings.showGridPoints && <Graphics draw={drawGridPoints} />}
       {viewSettings.showGrid && <Graphics draw={drawGrid} />}
+      {viewSettings.showSpringsByDistance && (
+        <Graphics draw={drawSpringsByDistance} />
+      )}
     </>
   );
 };

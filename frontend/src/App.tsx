@@ -29,6 +29,20 @@ const getTimenessForAnimation = (totalTime: number) => {
   );
 };
 
+const triangleWave = (t: number, period: number) => {
+  // Calculate the current phase of the wave, normalized to the range [0, 1]
+  const phase = (t % period) / period;
+
+  // Calculate the value of the triangle wave based on the phase
+  // The wave increases linearly from 0 to 1 in the first half of the period
+  // and decreases linearly from 1 to 0 in the second half
+  if (phase < 0.5) {
+    return 2 * phase; // Linearly increase
+  } else {
+    return 2 * (1 - phase); // Linearly decrease
+  }
+};
+
 const App = () => {
   const [viewSettings, setViewSettings] = useLocalStorage<ViewSettings>(
     "SpacetimeMap.viewSettings",
@@ -39,6 +53,8 @@ const App = () => {
       showGridPoints: false,
       showGrid: false,
       showGridNumbers: false,
+      showSpringsByDistance: false,
+      showSpringsThreshold: 0,
     }
   );
   const [isPressed, setIsPressed] = useState(false);
@@ -73,6 +89,11 @@ const App = () => {
 
   const onTick = (deltaSeconds: number) => {
     setTotalTime(totalTime + deltaSeconds);
+    if (viewSettings.showSpringsByDistance)
+      setViewSettings({
+        ...viewSettings,
+        showSpringsThreshold: triangleWave(totalTime, 20),
+      });
     if (viewSettings.animate) {
       setTimeness(getTimenessForAnimation(totalTime));
     } else {
