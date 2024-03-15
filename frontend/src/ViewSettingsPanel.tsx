@@ -41,6 +41,11 @@ export const ViewSettingsPanel = ({
   };
 
   const makeSettingsButton = (setting: keyof ViewSettings, text: string) => {
+    if (setting === "showSpringsThreshold") {
+      throw new Error(
+        "Can't turn showSpringsThreshold into a button because it's a float"
+      );
+    }
     return (
       <SettingsButton
         active={viewSettings[setting]}
