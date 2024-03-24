@@ -68,6 +68,12 @@ export const CITIES: { [key: string]: CityMetadata } = {
   //   displayName: "Prague - Drive",
   //   maxTimeness: 0.15,
   // },
+  // This is a reproduction of the early versions of the Zurich map.
+  // It was used in the YouTube video.
+  // zurich_dev: {
+  //   displayName: "Zurich (dev)",
+  //   maxTimeness: 0.15,
+  // },
 };
 
 export type CityName = keyof typeof CITIES;
