@@ -29,3 +29,9 @@ export const useMapSizePx = () => {
   const { width, height } = useWindowDimensions();
   return isMobile ? Math.max(width, height) : Math.min(width, height);
 };
+
+export const isTouchscreen = () => {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent
+  );
+};

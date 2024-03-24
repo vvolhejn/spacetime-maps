@@ -1,13 +1,8 @@
 import { ReactNode } from "react";
+import { isTouchscreen } from "./useIsMobile";
 
 const B = ({ children }: { children: ReactNode }) => {
   return <span className="font-bold">{children}</span>;
-};
-
-const isMobileDevice = () => {
-  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
-    navigator.userAgent
-  );
 };
 
 export const ExplanationModal = () => {
@@ -21,7 +16,7 @@ export const ExplanationModal = () => {
           looks close together is actually fast to travel between.
         </p>
         <p>
-          <B>{isMobileDevice() ? "Touch" : "Click"} and hold</B> to switch to
+          <B>{isTouchscreen() ? "Touch" : "Click"} and hold</B> to switch to
           time mode.
         </p>
       </div>
