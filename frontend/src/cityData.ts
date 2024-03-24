@@ -12,6 +12,16 @@ export type City = CityMetadata & {
 };
 
 export const CITIES: { [key: string]: CityMetadata } = {
+  newyork: {
+    displayName: "New York City",
+    maxTimeness: 0.15,
+    mode: "car",
+  },
+  newyork_transit: {
+    displayName: "New York City",
+    maxTimeness: 0.15,
+    mode: "public transport",
+  },
   prague: {
     displayName: "Prague",
     maxTimeness: 0.05,
@@ -36,16 +46,6 @@ export const CITIES: { [key: string]: CityMetadata } = {
     displayName: "London",
     maxTimeness: 0.15,
     mode: "car",
-  },
-  newyork: {
-    displayName: "New York City",
-    maxTimeness: 0.15,
-    mode: "car",
-  },
-  newyork_transit: {
-    displayName: "New York City",
-    maxTimeness: 0.15,
-    mode: "public transport",
   },
   losangeles: {
     displayName: "Los Angeles",
