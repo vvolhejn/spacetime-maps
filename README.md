@@ -65,3 +65,5 @@ I'd be happy to add more maps.
 I made the favicon based on [this](https://www.freepik.com/icon/map-pin_9356230) icon from Freepik user Anggara.
 I then used a modified version of [this CodePen](https://codepen.io/V-clav-Volhejn/pen/KKbmKVb?editors=1010)
 that I had used for a bug report before.
+
+"Click and hold" icon: https://www.iconpacks.net/free-icon/click-2387.html

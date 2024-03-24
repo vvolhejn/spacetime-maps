@@ -1,9 +1,9 @@
-import { ReactNode, forwardRef, useEffect, useState } from "react";
+import { forwardRef, useEffect, useState } from "react";
 import { HamburgerMenuIcon } from "./HamburgerMenuIcon";
 import { CITIES } from "./cityData";
 import { ViewSettingsPanel } from "./ViewSettingsPanel";
 import { ViewSettings } from "./viewSettings";
-import { isTouchscreen } from "./useIsMobile";
+import { ExplanationText } from "./ExplanationText";
 
 export const DropdownItem = ({
   text,
@@ -104,10 +104,6 @@ export const CitySelector = ({
   );
 };
 
-const B = ({ children }: { children: ReactNode }) => {
-  return <span className="font-bold">{children}</span>;
-};
-
 export type MenuProps = {
   timeness: number;
   setTimeness: (timeness: number) => void;
@@ -175,15 +171,7 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
         <div
           className={"text-white p-4 text-base max-w-md gap-y-2 flex flex-col"}
         >
-          <p>
-            <B>{isTouchscreen() ? "Touch" : "Click"} and hold</B> to switch to
-            time mode.
-          </p>
-          <p>
-            This is a map that can show <B>time</B> instead of space. Points
-            that are close but take a long time to travel between get pushed
-            away from each other, and vice versa.
-          </p>
+          <ExplanationText />
           <p>
             <a
               href="https://www.youtube.com/watch?v=rC2VQ-oyDG0"
