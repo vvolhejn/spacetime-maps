@@ -47,6 +47,21 @@ export const CITIES: { [key: string]: CityMetadata } = {
     maxTimeness: 0.15,
     mode: "car",
   },
+  london_transit: {
+    displayName: "London",
+    maxTimeness: 0.15,
+    mode: "public transport",
+  },
+  london_detail: {
+    displayName: "London – detail",
+    maxTimeness: 0.03,
+    mode: "car",
+  },
+  london_detail_pedestrian: {
+    displayName: "London – detail",
+    maxTimeness: 0.3,
+    mode: "pedestrian",
+  },
   losangeles: {
     displayName: "Los Angeles",
     maxTimeness: 0.3,
@@ -66,11 +81,6 @@ export const CITIES: { [key: string]: CityMetadata } = {
     displayName: "La Paz",
     maxTimeness: 0.15,
     mode: "car",
-  },
-  london_detail_pedestrian: {
-    displayName: "London – detail",
-    maxTimeness: 0.3,
-    mode: "pedestrian",
   },
   // These are testing maps with low grid size.
   // "prague_debug_transit": {
