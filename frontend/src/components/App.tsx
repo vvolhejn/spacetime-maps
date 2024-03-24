@@ -2,13 +2,13 @@ import { Container, Stage, Text } from "@pixi/react";
 import { SpacetimeMap } from "./SpacetimeMap";
 import { useEffect, useRef, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
-import { Point } from "./mesh";
+import { Point } from "../mesh";
 import { Menu } from "./Menu";
-import { City, DEFAULT_CITY, fetchCity } from "./cityData";
-import { useMapSizePx } from "./useIsMobile";
-import { useSearchParamsState } from "./useSearchParamsState";
+import { City, DEFAULT_CITY, fetchCity } from "../cityData";
+import { useMapSizePx } from "../useIsMobile";
+import { useSearchParamsState } from "../useSearchParamsState";
 import { ExplanationModal } from "./ExplanationModal";
-import { ViewSettings, updateViewSettings } from "./viewSettings";
+import { ViewSettings, updateViewSettings } from "../viewSettings";
 
 const clamp = (num: number, min: number, max: number) => {
   return Math.min(Math.max(num, min), max);

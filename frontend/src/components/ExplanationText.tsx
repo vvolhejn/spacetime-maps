@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { isTouchscreen } from "./useIsMobile";
+import { isTouchscreen } from "../useIsMobile";
 
 const B = ({ children }: { children: ReactNode }) => {
   return <span className="font-bold">{children}</span>;

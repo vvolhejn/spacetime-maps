@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { City } from "./cityData";
+import { City } from "../cityData";
 
 /**
  * A component that automatically animates the timeness when the page is loaded

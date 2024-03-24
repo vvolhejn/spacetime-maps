@@ -1,15 +1,15 @@
 import { Container, useTick } from "@pixi/react";
 
 import { useEffect, useMemo, useState } from "react";
-import { Point, VertexPosition, getMesh } from "./mesh";
+import { Point, VertexPosition, getMesh } from "../mesh";
 import { DebugOverlay } from "./DebugOverlay";
-import { Spring, routeMatrixToSprings, stepSprings } from "./springs";
+import { Spring, routeMatrixToSprings, stepSprings } from "../springs";
 import MeshTriangle from "./MeshTriangle";
 
-import { GridData } from "./gridData";
-import { City } from "./cityData";
-import { useMapSizePx } from "./useIsMobile";
-import { ViewSettings } from "./viewSettings";
+import { GridData } from "../gridData";
+import { City } from "../cityData";
+import { useMapSizePx } from "../useIsMobile";
+import { ViewSettings } from "../viewSettings";
 
 /**
  * Create a mesh of triangles from individual <SimpleMesh>es.

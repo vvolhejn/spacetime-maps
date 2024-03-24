@@ -1,4 +1,4 @@
-import touchAndHold from "./assets/touch-and-hold.svg";
+import touchAndHold from "../assets/touch-and-hold.svg";
 import { ExplanationText } from "./ExplanationText";
 
 export const ExplanationModal = () => {

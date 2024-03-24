@@ -1,8 +1,8 @@
 import { forwardRef, useEffect, useState } from "react";
 import { HamburgerMenuIcon } from "./HamburgerMenuIcon";
-import { CITIES } from "./cityData";
+import { CITIES } from "../cityData";
 import { ViewSettingsPanel } from "./ViewSettingsPanel";
-import { ViewSettings } from "./viewSettings";
+import { ViewSettings } from "../viewSettings";
 import { ExplanationText } from "./ExplanationText";
 
 export const DropdownItem = ({

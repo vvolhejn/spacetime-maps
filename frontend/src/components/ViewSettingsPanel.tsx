@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { ViewSettings, toggleSetting } from "./viewSettings";
+import { ViewSettings, toggleSetting } from "../viewSettings";
 
 const SettingsButton = ({
   children,

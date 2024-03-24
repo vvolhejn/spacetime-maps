@@ -1,9 +1,9 @@
 import * as PIXI from "pixi.js";
 import { useCallback } from "react";
 import { Graphics, Text } from "@pixi/react";
-import { GridEntry, VertexPosition, Point } from "./mesh";
-import { Spring, getForce } from "./springs";
-import { ViewSettings } from "./viewSettings";
+import { GridEntry, VertexPosition, Point } from "../mesh";
+import { Spring, getForce } from "../springs";
+import { ViewSettings } from "../viewSettings";
 
 const getClosestMeshPoint = (
   point: Point,
