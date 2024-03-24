@@ -104,7 +104,7 @@ export const DebugOverlay = ({
 
       vertexPositions.forEach((point) => {
         g.lineStyle(0);
-        g.beginFill(point.pinned ? 0xffff0b : 0xff000b, 0.5);
+        g.beginFill(point.pinned ? 0x555555 : 0xff000b, 0.5);
         g.drawCircle(
           point.x * mapSizePx,
           point.y * mapSizePx,
