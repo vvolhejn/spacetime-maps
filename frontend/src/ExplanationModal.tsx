@@ -4,6 +4,12 @@ const B = ({ children }: { children: ReactNode }) => {
   return <span className="font-bold">{children}</span>;
 };
 
+const isMobileDevice = () => {
+  return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+    navigator.userAgent
+  );
+};
+
 export const ExplanationModal = () => {
   return (
     <div className="absolute flex justify-center items-center w-screen lg:w-full h-full">
@@ -15,7 +21,8 @@ export const ExplanationModal = () => {
           looks close together is actually fast to travel between.
         </p>
         <p>
-          <B>Touch/click and hold</B> to switch to time mode.
+          <B>{isMobileDevice() ? "Touch" : "Click"} and hold</B> to switch to
+          time mode.
         </p>
       </div>
     </div>
