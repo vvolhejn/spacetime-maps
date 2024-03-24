@@ -90,7 +90,7 @@ export const CitySelector = ({
         >
           {Object.entries(CITIES).map(([curCityName, curCity]) => (
             <DropdownItem
-              text={curCity.displayName}
+              text={`${curCity.displayName} (${curCity.mode})`}
               onClick={() => setCityName(curCityName)}
               key={curCityName}
               selected={cityName === curCityName}

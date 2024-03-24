@@ -3,6 +3,7 @@ import { GridData } from "./gridData";
 export type CityMetadata = {
   displayName: string;
   maxTimeness: number;
+  mode: "car" | "public transport" | "pedestrian";
 };
 
 export type City = CityMetadata & {
@@ -12,52 +13,64 @@ export type City = CityMetadata & {
 
 export const CITIES: { [key: string]: CityMetadata } = {
   prague: {
-    displayName: "Prague (by car)",
+    displayName: "Prague",
     maxTimeness: 0.05,
+    mode: "car",
   },
   prague_transit: {
-    displayName: "Prague (by public transport)",
+    displayName: "Prague",
     maxTimeness: 0.2,
+    mode: "public transport",
   },
   zurich: {
     displayName: "Zürich",
     maxTimeness: 0.1,
+    mode: "car",
   },
   zurich_transit: {
-    displayName: "Zürich (by public transport)",
+    displayName: "Zürich",
     maxTimeness: 0.2,
+    mode: "public transport",
   },
   london: {
     displayName: "London",
     maxTimeness: 0.15,
+    mode: "car",
   },
   newyork: {
-    displayName: "New York",
+    displayName: "New York City",
     maxTimeness: 0.15,
+    mode: "car",
   },
   newyork_transit: {
-    displayName: "New York (by public transport)",
+    displayName: "New York City",
     maxTimeness: 0.15,
+    mode: "public transport",
   },
   losangeles: {
     displayName: "Los Angeles",
     maxTimeness: 0.3,
+    mode: "car",
   },
   cairo: {
     displayName: "Cairo",
     maxTimeness: 0.15,
+    mode: "car",
   },
   hongkong: {
     displayName: "Hong Kong",
     maxTimeness: 0.08,
+    mode: "car",
   },
   lapaz: {
     displayName: "La Paz",
     maxTimeness: 0.15,
+    mode: "car",
   },
   london_detail_pedestrian: {
-    displayName: "London (detail, pedestrian)",
+    displayName: "London – detail",
     maxTimeness: 0.3,
+    mode: "pedestrian",
   },
   // These are testing maps with low grid size.
   // "prague_debug_transit": {
