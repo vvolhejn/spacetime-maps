@@ -177,10 +177,10 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
           </p>
           <p>
             <a
-              href="https://vvolhejn.github.io/2023/11/25/spacetime-map.html"
+              href="https://www.youtube.com/watch?v=rC2VQ-oyDG0"
               className="underline"
             >
-              About
+              About (video)
             </a>
           </p>
           <ViewSettingsPanel
