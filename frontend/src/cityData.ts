@@ -82,6 +82,11 @@ export const CITIES: { [key: string]: CityMetadata } = {
     maxTimeness: 0.15,
     mode: "car",
   },
+  seattle_transit_rushhour: {
+    displayName: "Seattle",
+    maxTimeness: 0.15,
+    mode: "public transport",
+  },
   // These are testing maps with low grid size.
   // "prague_debug_transit": {
   //   displayName: "Prague - Transit",
