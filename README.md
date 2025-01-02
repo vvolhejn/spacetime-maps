@@ -1,7 +1,7 @@
 # Spacetime maps
 
 Maps where distance represents travel time instead of physical distance.
-Try them [here](https://spacetime-maps.vercel.app/).
+Try them [here](https://maps.vvolhejn.com).
 **For a detailed explanation of how these work, [see the YouTube video](https://www.youtube.com/watch?v=rC2VQ-oyDG0).**
 
 https://github.com/vvolhejn/spacetime-map/assets/8401624/43384b01-68a9-426f-bcf6-a1828d2073d4
@@ -11,7 +11,7 @@ https://github.com/vvolhejn/spacetime-map/assets/8401624/43384b01-68a9-426f-bcf6
 - `backend/` - Python backend. It uses the Google Maps API to create grids of points along with travel time information.
 - `frontend/src/assets/` - contains the static map images and the grid JSONs created in `backend/`
 - `frontend/` - TypeScript + React frontend. It takes the data from the backend and actually bends and shows the maps.
-  The newest frontend is automatically deployed [here](https://spacetime-maps.vercel.app/) using [Vercel](https://vercel.com/).
+  The newest frontend is automatically deployed [here](https://maps.vvolhejn.com) using [Vercel](https://vercel.com/).
 - `cavalry/` - just some personal backups of Cavalry animation files that I used in [the YouTube video](https://www.youtube.com/watch?v=rC2VQ-oyDG0).
   Safe to ignore.
 
