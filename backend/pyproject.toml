@@ -13,6 +13,8 @@ python-dotenv = "^1.0.0"
 tqdm = "^4.66.1"
 plotly = "^5.16.1"
 pydantic = "^2.5.0"
+timezonefinder = "^6.5.7"
+pytz = "^2024.2"
 
 
 [tool.poetry.group.dev.dependencies]
