@@ -8,8 +8,9 @@ import MeshTriangle from "./MeshTriangle";
 
 import { GridData } from "../gridData";
 import { City } from "../cityData";
-import { useMapSizePx } from "../useIsMobile";
 import { ViewSettings } from "../viewSettings";
+
+export const MAP_SIZE_PX = 1280;
 
 /**
  * Create a mesh of triangles from individual <SimpleMesh>es.
@@ -71,15 +72,6 @@ export const SpacetimeMap = ({
   city: City;
   onTick: (deltaSeconds: number) => void;
 }) => {
-  const mapSizePx = useMapSizePx();
-
-  const normalizedHoveredPoint = hoveredPoint
-    ? {
-        x: hoveredPoint.x / mapSizePx,
-        y: hoveredPoint.y / mapSizePx,
-      }
-    : null;
-
   const getConstantGridData = () => {
     const gridData = city.data;
 
@@ -148,7 +140,7 @@ export const SpacetimeMap = ({
       vertexPositions,
       springs,
       deltaSeconds,
-      viewSettings.focusOnHover ? normalizedHoveredPoint : null,
+      viewSettings.focusOnHover ? hoveredPoint : null,
       // Different cities have different maxTimeness because the stretch
       // effect is less or more extreme depending on the data.
       timeness,
@@ -162,7 +154,7 @@ export const SpacetimeMap = ({
     vertexPositions,
     triangles,
     flatUvs,
-    mapSizePx,
+    MAP_SIZE_PX,
     city
   );
 
@@ -175,8 +167,8 @@ export const SpacetimeMap = ({
           grid={grid}
           springs={springs}
           viewSettings={viewSettings}
-          normalizedHoveredPoint={normalizedHoveredPoint}
-          mapSizePx={mapSizePx}
+          hoveredPoint={hoveredPoint}
+          mapSizePx={MAP_SIZE_PX}
         />
       </Container>
     </>

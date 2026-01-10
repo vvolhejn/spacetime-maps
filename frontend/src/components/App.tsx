@@ -1,11 +1,10 @@
 import { Container, Stage, Text } from "@pixi/react";
-import { SpacetimeMap } from "./SpacetimeMap";
+import { MAP_SIZE_PX, SpacetimeMap } from "./SpacetimeMap";
 import { useEffect, useRef, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import { Point } from "../mesh";
 import { Menu } from "./Menu";
 import { City, DEFAULT_CITY, fetchCity } from "../cityData";
-import { useMapSizePx } from "../useIsMobile";
 import { useSearchParamsState } from "../useSearchParamsState";
 import { ExplanationModal } from "./ExplanationModal";
 import { ViewSettings, updateViewSettings } from "../viewSettings";
@@ -64,8 +63,6 @@ const App = () => {
   const [city, setCity] = useState<City | null>(null);
   const [totalTime, setTotalTime] = useState(0);
   const [showExplantion, setShowExplantion] = useState(true);
-
-  const mapSizePx = useMapSizePx();
 
   const [isMenuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -127,8 +124,24 @@ const App = () => {
     // The setCityName dependency is missing, but I get an infinite loop if I add it.
   }, [cityName]);
 
+  const updateHoveredPoint = (
+    target: HTMLDivElement,
+    clientX: number,
+    clientY: number
+  ) => {
+    const rect = target.getBoundingClientRect();
+    // Convert to relative coordinates. Assumes the canvas is square and vertically centered.
+    setHoveredPoint({
+      x:
+        (clientX - rect.left + Math.max(0, rect.height - rect.width) / 2) /
+        rect.height,
+      y: (clientY - rect.top) / rect.height,
+    });
+  };
+
   return (
     <div>
+      {showExplantion && <ExplanationModal />}
       <div
         tabIndex={0}
         onKeyDown={(e) => {
@@ -141,49 +154,52 @@ const App = () => {
           setIsPressed(false);
         }}
         onPointerMove={(e) => {
-          setHoveredPoint({
-            x: e.clientX,
-            y: e.clientY,
-          });
+          updateHoveredPoint(
+            e.currentTarget as HTMLDivElement,
+            e.clientX,
+            e.clientY
+          );
         }}
         // I'm not sure why, but without these onTouch events, the hovered point doesn't
         // update properly on mobile, or only updates irregularly.
         onTouchStart={(e) => {
-          setHoveredPoint({
-            x: e.touches[0].clientX,
-            y: e.touches[0].clientY,
-          });
+          updateHoveredPoint(
+            e.currentTarget as HTMLDivElement,
+            e.touches[0].clientX,
+            e.touches[0].clientY
+          );
         }}
         onTouchMove={(e) => {
-          setHoveredPoint({
-            x: e.touches[0].clientX,
-            y: e.touches[0].clientY,
-          });
+          updateHoveredPoint(
+            e.currentTarget as HTMLDivElement,
+            e.touches[0].clientX,
+            e.touches[0].clientY
+          );
         }}
         onTouchEnd={(e) => {
           setHoveredPoint(null);
           setIsPressed(false);
         }}
-        className="absolute -z-10 select-none"
+        className="absolute -z-10 select-none touch-none flex justify-center md:justify-start w-screen h-screen overflow-hidden"
       >
-        {showExplantion && <ExplanationModal />}
         {/* The <Stage> wrapper must live outside of the SpacetimeMap component
             for useTick() to work. */}
         <Stage
-          width={mapSizePx}
-          height={mapSizePx}
+          width={MAP_SIZE_PX}
+          height={MAP_SIZE_PX}
           options={{
-            autoDensity: true,
+            autoDensity: false,
             backgroundColor: 0xeef1f5,
           }}
+          className="h-full aspect-square"
         >
           {city === null && (
             <Container>
               <Text
                 text="Loading..."
                 anchor={0.5}
-                x={mapSizePx / 2}
-                y={mapSizePx / 2}
+                x={MAP_SIZE_PX / 2}
+                y={MAP_SIZE_PX / 2}
               />
             </Container>
           )}

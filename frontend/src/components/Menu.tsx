@@ -191,7 +191,7 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
           />
           <p>
             By{" "}
-            <a href="https://vvolhejn.github.io/" className="underline">
+            <a href="https://vvolhejn.com/" className="underline">
               Václav Volhejn
             </a>
             . Map data ©Google

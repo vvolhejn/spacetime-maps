@@ -149,7 +149,7 @@ export const stepSprings = (
   vertexPositions: VertexPosition[],
   springs: Spring[],
   deltaSeconds: number,
-  normalizedHoveredPoint: Point | null,
+  hoveredPoint: Point | null,
   timeness: number,
   timenessScale: number
 ): [VertexPosition[], number] => {
@@ -178,10 +178,10 @@ export const stepSprings = (
         ? interpolate(5, 1.5, timeness)
         : timeness * timenessScale);
 
-    if (normalizedHoveredPoint !== null) {
+    if (hoveredPoint !== null) {
       const distanceFromHover = Math.hypot(
-        (from.x + to.x) / 2 - normalizedHoveredPoint.x,
-        (from.y + to.y) / 2 - normalizedHoveredPoint.y
+        (from.x + to.x) / 2 - hoveredPoint.x,
+        (from.y + to.y) / 2 - hoveredPoint.y
       );
       const coef = Math.min(10, 1 / (distanceFromHover + 0.01));
       force *= coef;

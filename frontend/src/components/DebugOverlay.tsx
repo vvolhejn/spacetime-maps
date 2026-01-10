@@ -88,14 +88,14 @@ export const DebugOverlay = ({
   grid,
   springs,
   viewSettings,
-  normalizedHoveredPoint,
+  hoveredPoint,
   mapSizePx,
 }: {
   vertexPositions: VertexPosition[];
   grid: GridEntry[][];
   springs: Spring[];
   viewSettings: ViewSettings;
-  normalizedHoveredPoint: Point | null;
+  hoveredPoint: Point | null;
   mapSizePx: number;
 }) => {
   const drawGridPoints = useCallback(
@@ -143,10 +143,10 @@ export const DebugOverlay = ({
 
   const drawSpringArrows = useCallback(
     (g: PIXI.Graphics) => {
-      if (!normalizedHoveredPoint) return;
+      if (!hoveredPoint) return;
       g.clear();
       const closestIndex = getClosestMeshPoint(
-        normalizedHoveredPoint,
+        hoveredPoint,
         vertexPositions
       );
       const closestMeshPoint = vertexPositions[closestIndex];
@@ -184,7 +184,7 @@ export const DebugOverlay = ({
         );
       });
     },
-    [vertexPositions, normalizedHoveredPoint, springs, mapSizePx]
+    [vertexPositions, hoveredPoint, springs, mapSizePx]
   );
 
   const drawSpringsByDistance = useCallback(

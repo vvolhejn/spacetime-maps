@@ -22,6 +22,16 @@ export const CITIES: { [key: string]: CityMetadata } = {
     maxTimeness: 0.15,
     mode: "public transport",
   },
+  paris_car: {
+    displayName: "Paris",
+    maxTimeness: 0.1,
+    mode: "car",
+  },
+  paris_transit: {
+    displayName: "Paris",
+    maxTimeness: 0.1,
+    mode: "public transport",
+  },
   prague: {
     displayName: "Prague",
     maxTimeness: 0.05,
