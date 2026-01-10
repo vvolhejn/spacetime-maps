@@ -66,6 +66,7 @@ const App = () => {
 
   const [isMenuOpen, setMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   const handleClickOutside = (event: MouseEvent) => {
     if (
@@ -82,6 +83,16 @@ const App = () => {
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
+  }, []);
+
+  useEffect(() => {
+    if (scrollContainerRef.current) {
+      const container = scrollContainerRef.current;
+      container.scrollLeft =
+        (container.scrollWidth - container.clientWidth) / 2;
+      container.scrollTop =
+        (container.scrollHeight - container.clientHeight) / 2;
+    }
   }, []);
 
   const onTick = (deltaSeconds: number) => {
@@ -141,8 +152,13 @@ const App = () => {
 
   return (
     <div>
-      {showExplantion && <ExplanationModal />}
+      {showExplantion && (
+        <div className="md:hidden">
+          <ExplanationModal />
+        </div>
+      )}
       <div
+        ref={scrollContainerRef}
         tabIndex={0}
         onKeyDown={(e) => {
           setViewSettings(updateViewSettings(viewSettings, e.code));
@@ -180,8 +196,14 @@ const App = () => {
           setHoveredPoint(null);
           setIsPressed(false);
         }}
-        className="absolute -z-10 select-none touch-none flex justify-center md:justify-start w-screen h-screen overflow-hidden"
+        className="absolute -z-10 select-none touch-none flex justify-center md:justify-start w-screen h-screen overflow-scroll"
       >
+        {/* It's tricky to make the modal work for both very wide and narrow screens without separating the element */}
+        {showExplantion && (
+          <div className="z-10 h-full aspect-square fixed hidden md:block">
+            <ExplanationModal />
+          </div>
+        )}
         {/* The <Stage> wrapper must live outside of the SpacetimeMap component
             for useTick() to work. */}
         <Stage

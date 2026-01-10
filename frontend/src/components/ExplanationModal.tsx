@@ -3,7 +3,7 @@ import { ExplanationText } from "./ExplanationText";
 
 export const ExplanationModal = () => {
   return (
-    <div className="absolute flex flex-col justify-center items-center w-screen lg:w-full h-full pointer-events-none">
+    <div className="absolute flex flex-col justify-center items-center w-full h-full pointer-events-none">
       <div>
         <img src={touchAndHold} alt="Touch and hold" className="w-36 m-4" />
       </div>

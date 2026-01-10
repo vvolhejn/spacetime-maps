@@ -131,7 +131,7 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
   ) => {
     const conditionalStyle = isMenuOpen
       ? ""
-      : "translate-y-[calc(100%-3rem)] md:translate-y-0 ";
+      : "translate-y-[calc(100%-3rem)] lg:translate-y-0 ";
 
     // Reset timeness when city changes
     useEffect(() => {
@@ -141,9 +141,9 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
     return (
       <div
         className={
-          "w-full md:w-96 md:h-full " +
+          "w-full lg:w-96 lg:h-full " +
           "fixed bottom-0 px-3 " +
-          "md:bottom-auto md:top-0 md:right-0 " +
+          "lg:bottom-auto lg:top-0 lg:right-0 " +
           "bg-primary text-white " +
           "text-xl " +
           "transition " +
