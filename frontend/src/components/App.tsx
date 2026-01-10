@@ -4,8 +4,15 @@ import { useEffect, useRef, useState } from "react";
 import { useLocalStorage } from "usehooks-ts";
 import { Point } from "../mesh";
 import { Menu } from "./Menu";
-import { City, DEFAULT_CITY, fetchCity } from "../cityData";
-import { useSearchParamsState } from "../useSearchParamsState";
+import {
+  City,
+  CityKey,
+  TransportMode,
+  DEFAULT_CITY_KEY,
+  DEFAULT_MODE,
+  fetchCity,
+} from "../cityData";
+import { useSearchParamsStateMultiple } from "../useSearchParamsState";
 import { ExplanationModal } from "./ExplanationModal";
 import { ViewSettings, updateViewSettings } from "../viewSettings";
 
@@ -59,7 +66,12 @@ const App = () => {
   const [isPressed, setIsPressed] = useState(false);
   const [hoveredPoint, setHoveredPoint] = useState<Point | null>(null);
   const [timeness, setTimeness] = useState(0);
-  const [cityName, setCityName] = useSearchParamsState("city", DEFAULT_CITY);
+  const [urlParams, setUrlParams] = useSearchParamsStateMultiple({
+    city: DEFAULT_CITY_KEY,
+    mode: DEFAULT_MODE,
+  });
+  const cityKey = urlParams.city;
+  const mode = urlParams.mode;
   const [city, setCity] = useState<City | null>(null);
   const [totalTime, setTotalTime] = useState(0);
   const [showExplantion, setShowExplantion] = useState(true);
@@ -119,21 +131,23 @@ const App = () => {
   };
 
   useEffect(() => {
-    fetchCity(cityName).then(
+    fetchCity(cityKey as CityKey, mode as TransportMode).then(
       (city) => {
         setCity(city);
       },
       (error) => {
         if (error.toString().includes("Unknown variable dynamic import")) {
-          console.error(`City "${cityName}" not found, resetting`);
-          setCityName(DEFAULT_CITY);
+          console.error(
+            `City "${cityKey}" with mode "${mode}" not found, resetting`
+          );
+          setUrlParams({ city: DEFAULT_CITY_KEY, mode: DEFAULT_MODE });
         } else {
           console.error("Error fetching city data", error);
         }
       }
     );
-    // The setCityName dependency is missing, but I get an infinite loop if I add it.
-  }, [cityName]);
+    // The setUrlParams dependency is missing, but I get an infinite loop if I add it.
+  }, [cityKey, mode]);
 
   const updateHoveredPoint = (
     target: HTMLDivElement,
@@ -247,8 +261,11 @@ const App = () => {
         setTimeness={setTimeness}
         isMenuOpen={isMenuOpen}
         setMenuOpen={setMenuOpen}
-        cityName={cityName}
-        setCityName={setCityName}
+        cityKey={cityKey as CityKey}
+        mode={mode as TransportMode}
+        onCityChange={(city, mode) => {
+          setUrlParams({ city, mode });
+        }}
         viewSettings={viewSettings}
         setViewSettings={setViewSettings}
       />

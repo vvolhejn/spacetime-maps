@@ -1,6 +1,11 @@
 import { forwardRef, useEffect, useState } from "react";
 import { HamburgerMenuIcon } from "./HamburgerMenuIcon";
-import { CITIES } from "../cityData";
+import {
+  CITY_CONFIGS,
+  CityKey,
+  TransportMode,
+  getAvailableModes,
+} from "../cityData";
 import { ViewSettingsPanel } from "./ViewSettingsPanel";
 import { ViewSettings } from "../viewSettings";
 import { ExplanationText } from "./ExplanationText";
@@ -40,17 +45,98 @@ export const DropdownItem = ({
   );
 };
 
+const ModeButton = ({
+  mode,
+  isSelected,
+  onClick,
+  isFirst,
+  isLast,
+}: {
+  mode: TransportMode;
+  isSelected: boolean;
+  onClick: () => void;
+  isFirst: boolean;
+  isLast: boolean;
+}) => {
+  const modeLabels = {
+    car: "Car",
+    "public transport": "Transit",
+    pedestrian: "Walk",
+  };
+
+  const roundedClasses = (() => {
+    if (isFirst && isLast) return "rounded-md";
+    if (isFirst) return "rounded-l-md";
+    if (isLast) return "rounded-r-md";
+    return "";
+  })();
+
+  return (
+    <button
+      onClick={onClick}
+      className={
+        `flex-1 py-2 text-sm font-medium transition-all duration-150 ${roundedClasses} ` +
+        (isSelected
+          ? "bg-blue-600 text-white"
+          : "bg-gray-600 text-gray-200 hover:bg-gray-500")
+      }
+    >
+      {modeLabels[mode]}
+    </button>
+  );
+};
+
+export const ModeSelector = ({
+  cityKey,
+  selectedMode,
+  onModeChange,
+}: {
+  cityKey: CityKey;
+  selectedMode: TransportMode;
+  onModeChange: (mode: TransportMode) => void;
+}) => {
+  const availableModes = getAvailableModes(cityKey);
+
+  if (availableModes.length <= 1) {
+    return (
+      <div className="w-full">
+        <label className="text-xs text-gray-300 mb-1 block">
+          Transport mode: {selectedMode}
+        </label>
+      </div>
+    );
+  }
+
+  return (
+    <div className="w-full">
+      <label className="text-xs text-gray-300 mb-1 block">Transport mode</label>
+      <div className="flex">
+        {availableModes.map((mode, index) => (
+          <ModeButton
+            key={mode}
+            mode={mode}
+            isSelected={mode === selectedMode}
+            onClick={() => onModeChange(mode)}
+            isFirst={index === 0}
+            isLast={index === availableModes.length - 1}
+          />
+        ))}
+      </div>
+    </div>
+  );
+};
+
 export const CitySelector = ({
-  cityName,
-  setCityName,
+  cityKey,
+  onCityChange,
   setMenuOpen,
 }: {
-  cityName: string;
-  setCityName: (city: string) => void;
+  cityKey: CityKey;
+  onCityChange: (cityKey: CityKey) => void;
   setMenuOpen: (isOpen: boolean) => void;
 }) => {
   const [isDropdownOpen, setDropdownOpen] = useState(true);
-  const selectedCity = CITIES[cityName];
+  const selectedCity = CITY_CONFIGS[cityKey];
 
   return (
     <div className="w-full">
@@ -70,7 +156,7 @@ export const CitySelector = ({
         <div className="flex flex-col items-start">
           <span className="text-xs text-blue-200">City</span>
           <span className="font-semibold">
-            {`${selectedCity.displayName} (${selectedCity.mode})`}
+            {selectedCity?.displayName || cityKey}
           </span>
         </div>
         <ChevronSVG isOpen={isDropdownOpen} />
@@ -90,12 +176,15 @@ export const CitySelector = ({
           className="overflow-y-auto max-h-48 text-sm"
           aria-labelledby="dropdownDefaultButton"
         >
-          {Object.entries(CITIES).map(([curCityName, curCity]) => (
+          {Object.entries(CITY_CONFIGS).map(([key, config]) => (
             <DropdownItem
-              text={`${curCity.displayName} (${curCity.mode})`}
-              onClick={() => setCityName(curCityName)}
-              key={curCityName}
-              selected={cityName === curCityName}
+              text={config.displayName}
+              onClick={() => {
+                console.log('DropdownItem onClick, key:', key, 'type:', typeof key);
+                onCityChange(key as CityKey);
+              }}
+              key={key}
+              selected={cityKey === key}
               setMenuOpen={setMenuOpen}
             />
           ))}
@@ -110,8 +199,9 @@ export type MenuProps = {
   setTimeness: (timeness: number) => void;
   isMenuOpen: boolean;
   setMenuOpen: (isMenuOpen: boolean) => void;
-  cityName: string;
-  setCityName: (cityName: string) => void;
+  cityKey: CityKey;
+  mode: TransportMode;
+  onCityChange: (cityKey: CityKey, mode: TransportMode) => void;
   viewSettings: ViewSettings;
   setViewSettings: (viewSettings: ViewSettings) => void;
 };
@@ -123,8 +213,9 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
       setTimeness,
       isMenuOpen,
       setMenuOpen,
-      cityName,
-      setCityName,
+      cityKey,
+      mode,
+      onCityChange,
       viewSettings,
       setViewSettings,
     }: MenuProps,
@@ -134,10 +225,21 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
       ? ""
       : "translate-y-[calc(100%-3rem)] lg:translate-y-0 ";
 
-    // Reset timeness when city changes
+    // Reset timeness when city or mode changes
     useEffect(() => {
       setTimeness(0);
-    }, [cityName, setTimeness]);
+    }, [cityKey, mode, setTimeness]);
+
+    const handleCityChange = (newCityKey: CityKey) => {
+      const modes = getAvailableModes(newCityKey);
+      // Try to keep the current mode if available in the new city, otherwise use the first available mode
+      const newMode = modes.includes(mode) ? mode : modes[0];
+      onCityChange(newCityKey, newMode);
+    };
+
+    const handleModeChange = (newMode: TransportMode) => {
+      onCityChange(cityKey, newMode);
+    };
 
     return (
       <div
@@ -189,9 +291,14 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
             setViewSettings={setViewSettings}
           />
           <CitySelector
-            cityName={cityName}
-            setCityName={setCityName}
+            cityKey={cityKey}
+            onCityChange={handleCityChange}
             setMenuOpen={setMenuOpen}
+          />
+          <ModeSelector
+            cityKey={cityKey}
+            selectedMode={mode}
+            onModeChange={handleModeChange}
           />
           <p>
             By{" "}

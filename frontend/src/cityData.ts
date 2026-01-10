@@ -1,9 +1,11 @@
 import { GridData } from "./gridData";
 
+export type TransportMode = "car" | "public transport" | "pedestrian";
+
 export type CityMetadata = {
   displayName: string;
   maxTimeness: number;
-  mode: "car" | "public transport" | "pedestrian";
+  mode: TransportMode;
 };
 
 export type City = CityMetadata & {
@@ -11,132 +13,144 @@ export type City = CityMetadata & {
   data: GridData;
 };
 
-export const CITIES: { [key: string]: CityMetadata } = {
+export type CityConfig = {
+  displayName: string;
+  modes: {
+    [K in TransportMode]?: {
+      dataKey: string;
+      maxTimeness: number;
+    };
+  };
+};
+
+export const CITY_CONFIGS: { [key: string]: CityConfig } = {
   newyork: {
     displayName: "New York City",
-    maxTimeness: 0.15,
-    mode: "car",
+    modes: {
+      car: { dataKey: "newyork", maxTimeness: 0.15 },
+      "public transport": { dataKey: "newyork_transit", maxTimeness: 0.15 },
+    },
   },
-  newyork_transit: {
-    displayName: "New York City",
-    maxTimeness: 0.15,
-    mode: "public transport",
-  },
-  paris_car: {
+  paris: {
     displayName: "Paris",
-    maxTimeness: 0.1,
-    mode: "car",
-  },
-  paris_transit: {
-    displayName: "Paris",
-    maxTimeness: 0.1,
-    mode: "public transport",
+    modes: {
+      car: { dataKey: "paris_car", maxTimeness: 0.1 },
+      "public transport": { dataKey: "paris_transit", maxTimeness: 0.15 },
+    },
   },
   prague: {
     displayName: "Prague",
-    maxTimeness: 0.05,
-    mode: "car",
+    modes: {
+      car: { dataKey: "prague", maxTimeness: 0.05 },
+      "public transport": { dataKey: "prague_transit", maxTimeness: 0.2 },
+    },
   },
-  prague_transit: {
-    displayName: "Prague",
-    maxTimeness: 0.2,
-    mode: "public transport",
-  },
-  sanfrancisco_car: {
+  sanfrancisco: {
     displayName: "San Francisco",
-    maxTimeness: 0.1,
-    mode: "car",
-  },
-  sanfrancisco_transit: {
-    displayName: "San Francisco",
-    maxTimeness: 0.1,
-    mode: "public transport",
+    modes: {
+      car: { dataKey: "sanfrancisco_car", maxTimeness: 0.1 },
+      "public transport": { dataKey: "sanfrancisco_transit", maxTimeness: 0.1 },
+    },
   },
   london: {
     displayName: "London",
-    maxTimeness: 0.15,
-    mode: "car",
-  },
-  london_transit: {
-    displayName: "London",
-    maxTimeness: 0.15,
-    mode: "public transport",
+    modes: {
+      car: { dataKey: "london", maxTimeness: 0.15 },
+      "public transport": { dataKey: "london_transit", maxTimeness: 0.15 },
+    },
   },
   london_detail: {
     displayName: "London – detail",
-    maxTimeness: 0.03,
-    mode: "car",
-  },
-  london_detail_pedestrian: {
-    displayName: "London – detail",
-    maxTimeness: 0.3,
-    mode: "pedestrian",
+    modes: {
+      car: { dataKey: "london_detail", maxTimeness: 0.03 },
+      pedestrian: { dataKey: "london_detail_pedestrian", maxTimeness: 0.3 },
+    },
   },
   zurich: {
     displayName: "Zürich",
-    maxTimeness: 0.1,
-    mode: "car",
-  },
-  zurich_transit: {
-    displayName: "Zürich",
-    maxTimeness: 0.2,
-    mode: "public transport",
+    modes: {
+      car: { dataKey: "zurich", maxTimeness: 0.1 },
+      "public transport": { dataKey: "zurich_transit", maxTimeness: 0.2 },
+    },
   },
   losangeles: {
     displayName: "Los Angeles",
-    maxTimeness: 0.3,
-    mode: "car",
+    modes: {
+      car: { dataKey: "losangeles", maxTimeness: 0.3 },
+    },
   },
   cairo: {
     displayName: "Cairo",
-    maxTimeness: 0.15,
-    mode: "car",
+    modes: {
+      car: { dataKey: "cairo", maxTimeness: 0.15 },
+    },
   },
   hongkong: {
     displayName: "Hong Kong",
-    maxTimeness: 0.08,
-    mode: "car",
+    modes: {
+      car: { dataKey: "hongkong", maxTimeness: 0.08 },
+    },
   },
   lapaz: {
     displayName: "La Paz",
-    maxTimeness: 0.15,
-    mode: "car",
+    modes: {
+      car: { dataKey: "lapaz", maxTimeness: 0.15 },
+    },
   },
-  seattle_transit_rushhour: {
+  seattle: {
     displayName: "Seattle",
-    maxTimeness: 0.15,
-    mode: "public transport",
+    modes: {
+      "public transport": { dataKey: "seattle_transit_rushhour", maxTimeness: 0.15 },
+    },
   },
-  // These are testing maps with low grid size.
-  // "prague_debug_transit": {
-  //   displayName: "Prague - Transit",
-  //   maxTimeness: 0.15,
-  // },
-  // "prague_debug_drive": {
-  //   displayName: "Prague - Drive",
-  //   maxTimeness: 0.15,
-  // },
-  // This is a reproduction of the early versions of the Zurich map.
-  // It was used in the YouTube video.
-  // zurich_dev: {
-  //   displayName: "Zurich (dev)",
-  //   maxTimeness: 0.15,
-  // },
 };
 
-export type CityName = keyof typeof CITIES;
+export type CityKey = string;
 
-export const DEFAULT_CITY = "newyork";
+export const DEFAULT_CITY_KEY = "newyork";
+export const DEFAULT_MODE: TransportMode = "car";
 
-export const fetchCity = async (cityName: CityName) => {
+export const fetchCity = async (cityKey: CityKey, mode: TransportMode) => {
+  const dataKey = getDataKey(cityKey, mode);
+  if (!dataKey) {
+    throw new Error(`No data available for ${cityKey} with mode ${mode}`);
+  }
+
   return Promise.all([
-    import(`./assets/${cityName}/grid_data.json`),
-    import(`./assets/${cityName}/map.png`),
+    import(`./assets/${dataKey}/grid_data.json`),
+    import(`./assets/${dataKey}/map.png`),
   ]).then(([gridData, mapImage]) => {
+    const metadata = getCityMetadata(cityKey, mode);
+    if (!metadata) {
+      throw new Error(`No metadata available for ${cityKey} with mode ${mode}`);
+    }
     return {
-      ...CITIES[cityName],
+      ...metadata,
       data: gridData.default as GridData,
       mapImage: mapImage.default as string,
     };
   });
+};
+
+export const getAvailableModes = (cityKey: CityKey): TransportMode[] => {
+  const config = CITY_CONFIGS[cityKey];
+  if (!config) return [];
+  return Object.keys(config.modes) as TransportMode[];
+};
+
+export const getDataKey = (cityKey: CityKey, mode: TransportMode): string | null => {
+  const config = CITY_CONFIGS[cityKey];
+  if (!config?.modes[mode]) return null;
+  return config.modes[mode]!.dataKey;
+};
+
+export const getCityMetadata = (cityKey: CityKey, mode: TransportMode): CityMetadata | null => {
+  const config = CITY_CONFIGS[cityKey];
+  const modeData = config?.modes[mode];
+  if (!config || !modeData) return null;
+  return {
+    displayName: config.displayName,
+    maxTimeness: modeData.maxTimeness,
+    mode,
+  };
 };
