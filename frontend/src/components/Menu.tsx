@@ -16,20 +16,25 @@ export const DropdownItem = ({
   selected?: boolean;
   setMenuOpen: (isOpen: boolean) => void;
 }) => {
-  const conditionalStyle = selected ? "bg-gray-600" : "";
   return (
     <li>
       <button
         className={
-          `block px-4 py-2 hover:bg-gray-500 w-full ${conditionalStyle}` +
-          " plausible-event-name=City+switch"
+          `block px-4 py-2 w-full text-left transition-colors duration-150 ` +
+          `${
+            selected
+              ? "bg-blue-600 text-white font-medium"
+              : "hover:bg-gray-600 text-gray-200"
+          }` +
+          " plausible-event-name=City+switch flex items-center justify-between"
         }
         onClick={() => {
           onClick();
           setMenuOpen(false);
         }}
       >
-        {text}
+        <span>{text}</span>
+        {selected && CHECKMARK_SVG}
       </button>
     </li>
   );
@@ -45,6 +50,7 @@ export const CitySelector = ({
   setMenuOpen: (isOpen: boolean) => void;
 }) => {
   const [isDropdownOpen, setDropdownOpen] = useState(true);
+  const selectedCity = CITIES[cityName];
 
   return (
     <div className="w-full">
@@ -54,39 +60,34 @@ export const CitySelector = ({
           setDropdownOpen(!isDropdownOpen);
         }}
         className={
-          "text-white bg-blue-600 hover:bg-blue-700 focus:ring-blue-800 focus:outline-none " +
-          " focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2.5 text-center " +
-          " inline-flex items-center w-full"
+          "text-white bg-blue-600 hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 focus:outline-none " +
+          "font-medium rounded-t-md text-sm px-4 py-2.5 " +
+          "inline-flex items-center justify-between w-full transition-all duration-200 " +
+          (isDropdownOpen ? "rounded-b-none" : "rounded-b-md")
         }
         type="button"
       >
-        City{" "}
-        <svg
-          className="w-2.5 h-2.5 ms-3"
-          aria-hidden="true"
-          xmlns="http://www.w3.org/2000/svg"
-          fill="none"
-          viewBox="0 0 10 6"
-        >
-          <path
-            stroke="currentColor"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth="2"
-            d="m1 1 4 4 4-4"
-          />
-        </svg>
+        <div className="flex flex-col items-start">
+          <span className="text-xs text-blue-200">City</span>
+          <span className="font-semibold">
+            {`${selectedCity.displayName} (${selectedCity.mode})`}
+          </span>
+        </div>
+        <ChevronSVG isOpen={isDropdownOpen} />
       </button>
 
       <div
         id="dropdown"
         className={
-          "z-10 divide-y divide-gray-100 rounded-lg shadow w-full bg-gray-700 h-48 overflow-y-auto " +
-          (isDropdownOpen ? "block" : "hidden")
+          "z-10 rounded-b-lg shadow-lg w-full bg-gray-700 border border-t-0 border-gray-600 " +
+          "transition-all duration-200 overflow-hidden " +
+          (isDropdownOpen
+            ? "max-h-48 opacity-100"
+            : "max-h-0 opacity-0 border-0")
         }
       >
         <ul
-          className="py-2 text-sm text-gray-200"
+          className="overflow-y-auto max-h-48 text-sm"
           aria-labelledby="dropdownDefaultButton"
         >
           {Object.entries(CITIES).map(([curCityName, curCity]) => (
@@ -157,13 +158,16 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
             <span>Space</span>
             <div className="bg-gray-200 h-4 transition-all duration-300 relative grow">
               <div
-                className="bg-blue-600 h-4 absolute right-0"
+                className="bg-blue-300 h-4 absolute right-0"
                 style={{ width: `${timeness * 100}%` }}
               ></div>
             </div>
-            <span>Time</span>
+            <span className="text-blue-300">Time</span>
           </div>
-          <button onClick={() => setMenuOpen(!isMenuOpen)}>
+          <button
+            onClick={() => setMenuOpen(!isMenuOpen)}
+            className="lg:hidden"
+          >
             <HamburgerMenuIcon />
           </button>
         </div>
@@ -177,7 +181,7 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
               href="https://www.youtube.com/watch?v=rC2VQ-oyDG0"
               className="underline"
             >
-              About (video)
+              Check out the video for more details.
             </a>
           </p>
           <ViewSettingsPanel
@@ -200,4 +204,41 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
       </div>
     );
   }
+);
+
+const CHECKMARK_SVG = (
+  <svg
+    className="w-4 h-4"
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+  >
+    <path
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      d="M5 13l4 4L19 7"
+    />
+  </svg>
+);
+
+const ChevronSVG = ({ isOpen }: { isOpen: boolean }) => (
+  <svg
+    className={
+      "w-4 h-4 transition-transform duration-200 " +
+      (isOpen ? "rotate-180" : "rotate-0")
+    }
+    aria-hidden="true"
+    xmlns="http://www.w3.org/2000/svg"
+    fill="none"
+    viewBox="0 0 10 6"
+  >
+    <path
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+      d="m1 1 4 4 4-4"
+    />
+  </svg>
 );
