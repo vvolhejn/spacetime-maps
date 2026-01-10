@@ -11,7 +11,7 @@ const SettingsButton = ({
   onClick: () => void;
 }) => {
   const colorProps = active
-    ? "bg-blue-600 hover:bg-blue-700"
+    ? "bg-fuchsia-600 hover:bg-fuchsia-700"
     : "bg-gray-600 hover:bg-gray-500";
   return (
     <button

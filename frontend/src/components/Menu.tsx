@@ -28,7 +28,7 @@ export const DropdownItem = ({
           `block px-4 py-2 w-full text-left transition-colors duration-150 ` +
           `${
             selected
-              ? "bg-blue-600 text-white font-medium"
+              ? "bg-fuchsia-600 text-white font-medium"
               : "hover:bg-gray-600 text-gray-200"
           }` +
           " plausible-event-name=City+switch flex items-center justify-between"
@@ -77,7 +77,7 @@ const ModeButton = ({
       className={
         `flex-1 py-2 text-sm font-medium transition-all duration-150 ${roundedClasses} ` +
         (isSelected
-          ? "bg-blue-600 text-white"
+          ? "bg-fuchsia-600 text-white"
           : "bg-gray-600 text-gray-200 hover:bg-gray-500")
       }
     >
@@ -146,7 +146,7 @@ export const CitySelector = ({
           setDropdownOpen(!isDropdownOpen);
         }}
         className={
-          "text-white bg-blue-600 hover:bg-blue-700 focus:ring-2 focus:ring-blue-400 focus:outline-none " +
+          "text-white bg-fuchsia-600 hover:bg-fuchsia-700 focus:ring-2 focus:ring-fuchsia-400 focus:outline-none " +
           "font-medium rounded-t-md text-sm px-4 py-2.5 " +
           "inline-flex items-center justify-between w-full transition-all duration-200 " +
           (isDropdownOpen ? "rounded-b-none" : "rounded-b-md")
@@ -154,7 +154,7 @@ export const CitySelector = ({
         type="button"
       >
         <div className="flex flex-col items-start">
-          <span className="text-xs text-blue-200">City</span>
+          <span className="text-xs text-fuchsia-200">City</span>
           <span className="font-semibold">
             {selectedCity?.displayName || cityKey}
           </span>
@@ -180,7 +180,12 @@ export const CitySelector = ({
             <DropdownItem
               text={config.displayName}
               onClick={() => {
-                console.log('DropdownItem onClick, key:', key, 'type:', typeof key);
+                console.log(
+                  "DropdownItem onClick, key:",
+                  key,
+                  "type:",
+                  typeof key
+                );
                 onCityChange(key as CityKey);
               }}
               key={key}
@@ -260,11 +265,11 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
             <span>Space</span>
             <div className="bg-gray-200 h-4 transition-all duration-300 relative grow">
               <div
-                className="bg-blue-300 h-4 absolute right-0"
+                className="bg-fuchsia-400 h-4 absolute right-0"
                 style={{ width: `${timeness * 100}%` }}
               ></div>
             </div>
-            <span className="text-blue-300">Time</span>
+            <span className="text-fuchsia-400">Time</span>
           </div>
           <button
             onClick={() => setMenuOpen(!isMenuOpen)}
