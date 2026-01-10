@@ -42,14 +42,14 @@ export const CITIES: { [key: string]: CityMetadata } = {
     maxTimeness: 0.2,
     mode: "public transport",
   },
-  zurich: {
-    displayName: "Zürich",
+  sanfrancisco_car: {
+    displayName: "San Francisco",
     maxTimeness: 0.1,
     mode: "car",
   },
-  zurich_transit: {
-    displayName: "Zürich",
-    maxTimeness: 0.2,
+  sanfrancisco_transit: {
+    displayName: "San Francisco",
+    maxTimeness: 0.1,
     mode: "public transport",
   },
   london: {
@@ -71,6 +71,16 @@ export const CITIES: { [key: string]: CityMetadata } = {
     displayName: "London – detail",
     maxTimeness: 0.3,
     mode: "pedestrian",
+  },
+  zurich: {
+    displayName: "Zürich",
+    maxTimeness: 0.1,
+    mode: "car",
+  },
+  zurich_transit: {
+    displayName: "Zürich",
+    maxTimeness: 0.2,
+    mode: "public transport",
   },
   losangeles: {
     displayName: "Los Angeles",
