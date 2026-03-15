@@ -97,16 +97,6 @@ const App = () => {
     };
   }, []);
 
-  useEffect(() => {
-    if (scrollContainerRef.current) {
-      const container = scrollContainerRef.current;
-      container.scrollLeft =
-        (container.scrollWidth - container.clientWidth) / 2;
-      container.scrollTop =
-        (container.scrollHeight - container.clientHeight) / 2;
-    }
-  }, []);
-
   const onTick = (deltaSeconds: number) => {
     setTotalTime(totalTime + deltaSeconds);
     if (viewSettings.showSpringsByDistance)
@@ -210,7 +200,7 @@ const App = () => {
           setHoveredPoint(null);
           setIsPressed(false);
         }}
-        className="absolute -z-10 select-none touch-none flex justify-center md:justify-start w-screen h-screen overflow-scroll"
+        className="absolute -z-10 select-none touch-pan-x flex justify-center md:justify-start w-screen h-screen overflow-scroll"
       >
         {/* It's tricky to make the modal work for both very wide and narrow screens without separating the element */}
         {showExplantion && (
