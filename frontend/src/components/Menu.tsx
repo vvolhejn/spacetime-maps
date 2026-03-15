@@ -227,7 +227,7 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
     ref
   ) => {
     const conditionalStyle = isMenuOpen
-      ? ""
+      ? "h-[100dvh]"
       : "translate-y-[calc(100%-3rem)] lg:translate-y-0 ";
 
     // Reset timeness when city or mode changes
@@ -254,7 +254,7 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
           "lg:bottom-auto lg:top-0 lg:right-0 " +
           "bg-primary text-white " +
           "text-xl " +
-          "transition " +
+          "transition flex flex-col " +
           conditionalStyle
         }
         ref={ref}
@@ -280,7 +280,7 @@ export const Menu = forwardRef<HTMLDivElement, MenuProps>(
         </div>
         {/* Expandable part */}
         <div
-          className={"text-white p-4 text-base max-w-md gap-y-2 flex flex-col"}
+          className={"text-white p-4 text-base max-w-md gap-y-2 flex flex-col overflow-y-auto lg:overflow-y-visible flex-1 min-h-0"}
         >
           <ExplanationText />
           <p>
