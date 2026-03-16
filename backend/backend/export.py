@@ -7,6 +7,7 @@ import tempfile
 import argparse
 
 from backend import gmaps
+from gmaps import TravelTime
 from backend.grid import Grid
 from backend.location import Location
 
@@ -52,6 +53,7 @@ def main(
     max_normalized_distance: float,
     preview: bool,
     travel_mode: gmaps.TravelMode,
+    departure_time: str | None = None,
 ):
     output_dir = ASSETS_DIR / output_name
 
@@ -83,6 +85,7 @@ def main(
         snap_to_roads=True,
         size_pixels=size_pixels,
         travel_mode=travel_mode,
+        departure_time=departure_time,
     )
 
     if preview:
@@ -158,14 +161,30 @@ if __name__ == "__main__":
         choices=list(gmaps.TravelMode),
         default=gmaps.TravelMode.DRIVE,
     )
+    parser.add_argument(
+        "--departure-time",
+        type=str,
+        default="",
+        help="The time of departure for the route calculation, fromatted as DAY HH(:MM) AM/PM"
+        "e.g. 'Monday 9:00 AM' or 'Friday 3 pm'",
+    )
     args = parser.parse_args()
+
+    location = Location(lat=args.center[0], lng=args.center[1])
+    travel_time = TravelTime.from_string(args.departure_time, location)
+
+    # If the travel time is valid, build it to a string so 
+    # we don't have to recompute it every time
+    if travel_time is not None:
+        travel_time = travel_time.to_string()
 
     main(
         output_name=args.output_name,
-        center=Location(lat=args.center[0], lng=args.center[1]),
+        center=location,
         zoom=args.zoom,
         grid_size=args.grid_size,
         max_normalized_distance=args.max_normalized_distance,
         preview=not args.no_preview,
         travel_mode=args.travel_mode,
+        departure_time=travel_time,
     )

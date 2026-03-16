@@ -42,6 +42,7 @@ class Grid:
         # a bigger size_pixels covers a larger area
         size_pixels: int = 400,
         travel_mode: TravelMode = TravelMode.DRIVE,
+        departure_time: str | None = None,
     ):
         """A grid of locations, possibly with distance information.
 
@@ -57,6 +58,7 @@ class Grid:
         self.size = size
         self.size_pixels = size_pixels
         self.travel_mode = travel_mode
+        self.departure_time = departure_time
 
         self.locations: list[GridLocation] = []
         self.route_matrix: list[RouteMatrixEntry] | None = None
@@ -159,6 +161,7 @@ class Grid:
                 self.get_snapped_locations(),
                 should_include=should_include,
                 travel_mode=self.travel_mode,
+                departure_time=self.departure_time
             )
         )
         original_len = len(distance_matrix)

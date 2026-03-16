@@ -4,10 +4,13 @@ import time
 from typing import Callable, Iterable, TypedDict
 import logging
 
+import pytz
+from datetime import datetime, timedelta, time
+from timezonefinder import TimezoneFinder
 import tqdm.auto as tqdm
 import requests
 
-from .location import Location
+from location import Location
 
 
 logger = logging.getLogger(__name__)
@@ -18,6 +21,99 @@ class TravelMode(StrEnum):
     TRANSIT = "TRANSIT"
     WALK = "WALK"
 
+# This class represents a day of the week
+# and a time of the day. It is used to specify
+# the departure time for a transit route.
+#
+# It can be returned like "yyyy-mm-ddThh:mm:ssZ"
+# which is the RFC3339 UTC "Zulu" format.
+class TravelTime():
+    # 0 = Monday, 1 = Tuesday, ..., 6 = Sunday
+    day: int
+    hour: int
+    minute: int
+    location: Location | None = None
+
+    def __init__(self, day: int, hour: int, minute: int, location: Location | None = None):
+        self.day = day
+        self.hour = hour
+        self.minute = minute
+        self.location = location
+
+    def from_string(time_str: str, location: Location):
+        if time_str.strip() == "":
+            return None
+        
+        travel_time = TravelTime(0, 0, 0, location)
+
+        # Something like monday 10am
+        
+        day, time, am_pm = time_str.split(" ")
+
+        # Convert the day to an integer
+        days = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+        travel_time.day = days.index(day.lower())
+        if travel_time.day == -1:
+            raise ValueError(f"Invalid day of the week '{day}'. Please use a valid day of the week.")
+        
+        am_pm = am_pm.lower()
+
+        if ":" in time:
+            hour, minute = time.split(":")
+            travel_time.hour = int(hour)
+            travel_time.minute = int(minute)
+        else:
+            travel_time.hour = int(time)
+
+            if am_pm == "pm":
+                if travel_time.hour != 12:
+                    travel_time.hour += 12 
+            elif am_pm == "am":
+                if travel_time.hour == 12:
+                    travel_time.hour = 0
+            else:
+                raise ValueError("Invalid time format. Please use HH(:MM) AM/PM")        
+
+        return travel_time            
+
+    def set_location(self, location: Location):
+        self.location = location
+
+    # This function takes the location, finds the timezone,
+    # and increments the time until the day and time match
+    # at that location.
+    def to_string(self):
+        if self.location is None:
+            raise ValueError("No location specified for the travel time.")
+        
+        # Step 1: Find the timezone at the specified location
+        tf = TimezoneFinder()
+        timezone_name = tf.timezone_at(lat=self.location.lat, lng=self.location.lng)
+        if timezone_name is None:
+            raise ValueError("Could not determine the timezone for the location.")
+        tz = pytz.timezone(timezone_name)
+
+        # Step 2: Get the current local time at the location
+        now_utc = datetime.now(pytz.utc)
+        now_local = now_utc.replace(tzinfo=pytz.utc).astimezone(tz)
+        current_weekday = now_local.weekday()
+        current_time = now_local.time()
+
+        # Step 3: Compute the next occurrence of the specified day and time
+        target_weekday = self.day % 7 
+        target_time = time(hour=self.hour, minute=self.minute)
+        days_ahead = (target_weekday - current_weekday) % 7
+
+        if days_ahead == 0 and target_time <= current_time:
+            days_ahead = 7
+        
+        target_date = now_local.date() + timedelta(days=days_ahead)
+        target_datetime_local = tz.localize(datetime.combine(target_date, target_time))
+
+        # Step 4: Convert the local datetime to UTC and format it
+        target_datetime_utc = target_datetime_local.astimezone(pytz.utc)
+        target_datetime_str = target_datetime_utc.strftime('%Y-%m-%dT%H:%M:%SZ')
+        return target_datetime_str
 
 def get_api_key():
     return os.getenv("GMAPS_API_KEY")
@@ -61,18 +157,18 @@ def get_distance_matrix_api_payload(
     origins: list[Location],
     destinations: list[Location],
     travel_mode: TravelMode = TravelMode.DRIVE,
+    departure_time: str | None = None,
+
 ):
     payload = {
         "origins": [l.to_route_matrix_location() for l in origins],
         "destinations": [l.to_route_matrix_location() for l in destinations],
         "travelMode": str(travel_mode),
-        # TODO: set departureTime for travel_mode=TRANSIT. Otherwise, it defaults to
-        # now, which is not reproducible. But you can only specify datetimes close
-        # to the current moment, which makes things more complicated. It'd be ideal to
-        # use something like "Monday 10AM", but then you also need to take into account
-        # the timezone and find the closest Monday.
-        # https://developers.google.com/maps/documentation/routes/transit-route#options
     }
+
+    # If travel_mode is TRANSIT, we can specify a departure time.
+    if travel_mode == TravelMode.TRANSIT and departure_time is not None:
+        payload["departureTime"] = departure_time
 
     # routingPreference doesn't apply for travel_mode=TRANSIT.
     if travel_mode == TravelMode.DRIVE:
@@ -108,6 +204,7 @@ def call_distance_matrix_api(
     destinations: list[Location],
     confirm: bool = True,
     travel_mode: TravelMode = TravelMode.DRIVE,
+    departure_time: str | None = None,
 ):
     if confirm:
         confirm_if_expensive(origins, destinations)
@@ -115,7 +212,7 @@ def call_distance_matrix_api(
     # Note that here we're not checking that the number of matrix elements
     # doesn't exceed the maximum allowed by the API.
     data = get_distance_matrix_api_payload(
-        origins, destinations, travel_mode=travel_mode
+        origins, destinations, travel_mode=travel_mode, departure_time=departure_time
     )
 
     for attempt in range(3):
@@ -140,7 +237,7 @@ def call_distance_matrix_api(
 
 
 def get_distance_matrix(
-    origins: list[Location], destinations: list[Location]
+    origins: list[Location], destinations: list[Location], departure_time: str | None = None
 ) -> Iterable[dict]:
     confirm_if_expensive(origins, destinations)
 
@@ -155,6 +252,7 @@ def get_distance_matrix(
                     origins[i : i + ROOT_MAX_ENTRIES],
                     destinations[j : j + ROOT_MAX_ENTRIES],
                     confirm=False,  # Already confirmed above
+                    departure_time=departure_time,
                 )
 
                 # Reindex to match the original indices
@@ -168,7 +266,7 @@ def get_distance_matrix(
                         entry["destinationIndex"] += j
                 yield from matrix_entries
     else:
-        response = call_distance_matrix_api(origins, destinations)
+        response = call_distance_matrix_api(origins, destinations, departure_time=departure_time)
         yield from response.json()
 
 
@@ -178,6 +276,7 @@ def get_sparsified_distance_matrix(
     should_include: Callable[[Location, Location], bool],
     filter_mirrored: bool = True,
     travel_mode: TravelMode = TravelMode.DRIVE,
+    departure_time: str | None = None,
 ) -> Iterable[dict]:
     """Get a distance matrix, but only for a select subset of location pairs."""
     mask = [
@@ -222,7 +321,7 @@ def get_sparsified_distance_matrix(
         # We're assuming that the number of destinations is small enough that we can
         # send them all in one request. This would break for large grids.
         response = call_distance_matrix_api(
-            [origin], cur_destinations, confirm=False, travel_mode=travel_mode
+            [origin], cur_destinations, confirm=False, travel_mode=travel_mode, departure_time=departure_time
         )
 
         matrix_entries = response.json()
